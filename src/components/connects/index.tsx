@@ -11,7 +11,6 @@ import {
 import { createPublicClient, custom, formatUnits, Hex } from "viem";
 import { mainnet } from "viem/chains";
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
-import { WalletsDialog } from "@privy-io/react-auth/ui";
 import {
   createClient,
   convertViemChainToRelayChain,
@@ -19,6 +18,7 @@ import {
 } from "@reservoir0x/relay-sdk";
 import { supportedChains } from "@/context/PrivyProvider";
 import { solanaChain } from "@/helpers/solanaChain";
+import TokenModal from "../token-modal";
 
 const connection = new Connection(process.env.NEXT_PUBLIC_SOLANA_RPC as string);
 
@@ -162,8 +162,6 @@ export default function Connect() {
 
   return (
     <div>
-      <WalletsDialog />
-
       {ready && (
         <button
           onClick={() => {
@@ -184,7 +182,6 @@ export default function Connect() {
           Logout
         </button>
       )}
-
       <h3>Ethereum Wallets</h3>
       {readyWallets &&
         authenticated &&
@@ -223,7 +220,6 @@ export default function Connect() {
             </div>
           </div>
         ))}
-
       <h3>Solana Wallets</h3>
       {readySolWallets &&
         authenticated &&

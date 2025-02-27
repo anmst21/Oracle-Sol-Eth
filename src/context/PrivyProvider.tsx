@@ -18,13 +18,14 @@ import { http } from "viem";
 export const supportedChains = [
   arbitrum,
   base,
-  degen,
   mainnet,
   optimism,
   polygon,
   zora,
-] as const;
+];
 
+const c = supportedChains.map((chain) => ({ id: chain.id, name: chain.name }));
+console.log("c", c);
 export const config = createConfig({
   chains: [arbitrum, base, degen, mainnet, optimism, polygon, zora], // Pass your required chains as an array
   transports: {
@@ -56,15 +57,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           walletChainType: "ethereum-and-solana",
           //  showWalletLoginFirst: true,
         },
-        supportedChains: [
-          mainnet,
-          base,
-          optimism,
-          arbitrum,
-          degen,
-          zora,
-          polygon,
-        ],
+        supportedChains,
 
         solanaClusters: [
           {

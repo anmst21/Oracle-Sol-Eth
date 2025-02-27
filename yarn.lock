@@ -1234,7 +1234,17 @@
   resolved "https://registry.yarnpkg.com/@react-types/shared/-/shared-3.27.0.tgz#167c163139efc98c2194aba090076c03b658c07d"
   integrity sha512-gvznmLhi6JPEf0bsq7SwRYTHAKKq/wcmKqFez9sRdbED+SPMUmK5omfZ6w3EwUFQHbYUa4zPBYedQ7Knv70RMw==
 
-"@reservoir0x/relay-sdk@^1.6.4":
+"@reservoir0x/relay-kit-hooks@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@reservoir0x/relay-kit-hooks/-/relay-kit-hooks-1.8.0.tgz#e91b6ca079cdb2a8807361474235473c54e74cfc"
+  integrity sha512-JSw45COpcYZ9m7Ab5TTG81OJnN2UTfiRVxShjos4unkg1ZFVTaomqf2b2AZz3W9q+jvwkz4Jsjolml8Vcs8kuQ==
+  dependencies:
+    "@reservoir0x/relay-sdk" "1.6.4"
+    "@types/react" "^18.0.0"
+    "@types/react-dom" "^18.0.0"
+    axios "^1.7.2"
+
+"@reservoir0x/relay-sdk@1.6.4", "@reservoir0x/relay-sdk@^1.6.4":
   version "1.6.4"
   resolved "https://registry.yarnpkg.com/@reservoir0x/relay-sdk/-/relay-sdk-1.6.4.tgz#bd08d947d93383453994c3e3b0a56a3df0e4c726"
   integrity sha512-7DFL1ln+R0Do5Wl/9d8+REnFFapB4uHh5qtDWe68Z7ENL5DLrs8cM4WlZXsIEpCPgfq8nJ+9Ni9fd7rO115P6A==
@@ -1641,10 +1651,28 @@
   dependencies:
     undici-types "~6.19.2"
 
+"@types/prop-types@*":
+  version "15.7.14"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.14.tgz#1433419d73b2a7ebfc6918dcefd2ec0d5cd698f2"
+  integrity sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==
+
+"@types/react-dom@^18.0.0":
+  version "18.3.5"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.3.5.tgz#45f9f87398c5dcea085b715c58ddcf1faf65f716"
+  integrity sha512-P4t6saawp+b/dFrUr2cvkVsfvPguwsxtH6dNIYRllMsefqFzkZk5UIjzyDOv5g1dXIPdG4Sp1yCR4Z6RCUsG/Q==
+
 "@types/react-dom@^19":
   version "19.0.4"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-19.0.4.tgz#bedba97f9346bd4c0fe5d39e689713804ec9ac89"
   integrity sha512-4fSQ8vWFkg+TGhePfUzVmat3eC14TXYSsiiDSLI0dVLsrm9gZFABjPy/Qu6TKgl1tq1Bu1yDsuQgY3A3DOjCcg==
+
+"@types/react@^18.0.0":
+  version "18.3.18"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.18.tgz#9b382c4cd32e13e463f97df07c2ee3bbcd26904b"
+  integrity sha512-t4yC+vtgnkYjNSKlFx1jkAhH8LgTo2N/7Qvi83kdEaUtMDiwpbLAktKDaAMlRcJ5eSxZkH74eEGt1ky31d7kfQ==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^3.0.2"
 
 "@types/react@^19":
   version "19.0.10"
@@ -2405,7 +2433,7 @@ axe-core@^4.10.0:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.10.2.tgz#85228e3e1d8b8532a27659b332e39b7fa0e022df"
   integrity sha512-RE3mdQ7P3FRSe7eqCWoeQ/Z9QXrtniSjp1wUjt5nRC3WIpz5rSCve6o3fsZ2aCpJtrZjSZgjwXAoTO5k4tEI0w==
 
-axios@^1.6.5:
+axios@^1.6.5, axios@^1.7.2:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.8.1.tgz#7c118d2146e9ebac512b7d1128771cdd738d11e3"
   integrity sha512-NN+fvwH/kV01dYUQ3PTOZns4LWtWhOFCAhQ/pHb88WQ1hNe5V/dvFwc4VJcDL11LT9xSX0QtsR8sWUuyOuOq7g==
