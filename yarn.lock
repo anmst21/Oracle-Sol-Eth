@@ -1309,20 +1309,20 @@
   resolved "https://registry.yarnpkg.com/@react-types/shared/-/shared-3.27.0.tgz#167c163139efc98c2194aba090076c03b658c07d"
   integrity sha512-gvznmLhi6JPEf0bsq7SwRYTHAKKq/wcmKqFez9sRdbED+SPMUmK5omfZ6w3EwUFQHbYUa4zPBYedQ7Knv70RMw==
 
-"@reservoir0x/relay-kit-hooks@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@reservoir0x/relay-kit-hooks/-/relay-kit-hooks-1.8.0.tgz#e91b6ca079cdb2a8807361474235473c54e74cfc"
-  integrity sha512-JSw45COpcYZ9m7Ab5TTG81OJnN2UTfiRVxShjos4unkg1ZFVTaomqf2b2AZz3W9q+jvwkz4Jsjolml8Vcs8kuQ==
+"@reservoir0x/relay-kit-hooks@^1.9.8":
+  version "1.9.8"
+  resolved "https://registry.yarnpkg.com/@reservoir0x/relay-kit-hooks/-/relay-kit-hooks-1.9.8.tgz#f805a452d4f029f76b1fe68a77de6050c1a9ab89"
+  integrity sha512-LEjGSi2JlCoV1k5Mc8dexgDEGknSKn+gpv/EhDIiXSn+Oumh3D9L94xrdoH6v4vfrgiYA+zKe4kKkNPE8i1QCw==
   dependencies:
-    "@reservoir0x/relay-sdk" "1.6.4"
+    "@reservoir0x/relay-sdk" "1.8.0"
     "@types/react" "^18.0.0"
     "@types/react-dom" "^18.0.0"
     axios "^1.7.2"
 
-"@reservoir0x/relay-sdk@1.6.4":
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/@reservoir0x/relay-sdk/-/relay-sdk-1.6.4.tgz#bd08d947d93383453994c3e3b0a56a3df0e4c726"
-  integrity sha512-7DFL1ln+R0Do5Wl/9d8+REnFFapB4uHh5qtDWe68Z7ENL5DLrs8cM4WlZXsIEpCPgfq8nJ+9Ni9fd7rO115P6A==
+"@reservoir0x/relay-sdk@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@reservoir0x/relay-sdk/-/relay-sdk-1.8.0.tgz#b88aa4a5a53902f9cb72d05dbe02a0bfe091604d"
+  integrity sha512-dW8rPb3Wrbf7esmfHwc4YFtPU69+U3X2Y2hJnzA3zQ0H8XdNTNLzah+zaS5g9/VEOrBpyNm7q4+Z1jjYSRD/4Q==
   dependencies:
     axios "^1.6.5"
 
@@ -1784,17 +1784,17 @@
   dependencies:
     tslib "^2.8.0"
 
-"@tanstack/query-core@5.66.4":
-  version "5.66.4"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.66.4.tgz#44b87bff289466adbfa0de8daa5756cbd2d61c61"
-  integrity sha512-skM/gzNX4shPkqmdTCSoHtJAPMTtmIJNS0hE+xwTTUVYwezArCT34NMermABmBVUg5Ls5aiUXEDXfqwR1oVkcA==
+"@tanstack/query-core@5.75.5":
+  version "5.75.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.75.5.tgz#198c27c21b5d15aad09167af8a021f214e194d4b"
+  integrity sha512-kPDOxtoMn2Ycycb76Givx2fi+2pzo98F9ifHL/NFiahEDpDwSVW6o12PRuQ0lQnBOunhRG5etatAhQij91M3MQ==
 
-"@tanstack/react-query@^5.66.9":
-  version "5.66.9"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.66.9.tgz#1c8be303adae59e9cee877490fbb2c23dfa26927"
-  integrity sha512-NRI02PHJsP5y2gAuWKP+awamTIBFBSKMnO6UVzi03GTclmHHHInH5UzVgzi5tpu4+FmGfsdT7Umqegobtsp23A==
+"@tanstack/react-query@^5.75.5":
+  version "5.75.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.75.5.tgz#650a6b58c7bcd4c33062426e05c4467571148a4f"
+  integrity sha512-QrLCJe40BgBVlWdAdf2ZEVJ0cISOuEy/HKupId1aTKU6gPJZVhSvZpH+Si7csRflCJphzlQ77Yx6gUxGW9o0XQ==
   dependencies:
-    "@tanstack/query-core" "5.66.4"
+    "@tanstack/query-core" "5.75.5"
 
 "@tanstack/react-virtual@^3.8.1":
   version "3.13.2"
@@ -5279,22 +5279,22 @@ react-device-detect@^2.2.2:
   dependencies:
     ua-parser-js "^1.0.33"
 
-react-dom@^19.0.0:
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.0.0.tgz#43446f1f01c65a4cd7f7588083e686a6726cfb57"
-  integrity sha512-4GV5sHFG0e/0AD4X+ySy6UJd3jVl1iNsNHdpad0qhABJ11twS3TTBnseqsKurKcsNqCEFeGL3uLpVChpIO3QfQ==
+react-dom@^19.1.0:
+  version "19.1.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.1.0.tgz#133558deca37fa1d682708df8904b25186793623"
+  integrity sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==
   dependencies:
-    scheduler "^0.25.0"
+    scheduler "^0.26.0"
 
 react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react@^19.0.0:
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0.tgz#6e1969251b9f108870aa4bff37a0ce9ddfaaabdd"
-  integrity sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ==
+react@^19.1.0:
+  version "19.1.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-19.1.0.tgz#926864b6c48da7627f004795d6cce50e90793b75"
+  integrity sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==
 
 readable-stream@^2.3.3:
   version "2.3.8"
@@ -5495,10 +5495,10 @@ sass@^1.85.1:
   optionalDependencies:
     "@parcel/watcher" "^2.4.1"
 
-scheduler@^0.25.0:
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0.tgz#336cd9768e8cceebf52d3c80e3dcf5de23e7e015"
-  integrity sha512-xFVuu11jh+xcO7JOAGJNOXld8/TcEHK/4CituBUeUb5hqxJLj9YuemAEuvm9gQ/+pgXYfbQuqAkiYu+u7YEsNA==
+scheduler@^0.26.0:
+  version "0.26.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.26.0.tgz#4ce8a8c2a2095f13ea11bf9a445be50c555d6337"
+  integrity sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==
 
 secure-json-parse@^2.4.0:
   version "2.7.0"

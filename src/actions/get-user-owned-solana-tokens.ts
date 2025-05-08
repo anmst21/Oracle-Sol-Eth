@@ -8,10 +8,7 @@ import {
 } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
-const RPC_ENDPOINT =
-  "https://mainnet.helius-rpc.com/?api-key=REDACTED_HELIUS_KEY";
-const connection = new Connection(RPC_ENDPOINT, { commitment: "confirmed" });
-const wallet = new PublicKey("8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp");
+const RPC_ENDPOINT = process.env.NEXT_PUBLIC_SOLANA_RPC;
 
 interface TokenAccount {
   pubkey: string;
@@ -31,7 +28,7 @@ interface HeliosAsset {
   };
 }
 
-interface EnrichedToken {
+export interface EnrichedToken {
   pubkey: string;
   mint: string; // base58 string
   amount: number;
@@ -45,8 +42,20 @@ interface EnrichedToken {
   priceUsd: number | null; // from Fluxbeam
 }
 
-export async function getTokenAccountsWithMetadata(): Promise<EnrichedToken[]> {
+export async function getTokenAccountsWithMetadata({
+  address,
+}: {
+  address: string;
+}): Promise<EnrichedToken[]> {
   // 1) load all SPL token accounts with non-zero balance
+
+  if (!RPC_ENDPOINT) {
+    return [];
+  }
+  const connection = new Connection(RPC_ENDPOINT, { commitment: "confirmed" });
+
+  const wallet = new PublicKey(address);
+
   const filters: GetProgramAccountsFilter[] = [
     { dataSize: 165 },
     { memcmp: { offset: 32, bytes: wallet.toBase58() } },

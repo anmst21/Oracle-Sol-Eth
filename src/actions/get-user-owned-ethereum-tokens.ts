@@ -3,6 +3,22 @@ import { duneEthChains } from "@/helpers/dune-eth-chains";
 
 const apiKey = process.env.DUNE_API_KEY;
 
+interface TokenMetadata {
+  logo: string;
+}
+
+export interface ChainBalance {
+  chain: string;
+  chain_id: number;
+  address: string;
+  amount: string;
+  symbol: string;
+  decimals: number;
+  price_usd: number;
+  value_usd: number;
+  token_metadata: TokenMetadata;
+}
+
 export async function getTokenAccountsWithMetadata({
   address,
   chainId,
@@ -11,7 +27,7 @@ export async function getTokenAccountsWithMetadata({
   address: string;
   chainId?: number;
   offset?: number;
-}) {
+}): Promise<ChainBalance[]> {
   if (!apiKey) {
     throw new Error("Missing DUNE_API_KEY");
   }
@@ -50,5 +66,7 @@ export async function getTokenAccountsWithMetadata({
     throw new Error(`Dune API error ${res.status}: ${text}`);
   }
 
-  return res.json();
+  const data = (await res.json()) as { balances: ChainBalance[] };
+
+  return data.balances;
 }
