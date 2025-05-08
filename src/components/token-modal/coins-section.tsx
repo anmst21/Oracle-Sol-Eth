@@ -13,15 +13,28 @@ type Props = {
     | null;
   sectionName: string;
   sectionType: "gecko" | "solana" | "community" | "relay";
+  chain: string;
 };
 
-const CoinsSection = ({ coinsArray, sectionName, sectionType }: Props) => {
+const CoinsSection = ({
+  coinsArray,
+  sectionName,
+  sectionType,
+  chain,
+}: Props) => {
   return (
     <div className="token-modal__section">
       <span>{sectionName}</span>
       <div className="token-modal__coins">
         {coinsArray?.map((coin, index) => {
-          return <CoinItem key={index} type={sectionType} coin={coin} />;
+          return (
+            <CoinItem
+              chain={chain}
+              key={index}
+              type={sectionType}
+              coin={coin}
+            />
+          );
         })}
       </div>
     </div>

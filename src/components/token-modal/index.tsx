@@ -18,6 +18,7 @@ import { DexScreenerTokenMeta } from "@/types/SolanaCoins";
 import CoinsSection from "./coins-section";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { fetchTokensForChain } from "@/actions/fetch-tokens-for-chain";
+import { getTokenAccounts } from "@/actions/get-user-owned-solana-tokens";
 
 type ModalChain = (GeckoNetwork | Chain) | null;
 interface TokenModalProps {
@@ -178,17 +179,20 @@ const TokenModal: React.FC<TokenModalProps> = ({
               <CoinsSection
                 sectionType="gecko"
                 coinsArray={geckoCoins}
-                sectionName="Top on Base"
+                sectionName="Trending on Base"
+                chain="base"
               />
               <CoinsSection
                 sectionType="solana"
                 coinsArray={solanaCoins}
-                sectionName="Top on Solana"
+                sectionName="Trending on Solana"
+                chain="solana"
               />
               <CoinsSection
                 sectionType="community"
                 coinsArray={communityCoins}
-                sectionName="Top on Warpcast"
+                sectionName="Trending on Warpcast"
+                chain="degen"
               />
             </>
           )}
@@ -196,14 +200,16 @@ const TokenModal: React.FC<TokenModalProps> = ({
             <CoinsSection
               sectionType="gecko"
               coinsArray={geckoCoins}
-              sectionName="Top on Base"
+              sectionName="Trending on Base"
+              chain="base"
             />
           )}
           {chain === "solana" && (
             <CoinsSection
               sectionType="solana"
               coinsArray={solanaCoins}
-              sectionName="Top on Solana"
+              sectionName="Trending on Solana"
+              chain="solana"
             />
           )}
 
@@ -215,14 +221,18 @@ const TokenModal: React.FC<TokenModalProps> = ({
               <CoinsSection
                 sectionType="gecko"
                 coinsArray={tokens}
-                sectionName={`Top on ${selectedChain?.attributes?.name}`}
+                sectionName={`Trending on ${selectedChain?.attributes?.name}`}
+                chain={selectedChain?.attributes?.name
+                  .split(" ")[0]
+                  .toLowerCase()}
               />
             )}
           {chain && isDexUnsupportedChain && (
             <CoinsSection
+              chain={selectedChain?.name.split(" ")[0].toLowerCase()}
               sectionType="relay"
               coinsArray={tokens}
-              sectionName={`Top on ${selectedChain?.name}`}
+              sectionName={`Trending on ${selectedChain?.name}`}
             />
           )}
         </div>

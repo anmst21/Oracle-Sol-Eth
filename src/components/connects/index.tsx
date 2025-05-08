@@ -8,9 +8,9 @@ import {
   ConnectedSolanaWallet,
   ConnectedWallet,
 } from "@privy-io/react-auth";
-import { createPublicClient, custom, formatUnits, Hex } from "viem";
+import { createPublicClient, custom, Hex } from "viem";
 import { mainnet } from "viem/chains";
-import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import {
   createClient,
   convertViemChainToRelayChain,
@@ -18,9 +18,10 @@ import {
 } from "@reservoir0x/relay-sdk";
 import { supportedChains } from "@/context/PrivyProvider";
 import { solanaChain } from "@/helpers/solanaChain";
-import TokenModal from "../token-modal";
+import { formatEthBalance, formatSolBalance } from "@/helpers/formatBalance";
+import { rpcSwitch } from "@/helpers/rpc-switch";
 
-const connection = new Connection(process.env.NEXT_PUBLIC_SOLANA_RPC as string);
+export const connection = new Connection(rpcSwitch("solana") as string);
 
 const ethChains = supportedChains.map((chain) =>
   convertViemChainToRelayChain(chain)
@@ -40,7 +41,7 @@ console.log("chainItems", chainItems);
 
 createClient({
   baseApiUrl: MAINNET_RELAY_API,
-  source: "https://h3llcat.app/",
+  source: "oracl3.net",
   chains,
 });
 
@@ -96,11 +97,6 @@ export default function Connect() {
   console.log("user", user, activeWallet);
   console.log("wallets", wallets, solWallets);
 
-  const formatSolBalance = (lamports: number) =>
-    (lamports / LAMPORTS_PER_SOL).toFixed(6);
-  const formatEthBalance = (units: bigint) =>
-    Number(formatUnits(units, 18)).toFixed(6);
-
   const fetchEthBalance = useCallback(async (wallet: ConnectedWallet) => {
     if (!wallet.linked) {
       // Set balance to null for unlinked wallets
@@ -148,7 +144,7 @@ export default function Connect() {
         fetchEthBalance(wallet);
       });
     }
-  }, [readyWallets, fetchEthBalance, authenticated]);
+  }, [readyWallets, fetchEthBalance, authenticated, wallets]);
 
   // When the Solana wallet list changes, reset balances and fetch new ones
   useEffect(() => {
@@ -158,7 +154,7 @@ export default function Connect() {
         fetchSolBalance(wallet);
       });
     }
-  }, [readySolWallets, fetchSolBalance, authenticated]);
+  }, [readySolWallets, fetchSolBalance, authenticated, solWallets]);
 
   return (
     <div>
