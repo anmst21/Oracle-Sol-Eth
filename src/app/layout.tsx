@@ -6,6 +6,9 @@ import { fetchCommunityCoins } from "@/actions/fetch-community-coins";
 import { fetchSolanaCoins } from "@/actions/fetch-solana-coins";
 import { fetchTokensForChain } from "@/actions/fetch-tokens-for-chain";
 import TokenModal from "@/components/token-modal";
+import { CommunityCoinsProvider } from "@/context/FarcasterCommunityTokensProvider";
+import { SolanaCoinsProvider } from "@/context/DexScreenerTrendingSolataTokensProvider";
+import { GeckoTokensProvider } from "@/context/GeckoTerminalCoinsProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +30,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const community = await fetchCommunityCoins();
-  const solana = await fetchSolanaCoins();
-  const gecko = await fetchTokensForChain("base");
+  // const community = await fetchCommunityCoins();
+  // console.log("solana coins", solana);
 
   // const s = await searchDexTokens({ network: "base", query: "degen" });
 
@@ -37,14 +39,20 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <PrivyProvider>
-          <div className="main">
-            {/* <TokenModal
+          <SolanaCoinsProvider>
+            <CommunityCoinsProvider>
+              <GeckoTokensProvider>
+                <div className="main">
+                  {/* <TokenModal
               geckoCoins={gecko}
               communityCoins={community}
               solanaCoins={solana}
             /> */}
-            {children}
-          </div>
+                  {children}
+                </div>
+              </GeckoTokensProvider>
+            </CommunityCoinsProvider>
+          </SolanaCoinsProvider>
         </PrivyProvider>
       </body>
     </html>

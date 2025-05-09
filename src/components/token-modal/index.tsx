@@ -18,7 +18,6 @@ import { DexScreenerTokenMeta } from "@/types/SolanaCoins";
 import CoinsSection from "./coins-section";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { fetchTokensForChain } from "@/actions/fetch-tokens-for-chain";
-import { getTokenAccounts } from "@/actions/get-user-owned-solana-tokens";
 
 type ModalChain = (GeckoNetwork | Chain) | null;
 interface TokenModalProps {
