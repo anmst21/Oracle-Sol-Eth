@@ -55,6 +55,8 @@ export async function getTokenAccountsWithMetadata({
 
   const res = await fetch(url, {
     method: "GET",
+    cache: "force-cache",
+    next: { revalidate: 60 * 60 },
     headers: {
       "X-Dune-Api-Key": apiKey,
       Accept: "application/json",

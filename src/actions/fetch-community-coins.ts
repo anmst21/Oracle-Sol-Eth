@@ -6,7 +6,10 @@ export const fetchCommunityCoins = async (): Promise<
   FormattedCoin[] | null
 > => {
   try {
-    const response = await fetch("https://www.farcaster.in/api/tokens");
+    const response = await fetch("https://www.farcaster.in/api/tokens", {
+      cache: "force-cache",
+      next: { revalidate: 60 * 60 },
+    });
     if (!response.ok) {
       throw new Error(`Failed to fetch coins: ${response.statusText}`);
     }

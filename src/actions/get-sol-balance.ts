@@ -34,7 +34,8 @@ export async function getSolBalance(
     const lamports = await connection.getBalance(pubkey, commitment);
 
     const res = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
+      "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd",
+      { cache: "force-cache", next: { revalidate: 60 * 60 } }
     );
     const json = (await res.json()) as { solana: { usd: number } };
 

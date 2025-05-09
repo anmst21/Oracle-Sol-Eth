@@ -106,7 +106,8 @@ export async function getTokenAccountsWithMetadata({
       let priceUsd: number | null = null;
       try {
         const priceRes = await fetch(
-          `https://data.fluxbeam.xyz/tokens/${tk.mint.toBase58()}/price`
+          `https://data.fluxbeam.xyz/tokens/${tk.mint.toBase58()}/price`,
+          { cache: "force-cache", next: { revalidate: 60 * 60 } }
         );
         if (priceRes.ok) {
           const price = await priceRes.json();

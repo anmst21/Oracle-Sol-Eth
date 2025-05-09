@@ -7,7 +7,8 @@ export async function fetchSolanaCoins(): Promise<
 > {
   try {
     const response = await fetch(
-      "https://api.dexscreener.com/token-boosts/top/v1"
+      "https://api.dexscreener.com/token-boosts/top/v1",
+      { cache: "force-cache", next: { revalidate: 60 * 60 } }
     );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -24,7 +25,8 @@ export async function fetchSolanaCoins(): Promise<
       .join(",");
 
     const priceResponse = await fetch(
-      `https://api.dexscreener.com/tokens/v1/solana/${tokenAddresses}`
+      `https://api.dexscreener.com/tokens/v1/solana/${tokenAddresses}`,
+      { cache: "force-cache", next: { revalidate: 60 * 60 } }
     );
 
     const metaData: DexScreenerTokenMeta[] = await priceResponse.json();

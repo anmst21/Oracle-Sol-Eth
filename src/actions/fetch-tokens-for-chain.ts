@@ -19,6 +19,7 @@ export async function fetchTokensForChain(
         Accept: "application/json;version=20230302",
       },
       cache: "force-cache",
+      next: { revalidate: 60 * 60 },
     });
 
     if (!response.ok) {
