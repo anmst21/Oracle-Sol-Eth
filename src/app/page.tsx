@@ -8,10 +8,8 @@ import {
   getTokenAccountsWithMetadata as getUserSolTokens,
 } from "@/actions/get-user-owned-solana-tokens";
 import { useRelayChains, useTokenList } from "@reservoir0x/relay-kit-hooks";
-import { act, useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import { ModalChain } from "@/components/icons";
-import classNames from "classnames";
+import { useEffect, useMemo, useState } from "react";
+
 import { getSolBalance, SolBalanceResponse } from "@/actions/get-sol-balance";
 import { useCommunityCoins } from "@/context/FarcasterCommunityTokensProvider";
 import { isAddress, zeroAddress } from "viem";
@@ -300,7 +298,7 @@ export default function Home() {
         chainId: solanaChain?.id,
         address: t.baseToken.address,
         symbol: t.baseToken.symbol,
-        logo: t.info.imageUrl,
+        logo: t.info.imageUrl || "",
         priceUsd: Number(t.priceUsd),
       }))
     );
@@ -384,28 +382,6 @@ export default function Home() {
         {searchTokens && searchTokens.length > 0 && searchTerm.length > 0 && (
           <div>
             <h2>Search Result</h2>
-            {/* {searchTokens.map((token, i) => {
-              if (!chains) return;
-              const chain = chains.find((c) => c.id === token.chainId);
-              console.log("token", token);
-
-              return (
-                <ModalCoinItem
-                  key={i}
-                  //   userBalance={Number(balanceNative)}
-                  //  priceUsd={token.price_usd}
-                  coinAddress={
-                    token.address === "native"
-                      ? zeroAddress
-                      : (token.address as string)
-                  }
-                  coinSymbol={token.symbol}
-                  chainSrc={chain?.icon?.squaredLight}
-                  coinSrc={token.metadata?.logoURI}
-                />
-              );
-            })} */}
-
             {filteredUnique.length &&
               filteredUnique.map((t, i) => {
                 const chain = chains?.find((c) => c.id === t.chainId);
@@ -625,7 +601,6 @@ export default function Home() {
                 return (
                   <ModalCoinItem
                     key={i}
-                    //  userBalance={token.amount}
                     priceUsd={Number(token.priceUsd)}
                     coinAddress={token.baseToken.address}
                     coinSymbol={token.baseToken.symbol}
@@ -637,7 +612,6 @@ export default function Home() {
             </div>
           )}
       </div>
-      {/* <Connect /> */}
     </div>
   );
 }

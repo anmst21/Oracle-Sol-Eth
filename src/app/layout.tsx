@@ -1,23 +1,21 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+// import type { Metadata } from "next";
+import { Fira_Code, Handjet } from "next/font/google";
 import PrivyProvider from "../context/PrivyProvider";
 import "../styles/index.scss";
-import { fetchCommunityCoins } from "@/actions/fetch-community-coins";
-import { fetchSolanaCoins } from "@/actions/fetch-solana-coins";
-import { fetchTokensForChain } from "@/actions/fetch-tokens-for-chain";
-import TokenModal from "@/components/token-modal";
 import { CommunityCoinsProvider } from "@/context/FarcasterCommunityTokensProvider";
 import { SolanaCoinsProvider } from "@/context/DexScreenerTrendingSolataTokensProvider";
 import { GeckoTokensProvider } from "@/context/GeckoTerminalCoinsProvider";
+import MoonPayContextProvider from "@/context/MoonpayProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const firaCode = Fira_Code({
+  subsets: ["latin"], // adjust as needed
+  variable: "--font-fira-code",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// load Handjet as a CSS variable
+const handjet = Handjet({
   subsets: ["latin"],
+  variable: "--font-handjet",
 });
 
 // export const metadata: Metadata = {
@@ -37,19 +35,21 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${firaCode.variable} ${handjet.variable}`}>
         <PrivyProvider>
           <SolanaCoinsProvider>
             <CommunityCoinsProvider>
               <GeckoTokensProvider>
-                <div className="main">
-                  {/* <TokenModal
+                <MoonPayContextProvider>
+                  <div className="main">
+                    {/* <TokenModal
               geckoCoins={gecko}
               communityCoins={community}
               solanaCoins={solana}
             /> */}
-                  {children}
-                </div>
+                    {children}
+                  </div>
+                </MoonPayContextProvider>
               </GeckoTokensProvider>
             </CommunityCoinsProvider>
           </SolanaCoinsProvider>

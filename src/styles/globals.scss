@@ -5,10 +5,55 @@ body {
     max-height: 100dvh;
     height: 100%;
     width: 100%;
+    font-family: var(--font-fira-code), monospace;
+    box-sizing: border-box !important;
+    background-color: #0F0E1B;
+    color: #889697;
+    margin: 0;
+}
+
+input {
+    background-color: transparent;
+    border: none;
+    color: #D9F1E9;
+    caret-color: #AEE900;
+    padding: 0;
+    font-family: var(--font-fira-code);
+    font-weight: 500;
+
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    &::placeholder {
+        color: #889697;
+    }
 }
 
 
 button {
     all: unset;
     cursor: pointer;
+}
+
+a {
+    all: unset;
+    cursor: pointer;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit !important;
+}
+
+
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    all: unset
 }

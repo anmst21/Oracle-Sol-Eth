@@ -5,13 +5,16 @@ function Icon({
   chainId,
   question,
   uri,
+
+  width = 24,
 }: {
   chainId?: number;
   question?: boolean;
   uri?: string;
+  width?: number;
 }) {
   const id = useId();
-
+  // 29 x 32
   const patternId = `svgPattern_${id}`;
 
   return (
@@ -19,8 +22,8 @@ function Icon({
       <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
-        width="22"
-        height="24"
+        width={width}
+        height={width}
         fill="none"
         viewBox="0 0 22 24"
       >
