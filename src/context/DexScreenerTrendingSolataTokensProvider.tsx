@@ -8,11 +8,11 @@ import React, {
   useTransition,
   ReactNode,
 } from "react";
-import { DexScreenerTokenMeta } from "@/types/SolanaCoins";
-import { fetchSolanaCoins } from "@/actions/fetch-solana-coins"; // your server fn
+import { fetchSolanaCoins } from "@/actions/fetch-solana-coins";
+import { UnifiedToken } from "@/types/coin-types";
 
 interface SolanaCoinsContextType {
-  data: DexScreenerTokenMeta[] | null;
+  data: UnifiedToken[] | null;
   isLoading: boolean;
   loadCoins: () => void;
 }
@@ -24,7 +24,7 @@ const SolanaCoinsContext = createContext<SolanaCoinsContextType>({
 });
 
 export const SolanaCoinsProvider = ({ children }: { children: ReactNode }) => {
-  const [data, setData] = useState<DexScreenerTokenMeta[] | null>(null);
+  const [data, setData] = useState<UnifiedToken[] | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const loadCoins = useCallback(() => {

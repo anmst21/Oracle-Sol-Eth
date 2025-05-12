@@ -86,6 +86,7 @@ export interface FormattedCoin {
   address: string;
   chainId: number;
   symbol: string;
+  name: string;
   metadata: {
     logoURI: string;
   };
@@ -93,6 +94,8 @@ export interface FormattedCoin {
   stats: {
     fdv: number;
     token_price_usd: number;
+    token_price_native: number;
+    base_token_price_quote_token: number;
     price_change_percentage: {
       h24: number;
     };

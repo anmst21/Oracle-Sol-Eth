@@ -1,5 +1,8 @@
 "use server";
+import { applyDecimals } from "@/helpers/apply-decimals";
 import { duneEthChains } from "@/helpers/dune-eth-chains";
+import { UnifiedToken } from "@/types/coin-types";
+import { zeroAddress } from "viem";
 
 const apiKey = process.env.DUNE_API_KEY;
 
@@ -13,6 +16,7 @@ export interface ChainBalance {
   address: string;
   amount: string;
   symbol: string;
+  name: string;
   decimals: number;
   price_usd: number;
   value_usd: number;
@@ -27,7 +31,7 @@ export async function getTokenAccountsWithMetadata({
   address: string;
   chainId?: number;
   offset?: number;
-}): Promise<ChainBalance[]> {
+}): Promise<UnifiedToken[]> {
   if (!apiKey) {
     throw new Error("Missing DUNE_API_KEY");
   }
@@ -70,5 +74,16 @@ export async function getTokenAccountsWithMetadata({
 
   const data = (await res.json()) as { balances: ChainBalance[] };
 
-  return data.balances;
+  const formatted = data.balances.map((t) => ({
+    source: "eth" as const,
+    chainId: t.chain_id,
+    address: t.address === "native" ? zeroAddress : t.address,
+    symbol: t.symbol,
+    logo: t.token_metadata.logo,
+    priceUsd: t.price_usd,
+    balance: Number(applyDecimals(t.amount, t.decimals)),
+    name: t.name,
+  }));
+
+  return formatted;
 }

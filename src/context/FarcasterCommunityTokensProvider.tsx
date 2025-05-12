@@ -8,11 +8,11 @@ import React, {
   useTransition,
   ReactNode,
 } from "react";
-import { FormattedCoin } from "@/types/CommunityCoins";
 import { fetchCommunityCoins } from "@/actions/fetch-community-coins";
+import { UnifiedToken } from "@/types/coin-types";
 
 interface CommunityCoinsContextType {
-  data: FormattedCoin[] | null;
+  data: UnifiedToken[] | null;
   isLoading: boolean;
   loadCoins: () => void;
 }
@@ -28,7 +28,7 @@ export const CommunityCoinsProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [data, setData] = useState<FormattedCoin[] | null>(null);
+  const [data, setData] = useState<UnifiedToken[] | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const loadCoins = useCallback(() => {

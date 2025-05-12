@@ -3,20 +3,32 @@
 import React, { useState } from "react";
 import SwapWindow from "./swap-window";
 import { SwapSwitch } from "../icons";
+import { useTokenModal } from "@/context/TokenModalProvider";
 
-type Props = {};
-
-const SwapContainer = (props: Props) => {
-  const [buyInputValue, setBuyInputValue] = useState("");
+const SwapContainer = () => {
   const [sellInputValue, setSellInputValue] = useState("");
+  const [buyInputValue, setBuyInputValue] = useState("");
+
+  const { sellToken, buyToken } = useTokenModal();
 
   return (
     <div className="swap-container">
-      <SwapWindow mode="sell" isNativeBalance />
+      <SwapWindow
+        inputValue={sellInputValue}
+        setInputValue={setSellInputValue}
+        token={sellToken}
+        mode="sell"
+        isNativeBalance
+      />
       <button className="swap-container__switch">
         <SwapSwitch />
       </button>
-      <SwapWindow mode="buy" />
+      <SwapWindow
+        inputValue={buyInputValue}
+        setInputValue={setBuyInputValue}
+        token={buyToken}
+        mode="buy"
+      />
     </div>
   );
 };

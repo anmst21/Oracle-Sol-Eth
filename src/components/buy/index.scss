@@ -63,6 +63,8 @@
 
 
 .user-placeholder {
+    border: 1px solid #889697;
+    overflow: hidden;
     width: 32px;
     height: 32px;
     display: flex;
@@ -73,6 +75,14 @@
     color: #0F0E1B;
     position: relative;
     left: -10px;
+
+
+
+    &--md {
+        width: 24px;
+        height: 24px;
+
+    }
 }
 
 

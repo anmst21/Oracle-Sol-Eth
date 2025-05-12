@@ -7,6 +7,7 @@ import {
   PublicKey,
 } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { UnifiedToken } from "@/types/coin-types";
 
 const RPC_ENDPOINT = process.env.NEXT_PUBLIC_SOLANA_RPC;
 
@@ -46,7 +47,7 @@ export async function getTokenAccountsWithMetadata({
   address,
 }: {
   address: string;
-}): Promise<EnrichedToken[]> {
+}): Promise<UnifiedToken[]> {
   // 1) load all SPL token accounts with non-zero balance
 
   if (!RPC_ENDPOINT) {
@@ -131,6 +132,17 @@ export async function getTokenAccountsWithMetadata({
     })
   );
 
+  const generalized = enriched.map((t) => ({
+    source: "sol" as const,
+    chainId: 792703809,
+    address: t.mint,
+    symbol: t.metadata.symbol,
+    logo: t.imgUri,
+    // nullish coalesce to undefined so it matches `number | undefined`
+    priceUsd: t.priceUsd ?? undefined,
+    balance: t.amount,
+    name: t.metadata.name,
+  }));
   console.log("fetched tokens + metadata + prices", enriched);
-  return enriched;
+  return generalized;
 }

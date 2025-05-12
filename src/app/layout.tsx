@@ -6,6 +6,7 @@ import { CommunityCoinsProvider } from "@/context/FarcasterCommunityTokensProvid
 import { SolanaCoinsProvider } from "@/context/DexScreenerTrendingSolataTokensProvider";
 import { GeckoTokensProvider } from "@/context/GeckoTerminalCoinsProvider";
 import MoonPayContextProvider from "@/context/MoonpayProvider";
+import { TokenModalProvider } from "@/context/TokenModalProvider";
 
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
@@ -41,14 +42,16 @@ export default async function RootLayout({
             <CommunityCoinsProvider>
               <GeckoTokensProvider>
                 <MoonPayContextProvider>
-                  <div className="main">
-                    {/* <TokenModal
+                  <TokenModalProvider>
+                    <div className="main">
+                      {/* <TokenModal
               geckoCoins={gecko}
               communityCoins={community}
               solanaCoins={solana}
             /> */}
-                    {children}
-                  </div>
+                      {children}
+                    </div>
+                  </TokenModalProvider>
                 </MoonPayContextProvider>
               </GeckoTokensProvider>
             </CommunityCoinsProvider>

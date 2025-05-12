@@ -5,13 +5,16 @@ function Icon({
   chainId,
   question,
   uri,
-
+  strokeWidth = 1,
   width = 24,
+  className,
 }: {
   chainId?: number;
   question?: boolean;
   uri?: string;
   width?: number;
+  strokeWidth?: number;
+  className?: string;
 }) {
   const id = useId();
   // 29 x 32
@@ -26,6 +29,7 @@ function Icon({
         height={width}
         fill="none"
         viewBox="0 0 22 24"
+        className={className}
       >
         <defs>
           <pattern
@@ -57,7 +61,7 @@ function Icon({
           id={patternId}
           fill={`url(#${patternId})`}
           stroke="currentColor"
-          strokeWidth="1"
+          strokeWidth={strokeWidth}
           d="M12.375 1.083l7.392 4.267a2.75 2.75 0 011.375 2.382v8.536a2.75 2.75 0 01-1.375 2.381l-7.392 4.268a2.75 2.75 0 01-2.75 0L2.233 18.65a2.75 2.75 0 01-1.375-2.381V7.732c0-.982.524-1.89 1.375-2.382l7.392-4.267a2.75 2.75 0 012.75 0z"
         ></path>
       </svg>

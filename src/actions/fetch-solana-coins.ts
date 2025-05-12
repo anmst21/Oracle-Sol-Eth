@@ -1,10 +1,9 @@
 "use server";
 
+import { UnifiedToken } from "@/types/coin-types";
 import { DexScreenerToken, DexScreenerTokenMeta } from "@/types/SolanaCoins";
 
-export async function fetchSolanaCoins(): Promise<
-  DexScreenerTokenMeta[] | null
-> {
+export async function fetchSolanaCoins(): Promise<UnifiedToken[] | null> {
   try {
     const response = await fetch(
       "https://api.dexscreener.com/token-boosts/top/v1",
@@ -31,7 +30,18 @@ export async function fetchSolanaCoins(): Promise<
 
     const metaData: DexScreenerTokenMeta[] = await priceResponse.json();
 
-    return metaData;
+    const generalized = metaData.map((t) => ({
+      source: "solTrending" as const,
+      chainId: 792703809,
+      address: t.baseToken.address,
+      symbol: t.baseToken.symbol,
+      logo: t.info.imageUrl || "",
+      priceUsd: Number(t.priceUsd),
+      priceNative: Number(t.priceNative),
+      name: t.baseToken.name,
+    }));
+
+    return generalized;
   } catch (error) {
     console.error("Error fetching popular tokens:", error);
     return null;

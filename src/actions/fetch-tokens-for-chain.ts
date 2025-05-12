@@ -1,14 +1,11 @@
 "use server";
-import {
-  GeckoMeta,
-  GeckoTerminalCoins,
-  MergedToken,
-} from "@/types/GeckoTerminalCoins";
+import { UnifiedToken } from "@/types/coin-types";
+import { GeckoMeta, GeckoTerminalCoins } from "@/types/GeckoTerminalCoins";
 
 export async function fetchTokensForChain(
   chain: string,
   include: string = "base_token,quote_token"
-): Promise<MergedToken[] | null> {
+): Promise<UnifiedToken[] | null> {
   try {
     const baseUrl = `https://api.geckoterminal.com/api/v2/networks/${chain}/trending_pools`;
     const params = new URLSearchParams({ include });
@@ -59,7 +56,19 @@ export async function fetchTokensForChain(
         );
       }
     });
-    return uniquePoolsByBaseSymbol;
+
+    const generalized = uniquePoolsByBaseSymbol.map((t) => ({
+      source: "gecko" as const,
+      chainId: 8453,
+      address: t.meta!.base!.attributes.address,
+      symbol: t.meta!.base!.attributes.symbol,
+      logo: t.meta!.base!.attributes.image_url,
+      priceUsd: Number(t.attributes.base_token_price_usd),
+      priceNative: Number(t.attributes.base_token_price_native_currency),
+      name: t.meta!.base!.attributes.name,
+    }));
+
+    return generalized;
   } catch (error) {
     console.error("Error fetching popular tokens from dex:", error);
     return null;

@@ -14,8 +14,12 @@ import CoinFade from "./CoinFade";
 import ArrowSmall from "./ArrowSmall";
 import InputCoin from "./InputCoin";
 import SwapSwitch from "./SwapSwitch";
+import InputCross from "./InputCross";
+import SearchGlass from "./SearchGlass";
 
 export {
+  SearchGlass,
+  InputCross,
   SwapSwitch,
   InputCoin,
   ArrowSmall,

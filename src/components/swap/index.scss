@@ -11,6 +11,14 @@
         flex: none !important;
         height: 49px;
         padding-right: 8px;
+
+        img {
+            background-color: white;
+        }
+
+        span {
+            font-family: var(--font-handjet);
+        }
     }
 
     &__token {

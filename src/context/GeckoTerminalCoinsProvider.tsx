@@ -9,11 +9,11 @@ import React, {
   useTransition,
   ReactNode,
 } from "react";
-import { MergedToken } from "@/types/GeckoTerminalCoins";
 import { fetchTokensForChain } from "@/actions/fetch-tokens-for-chain";
+import { UnifiedToken } from "@/types/coin-types";
 
 interface GeckoTokensContextType {
-  data: MergedToken[] | null;
+  data: UnifiedToken[] | null;
   isLoading: boolean;
   loadTokens: (chain: string) => void;
 }
@@ -25,7 +25,7 @@ const GeckoTokensContext = createContext<GeckoTokensContextType>({
 });
 
 export const GeckoTokensProvider = ({ children }: { children: ReactNode }) => {
-  const [data, setData] = useState<MergedToken[] | null>(null);
+  const [data, setData] = useState<UnifiedToken[] | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const loadTokens = useCallback((chain: string) => {

@@ -1,52 +1,77 @@
-"use client";
-import {
-  ChainBalance as EthChainBalance,
-  getTokenAccountsWithMetadata as getUserEthTokens,
-} from "@/actions/get-user-owned-ethereum-tokens";
-import {
-  EnrichedToken,
-  getTokenAccountsWithMetadata as getUserSolTokens,
-} from "@/actions/get-user-owned-solana-tokens";
-import { useRelayChains, useTokenList } from "@reservoir0x/relay-kit-hooks";
-import { useEffect, useMemo, useState } from "react";
-
-import { getSolBalance, SolBalanceResponse } from "@/actions/get-sol-balance";
-import { useCommunityCoins } from "@/context/FarcasterCommunityTokensProvider";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import ModalCoinItem from "./modal-coin-item";
 import { isAddress, zeroAddress } from "viem";
-import { applyDecimals } from "@/helpers/apply-decimals";
-import ModalCoinItem from "@/components/modal/modal-coin-item";
-import { useSolanaCoins } from "@/context/DexScreenerTrendingSolataTokensProvider";
-import { useGeckoTokens } from "@/context/GeckoTerminalCoinsProvider";
-import { queryTokenList } from "@reservoir0x/relay-kit-hooks";
-import ModalChains from "@/components/modal/modal-chains";
-import FeaturedCoinItem from "@/components/modal/featured-coin-item";
-import { InputCross, SearchGlass } from "@/components/icons";
+import { InputCross, SearchGlass } from "../icons";
 import { RelayToken, UnifiedToken } from "@/types/coin-types";
+import { queryTokenList, useRelayChains } from "@reservoir0x/relay-kit-hooks";
+import { useDebounce } from "@/hooks/useDebounce";
+import { getSolBalance, SolBalanceResponse } from "@/actions/get-sol-balance";
+import { getTokenAccountsWithMetadata as getUserEthTokens } from "@/actions/get-user-owned-ethereum-tokens";
+import { getTokenAccountsWithMetadata as getUserSolTokens } from "@/actions/get-user-owned-solana-tokens";
+import { RelayChain } from "@/types/relay-query-chain-type";
+import { getIconUri } from "@/helpers/get-icon-uri";
+import { ModalMode } from "@/types/modal-mode";
+type Props = {
+  activeChainId: number;
+  featuredChains: RelayChain[];
+  baseChain: RelayChain | undefined;
+  solanaChain: RelayChain | undefined;
+  chainFeaturedTokens: UnifiedToken[];
+  communityCoins: UnifiedToken[] | null;
+  isLoadingCommunityCoins: boolean;
+  loadCommunityCoins: () => void;
+  solanaTrendingCoins: UnifiedToken[] | null;
+  isLoadingSolanaTrendingCoins: boolean;
+  loadSolanaCoins: () => void;
+  geckoTrendingCoins: UnifiedToken[] | null;
+  isLoadingGeckoCoins: boolean;
+  loadGeckoCoinsForChain: (chain: string) => void;
+  userEthTokens: UnifiedToken[] | null;
+  setUserEthTokens: React.Dispatch<React.SetStateAction<UnifiedToken[] | null>>;
+  nativeSolBalance: SolBalanceResponse | null;
+  setNativeSolBalance: React.Dispatch<
+    React.SetStateAction<SolBalanceResponse | null>
+  >;
+  userSolanaTokens: UnifiedToken[] | null;
+  setUserSolanaTokens: React.Dispatch<
+    React.SetStateAction<UnifiedToken[] | null>
+  >;
 
-function useDebounce<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const handle = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(handle);
-  }, [value, delay]);
-  return debounced;
-}
+  setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  modalMode: ModalMode;
+};
 
-export default function Home() {
-  const [activeChainId, setActiveChainId] = useState<number>(0);
-
+const ModalCoins = ({
+  chainFeaturedTokens,
+  setBuyToken,
+  setSellToken,
+  modalMode,
+  activeChainId,
+  baseChain,
+  solanaChain,
+  communityCoins,
+  isLoadingCommunityCoins,
+  loadCommunityCoins,
+  solanaTrendingCoins,
+  isLoadingSolanaTrendingCoins,
+  loadSolanaCoins,
+  geckoTrendingCoins,
+  isLoadingGeckoCoins,
+  loadGeckoCoinsForChain,
+  userEthTokens,
+  setUserEthTokens,
+  nativeSolBalance,
+  setNativeSolBalance,
+  userSolanaTokens,
+  setUserSolanaTokens,
+}: Props) => {
   const [searchTerm, setSearchTerm] = useState(""); // raw input
   const [searchTokens, setSearchTokens] = useState<RelayToken[]>([]); // fetched results
   const [loadingSearchList, setLoadingSearchList] = useState(false);
   const [errorSearching, setErrorSearching] = useState<string | null>(null);
   // console.log("searchTokens", searchTokens);
   const debouncedTerm = useDebounce(searchTerm, 500);
-
-  const { data: suggestedTokens } = useTokenList("https://api.relay.link", {
-    limit: 10,
-    term: "",
-    chainIds: activeChainId === 0 ? undefined : [activeChainId],
-  });
 
   useEffect(() => {
     if (!debouncedTerm) {
@@ -80,77 +105,57 @@ export default function Home() {
     };
   }, [debouncedTerm, activeChainId]);
 
-  const {
-    data: communityCoins,
-    isLoading: isLoadingCommunityCoins,
-    loadCoins: loadCommunityCoins,
-  } = useCommunityCoins();
-
-  const {
-    data: solanaTrendingCoins,
-    isLoading: isLoadingSolanaTrendingCoins,
-    loadCoins: loadSolanaCoins,
-  } = useSolanaCoins();
-
-  console.log("solanaTrendingCoins", solanaTrendingCoins);
-
-  const {
-    data: geckoTrendingCoins,
-    isLoading: isLoadingGeckoCoins,
-    loadTokens: loadGeckoCoinsForChain,
-  } = useGeckoTokens();
-
-  const [userEthTokens, setUserEthTokens] = useState<UnifiedToken[] | null>(
-    null
-  );
-  const [nativeSolBalance, setNativeSolBalance] =
-    useState<SolBalanceResponse | null>(null);
-
-  const [userSolanaTokens, setUserSolanaTokens] = useState<
-    UnifiedToken[] | null
-  >(null);
-  // console.log("geckoTrendingCoins", geckoTrendingCoins);
-
-  // queryTokenList("https://api.relay.link", {
-  //   limit: 20,
-  //   term: "usdc",
-  // });
+  useEffect(() => {
+    if (!geckoTrendingCoins) loadGeckoCoinsForChain("base");
+  }, [loadGeckoCoinsForChain, geckoTrendingCoins]);
 
   useEffect(() => {
-    loadGeckoCoinsForChain("base");
-  }, [loadGeckoCoinsForChain]);
+    if (!communityCoins) loadCommunityCoins();
+  }, [loadCommunityCoins, communityCoins]);
 
   useEffect(() => {
-    loadCommunityCoins();
-  }, [loadCommunityCoins]);
+    if (!solanaTrendingCoins) loadSolanaCoins();
+  }, [loadSolanaCoins, solanaTrendingCoins]);
+
+  const solNativeBalance = useCallback(async () => {
+    const balance = await getSolBalance(
+      "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp"
+    );
+    setNativeSolBalance(balance);
+  }, [setNativeSolBalance]);
+
+  const ethCoins = useCallback(async () => {
+    const tokens = await getUserEthTokens({
+      address: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
+    });
+    setUserEthTokens(tokens);
+  }, [setUserEthTokens]);
+
+  const solCoins = useCallback(async () => {
+    const tokens = await getUserSolTokens({
+      address: "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp",
+    });
+    setUserSolanaTokens(tokens);
+  }, [setUserSolanaTokens]);
 
   useEffect(() => {
-    loadSolanaCoins();
-  }, [loadSolanaCoins]);
-
-  useEffect(() => {
-    const solNativeBalance = async () => {
-      const balance = await getSolBalance(
-        "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp"
-      );
-      setNativeSolBalance(balance);
-    };
-    const ethCoins = async () => {
-      const tokens = await getUserEthTokens({
-        address: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
-      });
-      setUserEthTokens(tokens);
-    };
-    const solCoins = async () => {
-      const tokens = await getUserSolTokens({
-        address: "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp",
-      });
-      setUserSolanaTokens(tokens);
-    };
-    solNativeBalance();
-    solCoins();
-    ethCoins();
-  }, []);
+    if (!nativeSolBalance) {
+      solNativeBalance();
+    }
+    if (!userSolanaTokens) {
+      solCoins();
+    }
+    if (!userEthTokens) {
+      ethCoins();
+    }
+  }, [
+    nativeSolBalance,
+    userSolanaTokens,
+    userEthTokens,
+    ethCoins,
+    solCoins,
+    solNativeBalance,
+  ]);
 
   const nativeTokens = useMemo(
     () => userEthTokens?.filter((t) => t.address === zeroAddress) ?? [],
@@ -162,36 +167,6 @@ export default function Home() {
   );
 
   const { chains, isLoading } = useRelayChains();
-
-  const nonBitcoin = useMemo(
-    () => (chains ?? []).filter((c) => c.id !== 8253038),
-    [chains]
-  );
-  const featuredIds = useMemo(
-    () => new Set<number>([7777777, 42161, 8453, 1, 56, 666666666, 792703809]),
-    []
-  );
-
-  // 3. Partition into featured vs others
-  const featuredChains = useMemo(
-    () => nonBitcoin.filter((c) => featuredIds.has(c.id)),
-    [nonBitcoin, featuredIds]
-  );
-  const otherChains = useMemo(
-    () => nonBitcoin.filter((c) => !featuredIds.has(c.id)),
-    [nonBitcoin, featuredIds]
-  );
-
-  const solanaChain = useMemo(
-    () => featuredChains.find((chain) => chain.id === 792703809),
-    [featuredChains]
-  );
-  const baseChain = useMemo(
-    () => featuredChains.find((chain) => chain.id === 8453),
-    [featuredChains]
-  );
-
-  console.log("geckoTrendingCoins", geckoTrendingCoins);
 
   const allTokens = useMemo<UnifiedToken[]>(() => {
     const out: UnifiedToken[] = [];
@@ -209,19 +184,17 @@ export default function Home() {
       }))
     );
 
-    // -- your Ethereum balances --
     if (userEthTokens) {
       out.push(...userEthTokens);
     }
 
-    // -- native SOL --
     if (nativeSolBalance && solanaChain) {
       out.push({
         source: "sol" as const,
         chainId: solanaChain.id,
         address: solanaChain.currency!.address as string,
         symbol: solanaChain.currency!.symbol as string,
-        logo: solanaChain.icon!.light,
+        logo: solanaChain.iconUrl as string | undefined,
         priceUsd: nativeSolBalance.solUsdPrice as number,
         balance: nativeSolBalance.balance,
         name: "Solana",
@@ -230,10 +203,6 @@ export default function Home() {
     if (userSolanaTokens) {
       out.push(...userSolanaTokens);
     }
-    // -- other Solana tokens --
-
-    // -- Farcaster community coins --
-
     if (communityCoins) {
       out.push(...communityCoins);
     }
@@ -243,10 +212,6 @@ export default function Home() {
     if (solanaTrendingCoins) {
       out.push(...solanaTrendingCoins);
     }
-
-    // -- Gecko trending on Base --
-
-    // -- Solana trending --
 
     return out;
   }, [
@@ -259,8 +224,6 @@ export default function Home() {
     solanaTrendingCoins,
     solanaChain,
   ]);
-
-  console.log("solanaChain", allTokens);
 
   const filteredUnique = useMemo(() => {
     if (!searchTerm) return [];
@@ -309,17 +272,8 @@ export default function Home() {
       : communityCoins.filter((c) => c.chainId === activeChainId);
   }, [communityCoins, activeChainId]);
 
-  console.log("ethNativeList", ethNativeList);
-
   return (
     <div className="coins-list">
-      {/* <ModalChains
-        setActiveChainId={setActiveChainId}
-        activeChainId={activeChainId}
-        otherChains={otherChains}
-        featuredChains={featuredChains}
-      /> */}
-
       <div className="chain-sidebar__contianer">
         <label className="chain-sidebar__input">
           <SearchGlass />
@@ -329,12 +283,14 @@ export default function Home() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button
-            onClick={() => setSearchTerm("")}
-            className="chain-sidebar__input__abandon"
-          >
-            <InputCross />
-          </button>
+          {searchTerm.length !== 0 && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="chain-sidebar__input__abandon"
+            >
+              <InputCross />
+            </button>
+          )}
         </label>
       </div>
       <div className="modal-native-coins">
@@ -356,37 +312,18 @@ export default function Home() {
                     chainSrc={chain?.icon?.squaredLight}
                     coinSrc={t.logo}
                     coinName={t.name}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={t.chainId}
                   />
                 );
               })}
           </div>
         )}
 
-        {suggestedTokens &&
-          suggestedTokens.length > 0 &&
-          !searchTerm.length && (
-            <div className="modal-native-coins__featured">
-              <div className="modal-native-coins__featured__header">
-                <h2>Featured</h2>
-              </div>
-              {suggestedTokens.map((token, i) => {
-                if (!chains) return;
-
-                const chain = chains.find((c) => c.id === token.chainId);
-
-                return (
-                  <FeaturedCoinItem
-                    key={i}
-                    coinSymbol={token.symbol}
-                    chainSrc={chain?.icon?.squaredLight}
-                    coinSrc={token.metadata?.logoURI}
-                  />
-                );
-              })}
-            </div>
-          )}
         {ethNativeList.length > 0 &&
-          activeChainId !== 792703809 &&
+          (activeChainId === 1 || activeChainId === 0) &&
           !searchTerm.length && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
@@ -394,11 +331,6 @@ export default function Home() {
                 <h2>Balance/Native</h2>
               </div>
               {ethNativeList.map((token, i) => {
-                const chain = featuredChains.find(
-                  (c) => c.id === token.chainId
-                );
-                // console.log("token", token);
-
                 return (
                   <ModalCoinItem
                     key={i}
@@ -410,9 +342,13 @@ export default function Home() {
                         : (token.address as string)
                     }
                     coinSymbol={token.symbol}
-                    chainSrc={chain?.icon?.squaredLight}
+                    chainSrc={getIconUri(1)}
                     coinSrc={token.logo}
                     coinName={"Ether"}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={1}
                   />
                 );
               })}
@@ -428,8 +364,6 @@ export default function Home() {
                 <h2>Balance/Native</h2>
               </div>
               {solanaChain &&
-                solanaChain?.icon?.light &&
-                solanaChain?.icon?.squaredLight &&
                 solanaChain.currency?.address &&
                 solanaChain.currency?.symbol && (
                   <ModalCoinItem
@@ -437,9 +371,13 @@ export default function Home() {
                     priceUsd={nativeSolBalance.solUsdPrice}
                     coinAddress={solanaChain.currency?.address}
                     coinSymbol={solanaChain.currency?.symbol}
-                    chainSrc={solanaChain?.icon?.squaredLight}
-                    coinSrc={solanaChain?.icon?.light}
+                    chainSrc={getIconUri(792703809)}
+                    coinSrc={getIconUri(792703809)}
                     coinName="Solana"
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={792703809}
                   />
                 )}
             </div>
@@ -454,13 +392,6 @@ export default function Home() {
                 <h2>Balance/Native</h2>
               </div>
               {ethOtherList.map((token, i) => {
-                const chain = featuredChains.find(
-                  (c) => c.id === token.chainId
-                );
-                // console.log("token", token);
-                // const balanceNative = Number(
-                //   applyDecimals(token.amount, token.decimals)
-                // ).toFixed(6);
                 return (
                   <ModalCoinItem
                     key={i}
@@ -472,17 +403,23 @@ export default function Home() {
                         : (token.address as string)
                     }
                     coinSymbol={token.symbol}
-                    chainSrc={chain?.icon?.squaredLight}
+                    chainSrc={
+                      token.chainId ? getIconUri(token.chainId) : undefined
+                    }
                     coinSrc={token.logo}
                     coinName={token.name}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={token.chainId}
                   />
                 );
               })}
             </div>
           )}
+
         {userSolanaTokens &&
           userSolanaTokens.length > 0 &&
-          solanaChain?.icon?.squaredLight &&
           (activeChainId === 792703809 || activeChainId === 0) &&
           !searchTerm.length && (
             <div className="modal-native-coins__container">
@@ -498,9 +435,13 @@ export default function Home() {
                     priceUsd={token.priceUsd}
                     coinAddress={token.address}
                     coinSymbol={token.symbol}
-                    chainSrc={solanaChain?.icon?.squaredLight}
+                    chainSrc={getIconUri(792703809)}
                     coinSrc={token.logo}
                     coinName={token.name}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={792703809}
                   />
                 );
               })}
@@ -516,20 +457,22 @@ export default function Home() {
               </div>
 
               {filteredCommunityCoins.map((token, i) => {
-                const chain = featuredChains.find(
-                  (c) => c.id === token.chainId
-                );
                 return (
                   <ModalCoinItem
                     key={i}
-                    //  userBalance={token.amount} // if you have balances
                     priceUsd={token.priceUsd}
                     priceNative={token.priceNative}
                     coinAddress={token.address}
                     coinSymbol={token.symbol}
-                    chainSrc={chain?.icon?.squaredLight}
+                    chainSrc={
+                      token.chainId ? getIconUri(token.chainId) : undefined
+                    }
                     coinSrc={token.logo}
                     coinName={token.name}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={token.chainId}
                   />
                 );
               })}
@@ -548,19 +491,22 @@ export default function Home() {
               </div>
 
               {geckoTrendingCoins.map((token, i) => {
-                // console.log("base token", token);
-
                 return (
                   <ModalCoinItem
                     key={i}
-                    //  userBalance={token.amount}
                     priceUsd={token.priceUsd}
                     priceNative={token.priceNative}
                     coinAddress={token.address}
                     coinSymbol={token.symbol}
-                    chainSrc={baseChain?.icon?.squaredLight}
+                    chainSrc={
+                      token.chainId ? getIconUri(token.chainId) : undefined
+                    }
                     coinSrc={token.logo}
                     coinName={token.name}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={token.chainId}
                   />
                 );
               })}
@@ -585,15 +531,50 @@ export default function Home() {
                     priceNative={token.priceNative}
                     coinAddress={token.address}
                     coinSymbol={token.symbol}
-                    chainSrc={solanaChain?.icon?.squaredLight}
+                    chainSrc={
+                      token.chainId ? getIconUri(token.chainId) : undefined
+                    }
                     coinSrc={token.logo}
                     coinName={token.name}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={token.chainId}
                   />
                 );
               })}
             </div>
           )}
+
+        {activeChainId !== 0 && (
+          <div className="modal-native-coins__container">
+            <div className="chain-sidebar__header">
+              <h2>Related Tokens</h2>
+            </div>
+            {chainFeaturedTokens.length > 0 &&
+              chainFeaturedTokens.map((token, i) => {
+                return (
+                  <ModalCoinItem
+                    key={i}
+                    userBalance={token.balance}
+                    priceUsd={token.priceUsd}
+                    coinAddress={token.address}
+                    coinSymbol={token.symbol}
+                    chainSrc={getIconUri(activeChainId)}
+                    coinSrc={token.logo}
+                    coinName={token.name}
+                    chainId={activeChainId}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                  />
+                );
+              })}
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default ModalCoins;
