@@ -16,8 +16,14 @@ import InputCoin from "./InputCoin";
 import SwapSwitch from "./SwapSwitch";
 import InputCross from "./InputCross";
 import SearchGlass from "./SearchGlass";
+import Wallet from "./Wallet";
+import PrivyLogo from "./PrivyLogo";
+import WalletStar from "./WalletStar";
 
 export {
+  WalletStar,
+  PrivyLogo,
+  Wallet,
   SearchGlass,
   InputCross,
   SwapSwitch,

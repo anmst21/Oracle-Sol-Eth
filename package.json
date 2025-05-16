@@ -12,7 +12,7 @@
     "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
     "@metaplex-foundation/umi": "^1.2.0",
     "@moonpay/moonpay-react": "^1.10.0",
-    "@privy-io/react-auth": "^2.4.5",
+    "@privy-io/react-auth": "^2.13.1",
     "@privy-io/wagmi": "^1.0.3",
     "@reservoir0x/relay-kit-hooks": "^1.9.8",
     "@reservoir0x/relay-sdk": "^1.7.4",

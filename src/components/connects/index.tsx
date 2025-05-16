@@ -135,26 +135,26 @@ export default function Connect() {
     }
   }, []);
 
-  // When the Ethereum wallet list changes, reset balances and fetch new ones
-  useEffect(() => {
-    if (readyWallets && wallets.length > 0 && authenticated) {
-      // Clear previous balances
-      setEthBalances({});
-      wallets.forEach((wallet) => {
-        fetchEthBalance(wallet);
-      });
-    }
-  }, [readyWallets, fetchEthBalance, authenticated, wallets]);
+  // // When the Ethereum wallet list changes, reset balances and fetch new ones
+  // useEffect(() => {
+  //   if (readyWallets && wallets.length > 0 && authenticated) {
+  //     // Clear previous balances
+  //     setEthBalances({});
+  //     wallets.forEach((wallet) => {
+  //       fetchEthBalance(wallet);
+  //     });
+  //   }
+  // }, [readyWallets, fetchEthBalance, authenticated, wallets]);
 
-  // When the Solana wallet list changes, reset balances and fetch new ones
-  useEffect(() => {
-    if (readySolWallets && solWallets.length > 0 && authenticated) {
-      setSolBalances({});
-      solWallets.forEach((wallet) => {
-        fetchSolBalance(wallet);
-      });
-    }
-  }, [readySolWallets, fetchSolBalance, authenticated, solWallets]);
+  // // When the Solana wallet list changes, reset balances and fetch new ones
+  // useEffect(() => {
+  //   if (readySolWallets && solWallets.length > 0 && authenticated) {
+  //     setSolBalances({});
+  //     solWallets.forEach((wallet) => {
+  //       fetchSolBalance(wallet);
+  //     });
+  //   }
+  // }, [readySolWallets, fetchSolBalance, authenticated, solWallets]);
 
   return (
     <div>

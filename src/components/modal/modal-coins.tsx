@@ -546,7 +546,7 @@ const ModalCoins = ({
             </div>
           )}
 
-        {activeChainId !== 0 && (
+        {activeChainId !== 0 && !searchTerm.length && (
           <div className="modal-native-coins__container">
             <div className="chain-sidebar__header">
               <h2>Related Tokens</h2>

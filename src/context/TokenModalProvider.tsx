@@ -9,6 +9,7 @@ import React, {
   ReactNode,
   FC,
   useEffect,
+  useMemo,
 } from "react";
 import { useCommunityCoins } from "./FarcasterCommunityTokensProvider";
 import { useSolanaCoins } from "./DexScreenerTrendingSolataTokensProvider";
@@ -16,6 +17,7 @@ import { useGeckoTokens } from "./GeckoTerminalCoinsProvider";
 import { UnifiedToken } from "@/types/coin-types";
 import { SolBalanceResponse } from "@/actions/get-sol-balance";
 import { ModalMode } from "@/types/modal-mode";
+import { RelayChain } from "@/types/relay-query-chain-type";
 
 interface TokenModalContextValue {
   isOpen: boolean;
@@ -25,6 +27,7 @@ interface TokenModalContextValue {
   loadChains: () => Promise<void>;
   sellToken: UnifiedToken | null;
   buyToken: UnifiedToken | null;
+  chains: RelayChain[];
 }
 
 const TokenModalContext = createContext<TokenModalContextValue | undefined>(
@@ -90,6 +93,11 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
     loadTokens: loadGeckoCoinsForChain,
   } = useGeckoTokens();
 
+  const appsChains = useMemo(
+    () => [...featuredChains, ...otherChains],
+    [featuredChains, otherChains]
+  );
+
   return (
     <TokenModalContext.Provider
       value={{
@@ -100,6 +108,7 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
         setModalMode,
         buyToken,
         sellToken,
+        chains: appsChains,
       }}
     >
       {children}

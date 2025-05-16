@@ -1,0 +1,229 @@
+.wallets {
+    border-radius: 12px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(136, 150, 151, 0.05);
+    backdrop-filter: blur(75px);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+
+    .chain-sidebar__header {
+        h2 {
+            color: #889697;
+        }
+    }
+
+
+    &__container {
+        border-radius: 10px;
+        background: rgba(136, 150, 151, 0.05);
+        padding: 4px;
+        gap: 4px;
+        display: flex;
+        height: auto;
+        flex-direction: column;
+    }
+}
+
+
+.wallet-item {
+
+    border-radius: 8px;
+    background: rgba(136, 150, 151, 0.05);
+    // backdrop-filter: blur(75px);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+
+    &__client {
+
+
+        img {
+            border-radius: 1000px;
+            transition: all .2s ease-in-out;
+            border: 1px solid #889697;
+        }
+
+        transition: all .2s ease-in-out;
+    }
+
+
+    &__star {
+        display: flex;
+        margin-left: auto;
+
+    }
+
+
+    &__bottom,
+    &__top,
+    &__center {
+        display: flex;
+        gap: 4px;
+        transition: all .2s ease-in-out;
+    }
+
+
+    &__address,
+    &__name {
+        display: flex;
+        border-radius: 6px;
+        border: 1px solid rgba(217, 241, 233, 0.10);
+        gap: 4px;
+        padding: 0 6px 0 5px;
+        flex: 1;
+        align-items: center;
+        background: rgba(217, 241, 233, 0.05);
+        transition: all .2s ease-in-out;
+    }
+
+    &__copy {
+        border: 1px solid rgba(217, 241, 233, 0.10);
+        transition: all .2s ease-in-out;
+        background: rgba(217, 241, 233, 0.05);
+    }
+
+
+    &__name,
+    &__client,
+    &__icon {
+        background: rgba(136, 150, 151, 0.05);
+        border: none;
+        transition: all .2s ease-in-out;
+    }
+
+
+
+    &__icon,
+    &__client,
+    &__copy {
+        width: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .2s ease-in-out;
+    }
+
+
+    &__icon,
+    &__address,
+    &__copy,
+    &__client,
+    &__name {
+        border-radius: 6px;
+        height: 30px;
+        transition: all .2s ease-in-out;
+    }
+
+    &__select,
+    &__connect,
+    &__disconnect {
+        height: 30px;
+        padding: 4px 5px;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex: 1 0 0;
+        display: flex;
+        border-radius: 5px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        background: rgba(217, 241, 233, 0.05);
+
+        transition: all .2s ease-in-out;
+        color: rgba(217, 241, 233, 0.80);
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+
+    // button,
+    // div,
+    // svg {
+    //     transition: all .2s ease-in-out;
+    // }
+
+
+
+    &--hover,
+    .wallet-item__copy:hover,
+    .wallet-item__disconnect:hover {
+
+        .wallet-item__disconnect,
+        .wallet-item__address,
+        .wallet-item__copy {
+            border: 1px solid rgba(217, 241, 233, 0.15);
+            color: rgba(217, 241, 233, 0.80);
+            background: rgba(217, 241, 233, 0.10);
+        }
+
+        .wallet-item__icon,
+        .wallet-item__name,
+        .wallet-item__client {
+            background: rgba(217, 241, 233, 0.10);
+            color: rgba(217, 241, 233, 0.80);
+
+
+
+
+
+
+            img {
+                border: 1px solid rgba(217, 241, 233, 0.80);
+            }
+
+
+
+        }
+    }
+
+
+    .wallet-item__copy:hover,
+    .wallet-item__logout:hover {
+        border: 1px solid rgba(217, 241, 233, 0.15);
+        color: rgba(217, 241, 233, 0.80);
+        background: rgba(217, 241, 233, 0.10);
+    }
+
+    .wallet-item__copy:active,
+    .wallet-item__logout:active {
+        color: rgba(174, 233, 0, 0.80);
+        border: 1px solid rgba(174, 233, 0, 0.15);
+
+        background: rgba(174, 233, 0, 0.10);
+    }
+
+    &--active {
+
+        .wallet-item__disconnect,
+        .wallet-item__address,
+        .wallet-item__copy {
+            color: rgba(174, 233, 0, 0.80);
+            border: 1px solid rgba(174, 233, 0, 0.15);
+
+            background: rgba(174, 233, 0, 0.10);
+        }
+
+        .wallet-item__icon,
+        .wallet-item__name,
+        .wallet-item__client {
+            background: rgba(174, 233, 0, 0.10);
+            color: rgba(174, 233, 0, 0.80);
+
+
+
+
+
+
+            img {
+                border: 1px solid rgba(217, 241, 233, 0.80);
+            }
+
+
+
+        }
+    }
+}
