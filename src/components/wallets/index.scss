@@ -1,3 +1,102 @@
+.divider {
+    display: flex;
+    width: 20px;
+    align-items: center;
+    justify-content: center;
+
+
+    div {
+        width: 6px;
+        height: 2px;
+        background-color: #889697;
+    }
+}
+
+.wallet-header {
+
+    display: flex;
+
+
+    &__address {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+
+        &__value,
+        &__provider {
+            border-radius: 6px;
+            display: flex;
+            height: 28px;
+            align-items: center;
+        }
+
+
+
+        &__value {
+            border-radius: 6px;
+            border: 1px solid rgba(217, 241, 233, 0.10);
+
+            background: rgba(217, 241, 233, 0.05);
+            gap: 4px;
+            padding: 4px 6px 4px 5px;
+
+
+            img {
+                border-radius: 1000px;
+                border: 1px solid #889697;
+            }
+        }
+
+
+        &__provider {
+
+            width: 28px;
+
+            justify-content: center;
+            background: rgba(136, 150, 151, 0.05);
+        }
+    }
+
+    &__balance {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        color: #889697;
+
+        &__chain,
+        &__number {
+            height: 28px;
+            display: flex;
+            border-radius: 6px;
+            background: rgba(136, 150, 151, 0.05);
+
+        }
+
+        &__chain {
+            width: 28px;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        &__number {
+            padding: 0 8px;
+            align-items: center;
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 .wallets {
     border-radius: 12px;
     border: 1px solid rgba(136, 150, 151, 0.20);

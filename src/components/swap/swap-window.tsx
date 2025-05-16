@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   ArrowSmall,
   CoinFade,
@@ -12,12 +12,17 @@ import { useTokenModal } from "@/context/TokenModalProvider";
 import { UnifiedToken } from "@/types/coin-types";
 import Image from "next/image";
 import { getIconUri } from "@/helpers/get-icon-uri";
+import GreenDot from "../green-dot";
+import { SwapWallet } from "./types";
+import WalletModal from "../wallets/wallet-modal";
 type Props = {
   mode: "buy" | "sell";
   isNativeBalance?: boolean;
   token: UnifiedToken | null;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
   inputValue: string;
+  setActiveWallet: React.Dispatch<React.SetStateAction<SwapWallet | null>>;
+  activeWallet: SwapWallet | null;
 };
 
 const address = "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce";
@@ -28,9 +33,15 @@ const presetOptions = [
   { value: "MAX", multiplier: 1 },
 ];
 
-const SwapWindow = ({ mode, isNativeBalance, token }: Props) => {
+const SwapWindow = ({
+  mode,
+  isNativeBalance,
+  token,
+  setActiveWallet,
+  activeWallet,
+}: Props) => {
   const { setIsOpen, setModalMode } = useTokenModal();
-
+  const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
   const openTokenModal = useCallback(() => {
     setIsOpen(true);
     setModalMode(mode);
@@ -39,18 +50,18 @@ const SwapWindow = ({ mode, isNativeBalance, token }: Props) => {
   const balance = "0.000510";
   const valueUsd = "1233.23";
 
-  const GreenDot = ({ int, dec }: { int: string; dec: string }) => {
-    return (
-      <>
-        <span>{int}</span>
-        <span style={{ color: "#AEE900" }}>.</span>
-        <span>{dec}</span>
-      </>
-    );
-  };
-
   const [intBalancePart, decBalancePart] = balance.split(".");
   const [intUsdPart, decUsdPart] = valueUsd.split(".");
+
+  const callback = useCallback(
+    (wallet: SwapWallet | undefined) => {
+      setIsOpenAddressModal(false);
+      if (mode === "buy" && wallet) {
+        setActiveWallet(wallet);
+      }
+    },
+    [mode, setActiveWallet]
+  );
   return (
     <div className="swap-window">
       <div className="swap-window__input">
@@ -63,10 +74,10 @@ const SwapWindow = ({ mode, isNativeBalance, token }: Props) => {
             <GreenDot int={intBalancePart} dec={decBalancePart} />
           </div>
         </div>
-        <div className="swap-window__input__main">
+        <label className="swap-window__input__main">
           <input placeholder="0" />
           <InputCoin />
-        </div>
+        </label>
         <div className="swap-window__input__quote">
           <div className="swap-window__input__quote__value">
             <GreenDot int={intUsdPart} dec={decUsdPart} />
@@ -75,14 +86,37 @@ const SwapWindow = ({ mode, isNativeBalance, token }: Props) => {
         </div>
       </div>
       <div className="swap-window__token">
-        <div className="swap-window__token__wallet">
+        <div
+          onMouseEnter={() => setIsOpenAddressModal(true)}
+          onMouseLeave={() => setIsOpenAddressModal(false)}
+          className="swap-window__token__wallet"
+        >
           <div className="swap-window__token__wallet__pfp">
-            {<CoinFade address={address} />}
+            {activeWallet?.address && (
+              <CoinFade
+                key={activeWallet?.address}
+                address={activeWallet?.address}
+              />
+            )}
           </div>
-          <span>{truncateAddress(address)}</span>
+          <span>
+            {!activeWallet?.address
+              ? "0x00...XXXX"
+              : truncateAddress(activeWallet?.address)}
+          </span>
           <div className="recipient-window__address__arrow">
             <ArrowSmall />
           </div>
+          {isOpenAddressModal && (
+            <div className="swap-window__wallet">
+              <WalletModal
+                isBuy={mode === "buy"}
+                callback={(wallet: SwapWallet | undefined) => callback(wallet)}
+                swapWindow
+                activeAddress={activeWallet?.address}
+              />
+            </div>
+          )}
         </div>
 
         <button onClick={openTokenModal} className="token-to-buy__token">

@@ -10,14 +10,18 @@ import React, {
   FC,
   useEffect,
   useMemo,
+  useCallback,
 } from "react";
 import { useCommunityCoins } from "./FarcasterCommunityTokensProvider";
 import { useSolanaCoins } from "./DexScreenerTrendingSolataTokensProvider";
 import { useGeckoTokens } from "./GeckoTerminalCoinsProvider";
 import { UnifiedToken } from "@/types/coin-types";
-import { SolBalanceResponse } from "@/actions/get-sol-balance";
+import { getSolBalance, SolBalanceResponse } from "@/actions/get-sol-balance";
 import { ModalMode } from "@/types/modal-mode";
 import { RelayChain } from "@/types/relay-query-chain-type";
+import { getTokenAccountsWithMetadata as getUserEthTokens } from "@/actions/get-user-owned-ethereum-tokens";
+import { getTokenAccountsWithMetadata as getUserSolTokens } from "@/actions/get-user-owned-solana-tokens";
+import { useActiveWallet } from "./ActiveWalletContext";
 
 interface TokenModalContextValue {
   isOpen: boolean;
@@ -28,6 +32,8 @@ interface TokenModalContextValue {
   sellToken: UnifiedToken | null;
   buyToken: UnifiedToken | null;
   chains: RelayChain[];
+  nativeSolBalance: SolBalanceResponse | null;
+  userEthTokens: UnifiedToken[] | null;
 }
 
 const TokenModalContext = createContext<TokenModalContextValue | undefined>(
@@ -98,6 +104,52 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
     [featuredChains, otherChains]
   );
 
+  const solNativeBalance = useCallback(
+    async (address: string) => {
+      const balance = await getSolBalance(address);
+      setNativeSolBalance(balance);
+    },
+    [setNativeSolBalance]
+  );
+
+  const ethCoins = useCallback(
+    async (address: string) => {
+      const tokens = await getUserEthTokens({
+        address,
+      });
+      setUserEthTokens(tokens);
+    },
+    [setUserEthTokens]
+  );
+
+  const solCoins = useCallback(
+    async (address: string) => {
+      const tokens = await getUserSolTokens({
+        address,
+      });
+      setUserSolanaTokens(tokens);
+    },
+    [setUserSolanaTokens]
+  );
+
+  const { activeWallet } = useActiveWallet();
+  useEffect(() => {
+    if (activeWallet) {
+      if (activeWallet.type === "ethereum") {
+        ethCoins(activeWallet.address);
+      }
+
+      if (activeWallet.type === "solana") {
+        solCoins(activeWallet.address);
+      }
+      if (activeWallet.type === "solana") {
+        solNativeBalance(activeWallet.address);
+      }
+    }
+  }, [ethCoins, solCoins, solNativeBalance, activeWallet]);
+  console.log({ nativeSolBalance, userEthTokens, activeWallet });
+
+  //Number(chainId.split(":")[1])
   return (
     <TokenModalContext.Provider
       value={{
@@ -109,6 +161,8 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
         buyToken,
         sellToken,
         chains: appsChains,
+        nativeSolBalance,
+        userEthTokens,
       }}
     >
       {children}

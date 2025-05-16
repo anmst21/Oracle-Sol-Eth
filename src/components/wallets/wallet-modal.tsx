@@ -1,98 +1,58 @@
 "use client";
 
 import {
-  useWallets,
-  useSolanaWallets,
   usePrivy,
-  useLogin,
   ConnectedSolanaWallet,
   ConnectedWallet,
 } from "@privy-io/react-auth";
 import WalletItem from "./wallet-item";
 import { PrivyLogo } from "../icons";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback } from "react";
+import { useActiveWallet } from "@/context/ActiveWalletContext";
+import { SwapWallet } from "../swap/types";
 
-export default function Wallets() {
-  const { wallets: ethereumWallets, ready: readyEth } = useWallets();
-  const { wallets: solanaWallets, ready: readySol } = useSolanaWallets();
-  const { ready, authenticated, linkWallet, user, logout } = usePrivy();
-  const { login } = useLogin();
+export default function Wallets({
+  swapWindow,
+  callback,
+  isBuy,
+  activeAddress,
+}: {
+  callback?: (wallet?: SwapWallet) => void;
+  swapWindow?: boolean;
+  isBuy?: boolean;
+  activeAddress?: string;
+}) {
+  const { ready, authenticated, linkWallet, user, logout, login } = usePrivy();
 
-  const [activeWallet, setActiveWallet] = useState<
-    ConnectedSolanaWallet | ConnectedWallet | null
-  >(null);
-
-  console.log("activeWallet", activeWallet);
-
-  useEffect(() => {
-    // guard: everything must be ready and we must have a user address
-    if (
-      ready &&
-      authenticated &&
-      user?.wallet?.address &&
-      (readyEth || readySol)
-    ) {
-      const userAddr = user.wallet.address.toLowerCase();
-
-      // try ETH first
-      let found: ConnectedWallet | ConnectedSolanaWallet | undefined = readyEth
-        ? ethereumWallets.find((w) => w.address?.toLowerCase() === userAddr)
-        : undefined;
-
-      // if not in ETH, try SOL
-      if (!found && readySol) {
-        found = solanaWallets.find(
-          (w) => w.address?.toLowerCase() === userAddr
-        );
-      }
-
-      // if we found it, set it; otherwise leave as-is (or clear if you prefer)
-      if (found) {
-        setActiveWallet(found);
-      }
-    }
-  }, [
-    ready,
-    authenticated,
-    user?.wallet?.address,
+  const {
+    ethLinked,
+    solLinked,
+    activeWallet,
+    setActiveWallet,
     readyEth,
     readySol,
-    ethereumWallets,
-    solanaWallets,
-  ]);
-
-  function sortByUserFirst<T extends { address?: string }>(
-    list: T[],
-    userAddress?: string
-  ): T[] {
-    const normalized = userAddress?.toLowerCase();
-    return [...list].sort((a, b) => {
-      if (a.address?.toLowerCase() === normalized) return -1;
-      if (b.address?.toLowerCase() === normalized) return 1;
-      return 0;
-    });
-  }
-  const userAddress = user?.wallet?.address;
-  // only keep linked wallets
-  const ethLinked = useMemo(() => {
-    const linked = ethereumWallets.filter((w) => w.linked);
-    // return liftUserWallet(linked, userAddress);
-    return sortByUserFirst(linked, userAddress);
-  }, [ethereumWallets, userAddress]);
-
-  const solLinked = useMemo(() => {
-    const linked = solanaWallets.filter((w) => w.linked);
-    // return liftUserWallet(linked, userAddress);
-    return sortByUserFirst(linked, userAddress);
-  }, [solanaWallets, userAddress]);
+  } = useActiveWallet();
 
   const userChain = user?.wallet?.chainType;
 
   const selectCallback = useCallback(
     (wallet: ConnectedWallet | ConnectedSolanaWallet) => {
-      setActiveWallet(wallet);
+      if (!isBuy) {
+        setActiveWallet(wallet);
+      }
+
+      if (callback && !isBuy) callback();
+      if (callback && isBuy)
+        callback({
+          type: wallet.type,
+          address: wallet.address,
+          chainId:
+            wallet.type === "ethereum"
+              ? Number(wallet.chainId.split(":")[1])
+              : 792703809,
+        });
     },
-    [setActiveWallet]
+    [setActiveWallet, callback, isBuy]
   );
 
   // define each section once
@@ -113,7 +73,10 @@ export default function Wallets() {
           unlink={w.unlink}
           logout={logout}
           selectCallback={() => selectCallback(w)}
-          activeWalletAddress={activeWallet?.address}
+          activeWalletAddress={
+            activeAddress ? activeAddress : activeWallet?.address
+          }
+          isMini={swapWindow}
         />
       ))}
     </div>
@@ -136,7 +99,10 @@ export default function Wallets() {
           unlink={w.unlink}
           logout={logout}
           selectCallback={() => selectCallback(w)}
-          activeWalletAddress={activeWallet?.address}
+          activeWalletAddress={
+            activeAddress ? activeAddress : activeWallet?.address
+          }
+          isMini={swapWindow}
         />
       ))}
     </div>

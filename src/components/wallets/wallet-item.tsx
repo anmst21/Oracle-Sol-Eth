@@ -18,6 +18,7 @@ type Props = {
   logout: () => Promise<void>;
   selectCallback: () => void;
   activeWalletAddress: string | undefined;
+  isMini: boolean | undefined;
 };
 
 const WalletItem = ({
@@ -33,6 +34,7 @@ const WalletItem = ({
   logout,
   selectCallback,
   activeWalletAddress,
+  isMini,
 }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -79,61 +81,66 @@ const WalletItem = ({
             </div>
           )}
         </button>
-        <button
-          onClick={() => handleCopy(address as string)}
-          className="wallet-item__copy"
-        >
-          <SwapCopy />
-        </button>
-      </div>
-      <div className="wallet-item__center">
-        <div className="wallet-item__client">
-          {icon && (
-            <Image
-              alt={id}
-              src={icon.replace(/^\n+/, "").trimEnd()}
-              width={24}
-              height={24}
-            />
-          )}
-        </div>
-        <div className="wallet-item__name">{name}</div>
-      </div>
-      <div className="wallet-item__bottom">
-        {address === userWalletAdderess ? (
+        {!isMini && (
           <button
-            className="wallet-item__disconnect wallet-item__logout"
-            onClick={logout}
+            onClick={() => handleCopy(address as string)}
+            className="wallet-item__copy"
           >
-            Log Out
-          </button>
-        ) : isLinked ? (
-          <button
-            className="wallet-item__disconnect wallet-item__logout"
-            onClick={unlink}
-          >
-            {"Unlink"}
-          </button>
-        ) : (
-          <button
-            className="wallet-item__disconnect wallet-item__logout"
-            onClick={loginOrLink}
-          >
-            Link
+            <SwapCopy />
           </button>
         )}
-
-        <button
-          onMouseEnter={() => !isHovered && setIsHovered(true)}
-          onMouseLeave={() => isHovered && setIsHovered(false)}
-          disabled={address === activeWalletAddress}
-          className="wallet-item__disconnect"
-          onClick={selectCallback}
-        >
-          Select
-        </button>
       </div>
-      {/* {wallet.linked} */}
+      {!isMini && (
+        <>
+          <div className="wallet-item__center">
+            <div className="wallet-item__client">
+              {icon && (
+                <Image
+                  alt={id}
+                  src={icon.replace(/^\n+/, "").trimEnd()}
+                  width={24}
+                  height={24}
+                />
+              )}
+            </div>
+            <div className="wallet-item__name">{name}</div>
+          </div>
+          <div className="wallet-item__bottom">
+            {address === userWalletAdderess ? (
+              <button
+                className="wallet-item__disconnect wallet-item__logout"
+                onClick={logout}
+              >
+                Log Out
+              </button>
+            ) : isLinked ? (
+              <button
+                className="wallet-item__disconnect wallet-item__logout"
+                onClick={unlink}
+              >
+                {"Unlink"}
+              </button>
+            ) : (
+              <button
+                className="wallet-item__disconnect wallet-item__logout"
+                onClick={loginOrLink}
+              >
+                Link
+              </button>
+            )}
+
+            <button
+              onMouseEnter={() => !isHovered && setIsHovered(true)}
+              onMouseLeave={() => isHovered && setIsHovered(false)}
+              disabled={address === activeWalletAddress}
+              className="wallet-item__disconnect"
+              onClick={selectCallback}
+            >
+              Select
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

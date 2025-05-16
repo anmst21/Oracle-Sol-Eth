@@ -11,6 +11,8 @@ import { getTokenAccountsWithMetadata as getUserSolTokens } from "@/actions/get-
 import { RelayChain } from "@/types/relay-query-chain-type";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { ModalMode } from "@/types/modal-mode";
+import { useActiveWallet } from "@/context/ActiveWalletContext";
+
 type Props = {
   activeChainId: number;
   featuredChains: RelayChain[];
@@ -116,46 +118,6 @@ const ModalCoins = ({
   useEffect(() => {
     if (!solanaTrendingCoins) loadSolanaCoins();
   }, [loadSolanaCoins, solanaTrendingCoins]);
-
-  const solNativeBalance = useCallback(async () => {
-    const balance = await getSolBalance(
-      "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp"
-    );
-    setNativeSolBalance(balance);
-  }, [setNativeSolBalance]);
-
-  const ethCoins = useCallback(async () => {
-    const tokens = await getUserEthTokens({
-      address: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
-    });
-    setUserEthTokens(tokens);
-  }, [setUserEthTokens]);
-
-  const solCoins = useCallback(async () => {
-    const tokens = await getUserSolTokens({
-      address: "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp",
-    });
-    setUserSolanaTokens(tokens);
-  }, [setUserSolanaTokens]);
-
-  useEffect(() => {
-    if (!nativeSolBalance) {
-      solNativeBalance();
-    }
-    if (!userSolanaTokens) {
-      solCoins();
-    }
-    if (!userEthTokens) {
-      ethCoins();
-    }
-  }, [
-    nativeSolBalance,
-    userSolanaTokens,
-    userEthTokens,
-    ethCoins,
-    solCoins,
-    solNativeBalance,
-  ]);
 
   const nativeTokens = useMemo(
     () => userEthTokens?.filter((t) => t.address === zeroAddress) ?? [],
@@ -272,6 +234,8 @@ const ModalCoins = ({
       : communityCoins.filter((c) => c.chainId === activeChainId);
   }, [communityCoins, activeChainId]);
 
+  const { activeWallet } = useActiveWallet();
+
   return (
     <div className="coins-list">
       <div className="chain-sidebar__contianer">
@@ -324,7 +288,8 @@ const ModalCoins = ({
 
         {ethNativeList.length > 0 &&
           (activeChainId === 1 || activeChainId === 0) &&
-          !searchTerm.length && (
+          !searchTerm.length &&
+          activeWallet?.type === "ethereum" && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
                 <h2>Native Ethereum Balance</h2>
@@ -357,7 +322,8 @@ const ModalCoins = ({
         {nativeSolBalance &&
           nativeSolBalance.balance !== 0 &&
           (activeChainId === 792703809 || activeChainId === 0) &&
-          !searchTerm.length && (
+          !searchTerm.length &&
+          activeWallet?.type === "solana" && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
                 <h2>Native Solana Balance</h2>
@@ -385,7 +351,8 @@ const ModalCoins = ({
 
         {ethOtherList.length > 0 &&
           activeChainId !== 792703809 &&
-          !searchTerm.length && (
+          !searchTerm.length &&
+          activeWallet?.type === "ethereum" && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
                 <h2>Other Ethereum Tokens</h2>
@@ -421,6 +388,7 @@ const ModalCoins = ({
         {userSolanaTokens &&
           userSolanaTokens.length > 0 &&
           (activeChainId === 792703809 || activeChainId === 0) &&
+          activeWallet?.type === "solana" &&
           !searchTerm.length && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
