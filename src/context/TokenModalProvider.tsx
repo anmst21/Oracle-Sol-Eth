@@ -34,6 +34,9 @@ interface TokenModalContextValue {
   chains: RelayChain[];
   nativeSolBalance: SolBalanceResponse | null;
   userEthTokens: UnifiedToken[] | null;
+  userSolanaTokens: UnifiedToken[] | null;
+  setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
 }
 
 const TokenModalContext = createContext<TokenModalContextValue | undefined>(
@@ -163,6 +166,9 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
         chains: appsChains,
         nativeSolBalance,
         userEthTokens,
+        userSolanaTokens,
+        setBuyToken,
+        setSellToken,
       }}
     >
       {children}

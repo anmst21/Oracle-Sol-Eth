@@ -15,6 +15,8 @@ import { getIconUri } from "@/helpers/get-icon-uri";
 import GreenDot from "../green-dot";
 import { SwapWallet } from "./types";
 import WalletModal from "../wallets/wallet-modal";
+import { useTokenPrice } from "@reservoir0x/relay-kit-hooks";
+
 type Props = {
   mode: "buy" | "sell";
   isNativeBalance?: boolean;
@@ -23,9 +25,8 @@ type Props = {
   inputValue: string;
   setActiveWallet: React.Dispatch<React.SetStateAction<SwapWallet | null>>;
   activeWallet: SwapWallet | null;
+  tokenBalance: string | undefined;
 };
-
-const address = "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce";
 
 const presetOptions = [
   { value: "20%", multiplier: 0.2 },
@@ -33,12 +34,20 @@ const presetOptions = [
   { value: "MAX", multiplier: 1 },
 ];
 
+const buyPresetOptions = [
+  { value: "+20%", multiplier: 1.2 },
+  { value: "+50%", multiplier: 1.5 },
+  { value: "+100%", multiplier: 2 },
+];
+
 const SwapWindow = ({
   mode,
-  isNativeBalance,
   token,
   setActiveWallet,
   activeWallet,
+  inputValue,
+  setInputValue,
+  tokenBalance = "0.000000",
 }: Props) => {
   const { setIsOpen, setModalMode } = useTokenModal();
   const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
@@ -46,12 +55,6 @@ const SwapWindow = ({
     setIsOpen(true);
     setModalMode(mode);
   }, [setIsOpen, setModalMode, mode]);
-
-  const balance = "0.000510";
-  const valueUsd = "1233.23";
-
-  const [intBalancePart, decBalancePart] = balance.split(".");
-  const [intUsdPart, decUsdPart] = valueUsd.split(".");
 
   const callback = useCallback(
     (wallet: SwapWallet | undefined) => {
@@ -62,6 +65,35 @@ const SwapWindow = ({
     },
     [mode, setActiveWallet]
   );
+
+  const priceOptions =
+    token?.address && token?.chainId
+      ? {
+          address: token?.address,
+          chainId: token?.chainId,
+        }
+      : undefined;
+
+  const {
+    data: ethPriceResponse,
+    isLoading,
+    error,
+  } = useTokenPrice("https://api.relay.link", priceOptions, {
+    // Optional query options
+    refetchInterval: 60000, // Refresh every minute
+  });
+
+  console.log("ethPriceResponse", ethPriceResponse);
+
+  const valueUsd =
+    inputValue.length > 0 && ethPriceResponse?.price
+      ? (ethPriceResponse?.price * Number(inputValue)).toFixed(2)
+      : "XX.XX";
+
+  const [intUsdPart, decUsdPart] = valueUsd.split(".");
+
+  const [intBalancePart, decBalancePart] = tokenBalance.split(".");
+
   return (
     <div className="swap-window">
       <div className="swap-window__input">
@@ -75,7 +107,17 @@ const SwapWindow = ({
           </div>
         </div>
         <label className="swap-window__input__main">
-          <input placeholder="0" />
+          <input
+            type="number"
+            inputMode="decimal"
+            placeholder="0"
+            // if your state is a string:
+            value={inputValue}
+            onChange={(e) => {
+              const raw = e.currentTarget.value;
+              setInputValue(raw);
+            }}
+          />
           <InputCoin />
         </label>
         <div className="swap-window__input__quote">
@@ -111,7 +153,9 @@ const SwapWindow = ({
             <div className="swap-window__wallet">
               <WalletModal
                 isBuy={mode === "buy"}
-                callback={(wallet: SwapWallet | undefined) => callback(wallet)}
+                callback={(wallet: SwapWallet | undefined) => {
+                  callback(wallet);
+                }}
                 swapWindow
                 activeAddress={activeWallet?.address}
               />
@@ -150,13 +194,28 @@ const SwapWindow = ({
             <SwapArrow />
           </div>
         </button>
-        {isNativeBalance ? (
+        {Number(tokenBalance) !== 0 ||
+        (token && mode === "buy" && inputValue.length > 0) ? (
           <div className="swap-window__token__ammount">
-            {presetOptions.map((option, i) => (
-              <button className="swap-window__token__ammount__option" key={i}>
-                {option.value}
-              </button>
-            ))}
+            {(mode === "sell" ? presetOptions : buyPresetOptions).map(
+              (option, i) => (
+                <button
+                  onClick={() =>
+                    setInputValue(
+                      (
+                        (mode === "buy"
+                          ? Number(inputValue)
+                          : Number(tokenBalance)) * option.multiplier
+                      ).toString()
+                    )
+                  }
+                  className="swap-window__token__ammount__option"
+                  key={i}
+                >
+                  {option.value}
+                </button>
+              )
+            )}
           </div>
         ) : (
           <div className="swap-window__token__ammount__placeholder" />

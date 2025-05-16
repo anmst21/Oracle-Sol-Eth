@@ -1,17 +1,50 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SwapWindow from "./swap-window";
 import { SwapSwitch } from "../icons";
 import { useTokenModal } from "@/context/TokenModalProvider";
 import { SwapWallet } from "./types";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
+import { getEthToken, solanaToken } from "@/helpers/solana-token";
 
 const SwapContainer = () => {
   const [sellInputValue, setSellInputValue] = useState("");
   const [buyInputValue, setBuyInputValue] = useState("");
 
-  const { sellToken, buyToken } = useTokenModal();
+  const {
+    sellToken,
+    buyToken,
+    nativeSolBalance,
+    userEthTokens,
+    userSolanaTokens,
+    setBuyToken,
+    setSellToken,
+  } = useTokenModal();
+
+  const getTokenBalance = useCallback(
+    (address: string | undefined, chainId: number | undefined) => {
+      if (!address || !chainId) return;
+
+      if (chainId === 792703809) {
+        if (address === "11111111111111111111111111111111") {
+          return nativeSolBalance?.balance.toFixed(6);
+        } else {
+          return (
+            userSolanaTokens?.find((token) => token.address === address)
+              ?.balance || 0
+          ).toFixed(6);
+        }
+      } else {
+        return (
+          userEthTokens?.find(
+            (token) => token.address === address && token.chainId === chainId
+          )?.balance || 0
+        ).toFixed(6);
+      }
+    },
+    [userEthTokens, userSolanaTokens, nativeSolBalance]
+  );
 
   const [activeSellWallet, setActiveSellWallet] = useState<SwapWallet | null>(
     null
@@ -20,7 +53,14 @@ const SwapContainer = () => {
     null
   );
 
-  const { activeWallet } = useActiveWallet();
+  const { activeWallet, ethLinked, solLinked, setActiveWallet } =
+    useActiveWallet();
+
+  //   useEffect(() => {
+  //   if (sellToken?.chainId !== activeSellWallet?.chainId) {
+  //     setActiveSellWallet()
+  //   }
+  // }, [sellToken])
 
   useEffect(() => {
     if (activeWallet && !activeSellWallet && !activeBuyWallet) {
@@ -49,6 +89,25 @@ const SwapContainer = () => {
       };
       setActiveSellWallet(walletData);
     }
+
+    // if (
+    //   activeWallet &&
+    //   activeWallet.type === "solana" &&
+    //   sellToken?.chainId !== 792703809
+    // ) {
+    //   setSellToken(solanaToken);
+    // }
+    // if (
+    //   activeWallet &&
+    //   activeWallet.type === "ethereum" &&
+    //   sellToken?.chainId !== Number(activeWallet.chainId.split(":")[1])
+    // ) {
+    //   const chainId = Number(activeWallet.chainId.split(":")[1]);
+    //   const token = getEthToken(chainId);
+    //   setSellToken(token);
+    // }
+
+    //@ts-nocheck
   }, [activeWallet]);
 
   console.log({ activeBuyWallet, activeSellWallet });
@@ -63,6 +122,7 @@ const SwapContainer = () => {
         isNativeBalance
         setActiveWallet={setActiveSellWallet}
         activeWallet={activeSellWallet}
+        tokenBalance={getTokenBalance(sellToken?.address, sellToken?.chainId)}
       />
       <button className="swap-container__switch">
         <SwapSwitch />
@@ -74,6 +134,7 @@ const SwapContainer = () => {
         mode="buy"
         setActiveWallet={setActiveBuyWallet}
         activeWallet={activeBuyWallet}
+        tokenBalance={getTokenBalance(buyToken?.address, buyToken?.chainId)}
       />
     </div>
   );
