@@ -7,6 +7,8 @@ import { useTokenModal } from "@/context/TokenModalProvider";
 import { SwapWallet } from "./types";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { getEthToken, solanaToken } from "@/helpers/solana-token";
+import { solanaChain } from "@/helpers/solanaChain";
+import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
 
 const SwapContainer = () => {
   const [sellInputValue, setSellInputValue] = useState("");
@@ -46,71 +48,105 @@ const SwapContainer = () => {
     [userEthTokens, userSolanaTokens, nativeSolBalance]
   );
 
-  const [activeSellWallet, setActiveSellWallet] = useState<SwapWallet | null>(
-    null
-  );
-  const [activeBuyWallet, setActiveBuyWallet] = useState<SwapWallet | null>(
-    null
-  );
+  const [activeBuyWallet, setActiveBuyWallet] = useState<
+    ConnectedWallet | ConnectedSolanaWallet | null
+  >(null);
 
   const { activeWallet, ethLinked, solLinked, setActiveWallet } =
     useActiveWallet();
 
-  //   useEffect(() => {
-  //   if (sellToken?.chainId !== activeSellWallet?.chainId) {
-  //     setActiveSellWallet()
-  //   }
-  // }, [sellToken])
+  useEffect(() => {
+    if (activeWallet && !activeBuyWallet) {
+      const chainId =
+        activeWallet.type === "ethereum"
+          ? Number(activeWallet.chainId.split(":")[1])
+          : 792703809;
+      if (!buyToken) {
+        setActiveBuyWallet(activeWallet);
+      } else {
+        if (buyToken && buyToken.chainId === 792703809) {
+          setActiveBuyWallet(solLinked[0]);
+        }
+        if (buyToken && buyToken.chainId !== 792703809) {
+          setActiveWallet(ethLinked[0]);
+        }
+      }
+
+      setSellToken(getEthToken(chainId));
+    }
+  }, [
+    activeWallet,
+    activeBuyWallet,
+    setSellToken,
+    setActiveWallet,
+    buyToken,
+    ethLinked,
+    solLinked,
+  ]);
 
   useEffect(() => {
-    if (activeWallet && !activeSellWallet && !activeBuyWallet) {
-      const walletData = {
-        chainId:
-          activeWallet.type === "ethereum"
-            ? Number(activeWallet.chainId.split(":")[1])
-            : 792703809,
-        address: activeWallet.address,
-        type: activeWallet.type,
-      };
-      setActiveSellWallet(walletData);
-      setActiveBuyWallet(walletData);
-    }
-  }, [activeWallet, activeBuyWallet, activeSellWallet]);
-
-  useEffect(() => {
-    if (activeWallet && activeSellWallet) {
-      const walletData = {
-        chainId:
-          activeWallet.type === "ethereum"
-            ? Number(activeWallet.chainId.split(":")[1])
-            : 792703809,
-        address: activeWallet.address,
-        type: activeWallet.type,
-      };
-      setActiveSellWallet(walletData);
+    if (
+      activeWallet?.type === "ethereum" &&
+      sellToken?.chainId === solanaChain.id
+    ) {
+      setSellToken(getEthToken(Number(activeWallet.chainId.split(":")[1])));
     }
 
-    // if (
-    //   activeWallet &&
-    //   activeWallet.type === "solana" &&
-    //   sellToken?.chainId !== 792703809
-    // ) {
-    //   setSellToken(solanaToken);
-    // }
-    // if (
-    //   activeWallet &&
-    //   activeWallet.type === "ethereum" &&
-    //   sellToken?.chainId !== Number(activeWallet.chainId.split(":")[1])
-    // ) {
-    //   const chainId = Number(activeWallet.chainId.split(":")[1]);
-    //   const token = getEthToken(chainId);
-    //   setSellToken(token);
-    // }
-
-    //@ts-nocheck
+    if (
+      activeWallet?.type === "solana" &&
+      sellToken?.chainId !== solanaChain.id
+    ) {
+      setSellToken(solanaToken);
+    }
   }, [activeWallet]);
 
-  console.log({ activeBuyWallet, activeSellWallet });
+  useEffect(() => {
+    if (
+      activeBuyWallet?.type === "ethereum" &&
+      buyToken?.chainId === solanaChain.id
+    ) {
+      setBuyToken(getEthToken(Number(activeBuyWallet.chainId)));
+    }
+
+    if (
+      activeBuyWallet?.type === "solana" &&
+      buyToken?.chainId !== solanaChain.id
+    ) {
+      setBuyToken(solanaToken);
+    }
+  }, [activeBuyWallet]);
+
+  useEffect(() => {
+    if (
+      activeWallet?.type === "ethereum" &&
+      sellToken?.chainId === solanaChain.id
+    ) {
+      setActiveWallet(solLinked[0]);
+    }
+
+    if (
+      activeWallet?.type === "solana" &&
+      sellToken?.chainId !== solanaChain.id
+    ) {
+      setActiveWallet(ethLinked[0]);
+    }
+  }, [sellToken]);
+
+  useEffect(() => {
+    if (
+      activeBuyWallet?.type === "ethereum" &&
+      buyToken?.chainId === solanaChain.id
+    ) {
+      setActiveBuyWallet(solLinked[0]);
+    }
+
+    if (
+      activeBuyWallet?.type === "solana" &&
+      buyToken?.chainId !== solanaChain.id
+    ) {
+      setActiveBuyWallet(ethLinked[0]);
+    }
+  }, [buyToken]);
 
   return (
     <div className="swap-container">
@@ -120,8 +156,8 @@ const SwapContainer = () => {
         token={sellToken}
         mode="sell"
         isNativeBalance
-        setActiveWallet={setActiveSellWallet}
-        activeWallet={activeSellWallet}
+        setActiveWallet={setActiveWallet}
+        activeWallet={activeWallet}
         tokenBalance={getTokenBalance(sellToken?.address, sellToken?.chainId)}
       />
       <button className="swap-container__switch">

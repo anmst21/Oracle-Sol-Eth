@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ArrowSmall,
   CoinFade,
@@ -16,6 +16,7 @@ import GreenDot from "../green-dot";
 import { SwapWallet } from "./types";
 import WalletModal from "../wallets/wallet-modal";
 import { useTokenPrice } from "@reservoir0x/relay-kit-hooks";
+import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
 
 type Props = {
   mode: "buy" | "sell";
@@ -23,9 +24,14 @@ type Props = {
   token: UnifiedToken | null;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
   inputValue: string;
-  setActiveWallet: React.Dispatch<React.SetStateAction<SwapWallet | null>>;
-  activeWallet: SwapWallet | null;
+  setActiveWallet:
+    | React.Dispatch<React.SetStateAction<SwapWallet | null>>
+    | React.Dispatch<
+        React.SetStateAction<ConnectedWallet | ConnectedSolanaWallet | null>
+      >;
+  activeWallet: ConnectedWallet | ConnectedSolanaWallet | SwapWallet | null;
   tokenBalance: string | undefined;
+  s?: () => void;
 };
 
 const presetOptions = [
@@ -48,8 +54,10 @@ const SwapWindow = ({
   inputValue,
   setInputValue,
   tokenBalance = "0.000000",
+  s,
 }: Props) => {
-  const { setIsOpen, setModalMode } = useTokenModal();
+  const { setIsOpen, setModalMode, isOpen } = useTokenModal();
+
   const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
   const openTokenModal = useCallback(() => {
     setIsOpen(true);
