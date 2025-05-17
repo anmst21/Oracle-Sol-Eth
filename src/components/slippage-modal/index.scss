@@ -1,0 +1,220 @@
+@import "./slider.scss";
+
+.modal-info {
+    position: absolute;
+    display: flex;
+    z-index: 150;
+    width: 188px;
+    padding: 4px;
+    flex-direction: column;
+    gap: 4px;
+    top: 44px;
+    border-radius: 8px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+
+    right: 90px;
+
+
+    background: rgba(136, 150, 151, 0.05);
+    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px);
+
+
+
+    &__header {
+        border-radius: 6px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        padding-left: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        height: 28px;
+        gap: 6px;
+        display: flex;
+        align-items: center;
+
+        &__h1 {
+            color: #889697;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+
+    }
+
+    &__paragraph {
+        display: flex;
+        padding: 4px 8px;
+
+        gap: 2px;
+        flex: 1 0 0;
+
+
+        span {
+            color: var(--dark-colorBorder, #889697);
+            font-family: var(--font-fira-code);
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 16px;
+        }
+    }
+}
+
+
+.slippage-modal {
+
+    flex: 1;
+    display: flex;
+    padding: 4px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    border-radius: 8px;
+    background: rgba(136, 150, 151, 0.05);
+
+
+
+    &__button {
+        border-radius: 6px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        display: flex;
+        padding: 4px;
+        gap: 4px;
+        background: rgba(136, 150, 151, 0.05);
+        width: 100%;
+
+
+        button {
+            border-radius: 4px;
+            display: flex;
+            flex: 1;
+            height: 26px;
+            align-items: center;
+            justify-content: center;
+
+
+            color: rgba(217, 241, 233, 0.80);
+
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            border: 1px solid transparent;
+        }
+
+
+
+        &--active {
+            border: 1px solid rgba(174, 233, 0, 0.25) !important;
+
+            background: rgba(174, 233, 0, 0.10);
+            color: #AEE900;
+        }
+    }
+
+
+
+    &__warning {
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        display: flex;
+        padding: 4px 8px;
+        width: 100%;
+
+
+        span {
+            color: #889697;
+
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 300;
+            line-height: 16px;
+        }
+    }
+
+
+    &__header {
+        color: #889697;
+        height: 28px;
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        display: flex;
+        width: 100%;
+        padding: 0px 4px 0px 8px;
+        position: relative;
+        align-items: center;
+
+        &__h1 {
+
+
+            text-align: center;
+            font-family: var(--font-handjet);
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px;
+        }
+
+        .cross {
+            margin-left: auto;
+        }
+
+        .before {
+
+
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 50px;
+            width: 35px;
+            background-color: red;
+
+        }
+
+        &__item {
+            display: flex;
+            width: 24px;
+            height: 24px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+
+
+
+        }
+
+    }
+
+
+    &__wrapper {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: -14px;
+    }
+
+    &__container {
+        z-index: 100;
+        border-radius: 12px;
+        border: 1px solid rgba(136, 150, 151, 0.20);
+        width: 210px;
+        background: rgba(136, 150, 151, 0.05);
+        padding: 12px;
+        display: flex;
+        -webkit-backdrop-filter: blur(30px);
+        backdrop-filter: blur(30px);
+        position: relative;
+
+
+        &::after {
+            content: "";
+            //    background-color: red;
+            position: absolute;
+            height: 60px;
+            width: 50px;
+            z-index: -1;
+            right: 0;
+            bottom: calc(100% - 20px);
+        }
+    }
+}

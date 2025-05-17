@@ -1,3 +1,11 @@
+@import "./swap-meta.scss";
+
+.swap-page {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .swap-window {
     display: flex;
     padding: 8px;
@@ -9,10 +17,24 @@
 
     &__wallet {
         position: absolute;
-        top: calc(100% + 4px);
-        right: 0;
+        top: calc(100% + 5px);
+        right: -2px;
         z-index: 50;
         width: 250px;
+
+
+        &::before {
+            content: "";
+            right: 0;
+            bottom: calc(100% - 2px);
+            height: 20px;
+            width: 172px;
+            position: absolute;
+        }
+
+        .wallets {
+            border-radius: 6px;
+        }
     }
 
 
@@ -276,6 +298,8 @@
     }
 
     &__settings {
+        cursor: pointer;
+        position: relative;
         border-radius: 4px;
         width: 32px;
         height: 32px;

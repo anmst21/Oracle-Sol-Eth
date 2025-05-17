@@ -1,0 +1,531 @@
+[
+    {
+        "name": "Oracl3.designSystem",
+        "values": [
+            {
+                "mode": {
+                    "name": "Mode-0",
+                    "id": "134:0"
+                },
+                "color": [
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent",
+                        "value": "#aee900cc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-dark",
+                        "value": "#d9f1e9cc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-darkest",
+                        "value": "#d9f1e91a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-light",
+                        "value": "#aee9001a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-lightest",
+                        "value": "#aee900",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background",
+                        "value": "#8896970d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background-2",
+                        "value": "#d9f1e90d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background-3",
+                        "value": "#0f0e1b33",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-error",
+                        "value": "#f13d20",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-error-light",
+                        "value": "#f13d200d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground",
+                        "value": "#889697cc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-2",
+                        "value": "#889697",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-3",
+                        "value": "#889697",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-4",
+                        "value": "#8896971a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-accent",
+                        "value": "#aee9001a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-success",
+                        "value": "#aee900",
+                        "var": "",
+                        "rootAlias": ""
+                    }
+                ],
+                "number": [
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-sm",
+                        "value": "6px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-md",
+                        "value": "8px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-full",
+                        "value": "12px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-lg",
+                        "value": "16px",
+                        "var": "",
+                        "rootAlias": ""
+                    }
+                ],
+                "string": []
+            },
+            {
+                "mode": {
+                    "name": "Mode-1",
+                    "id": "3073:0"
+                },
+                "color": [
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent",
+                        "value": "#815fe7cc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-dark",
+                        "value": "#e5e7ebcc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-darkest",
+                        "value": "#e5e7eb1a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-light",
+                        "value": "#815fe71a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-lightest",
+                        "value": "#815fe7",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background",
+                        "value": "#8b99a40d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background-2",
+                        "value": "#e5e7eb0d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background-3",
+                        "value": "#17101f33",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-error",
+                        "value": "#f13d20",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-error-light",
+                        "value": "#f13d200d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground",
+                        "value": "#8b99a4cc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-2",
+                        "value": "#8b99a4",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-3",
+                        "value": "#8b99a4",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-4",
+                        "value": "#8b99a41a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-accent",
+                        "value": "#815fe71a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-success",
+                        "value": "#815fe7",
+                        "var": "",
+                        "rootAlias": ""
+                    }
+                ],
+                "number": [
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-sm",
+                        "value": "6px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-md",
+                        "value": "8px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-full",
+                        "value": "12px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-lg",
+                        "value": "16px",
+                        "var": "",
+                        "rootAlias": ""
+                    }
+                ],
+                "string": []
+            },
+            {
+                "mode": {
+                    "name": "Mode-2",
+                    "id": "3073:1"
+                },
+                "color": [
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent",
+                        "value": "#7c65c1cc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-dark",
+                        "value": "#0c0c0ccc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-darkest",
+                        "value": "#0c0c0c1a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-light",
+                        "value": "#7c65c11a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-lightest",
+                        "value": "#7c65c1",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background",
+                        "value": "#6f6f6f0d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background-2",
+                        "value": "#0c0c0c0d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background-3",
+                        "value": "#f7f7f733",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-error",
+                        "value": "#f13d20",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-error-light",
+                        "value": "#f13d200d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground",
+                        "value": "#6f6f6fcc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-2",
+                        "value": "#6f6f6f",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-3",
+                        "value": "#6f6f6f",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-4",
+                        "value": "#6f6f6f1a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-accent",
+                        "value": "#7c65c11a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-success",
+                        "value": "#7c65c1",
+                        "var": "",
+                        "rootAlias": ""
+                    }
+                ],
+                "number": [
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-sm",
+                        "value": "6px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-md",
+                        "value": "8px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-full",
+                        "value": "12px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-lg",
+                        "value": "16px",
+                        "var": "",
+                        "rootAlias": ""
+                    }
+                ],
+                "string": []
+            },
+            {
+                "mode": {
+                    "name": "Mode-3",
+                    "id": "3073:2"
+                },
+                "color": [
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent",
+                        "value": "#ffffffcc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-dark",
+                        "value": "#4f4f4fcc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-darkest",
+                        "value": "#4f4f4f1a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-light",
+                        "value": "#ffffff1a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-accent-lightest",
+                        "value": "#ffffff",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background",
+                        "value": "#8888880d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background-2",
+                        "value": "#4f4f4f0d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-background-3",
+                        "value": "#b5b5b533",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-error",
+                        "value": "#f13d20",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-error-light",
+                        "value": "#f13d200d",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground",
+                        "value": "#888888cc",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-2",
+                        "value": "#888888",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-3",
+                        "value": "#888888",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-4",
+                        "value": "#8888881a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-foreground-accent",
+                        "value": "#ffffff1a",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/color/--v-privy-color-success",
+                        "value": "#ffffff",
+                        "var": "",
+                        "rootAlias": ""
+                    }
+                ],
+                "number": [
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-sm",
+                        "value": "6px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-md",
+                        "value": "8px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-full",
+                        "value": "12px",
+                        "var": "",
+                        "rootAlias": ""
+                    },
+                    {
+                        "name": "api/privy/radius/--v-privy-border-radius-lg",
+                        "value": "16px",
+                        "var": "",
+                        "rootAlias": ""
+                    }
+                ],
+                "string": []
+            }
+        ]
+    }
+]

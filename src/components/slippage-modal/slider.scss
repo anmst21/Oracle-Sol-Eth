@@ -1,0 +1,177 @@
+/* wrapper to line up input + slider */
+.percentage-slider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.slider-tooltip {
+    position: absolute;
+    z-index: 100;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+
+    border-radius: 4px;
+    background: #1E2023;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    padding: 0px 4px;
+    color: rgba(217, 241, 233, 0.80);
+
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+}
+
+
+.modal-input {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+
+.slider-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    border-radius: 8px;
+    background: rgba(136, 150, 151, 0.05);
+    padding: 8px 4px 4px 4px;
+
+
+    &__status {
+        color: #D9F1E9;
+        padding: 0px 8px;
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+
+
+        font-family: var(--font-handjet);
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+
+        .grey {
+            color: #889697;
+        }
+    }
+}
+
+
+.modal-input {
+    width: 100%;
+}
+
+/* small number input */
+.percentage-input {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(15, 14, 27, 0.20);
+    padding: 4px 12px;
+    height: 32px;
+    align-items: center;
+    display: flex;
+
+    input {
+        flex: 1;
+        display: flex;
+
+        color: #D9F1E9;
+
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+    }
+}
+
+/* ————————————— Radix classes ————————————— */
+
+/* root container */
+.SliderRoot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    /* tweak width as needed */
+    height: 24px;
+}
+
+/* the “track” background */
+.SliderTrack {
+    background: #333;
+    position: relative;
+    flex-grow: 1;
+    height: 3px;
+    border-radius: 1px;
+}
+
+/* the filled-in portion */
+.SliderRange {
+    background: #D9F1E9CC;
+    position: absolute;
+    height: 100%;
+    border-radius: 3px;
+
+}
+
+/* the draggable thumb */
+.SliderThumb {
+    display: block;
+    width: 28px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid #2A2F30;
+    background: #202324;
+    cursor: grab;
+    position: relative;
+    transition: all .2s ease-in-out;
+
+    svg {
+        transition: all .2s ease-in-out;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &:hover {
+        border: 1px solid #383E3F;
+
+        background: #2A2E2F;
+
+        svg {
+            color: #D9F1E9;
+        }
+    }
+
+    &:active {
+        border: 1px solid #3A4914;
+
+        background: #252D17;
+
+        svg {
+            color: #AEE900;
+        }
+    }
+
+
+}
+
+.SliderThumb:active {
+    cursor: grabbing;
+}

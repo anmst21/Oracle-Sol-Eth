@@ -19,8 +19,18 @@ import SearchGlass from "./SearchGlass";
 import Wallet from "./Wallet";
 import PrivyLogo from "./PrivyLogo";
 import WalletStar from "./WalletStar";
+import ModalInfo from "./ModalInfo";
+import SlippageGas from "./SlippageGas";
+import ChevDown from "./ChevDown";
+import SliderDots from "./SliderDots";
+import PensilSmall from "./PensilSmall";
 
 export {
+  PensilSmall,
+  SliderDots,
+  ChevDown,
+  SlippageGas,
+  ModalInfo,
   WalletStar,
   PrivyLogo,
   Wallet,

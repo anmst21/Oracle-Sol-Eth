@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { SwapIcon, SwapBuy, SwapCog } from "../icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import classNames from "classnames";
+import SlippageModal from "../slippage-modal";
 
 const buttons = [
   { name: "Swap", icon: <SwapIcon />, href: "/swap" },
@@ -12,7 +13,10 @@ const buttons = [
 ];
 
 const SwapHeader = () => {
+  const [isOpenSlippage, setIsOpenSlippage] = useState(false);
+
   const pathname = usePathname();
+
   return (
     <div className="swap-header">
       {buttons.map((button, i) => (
@@ -27,9 +31,20 @@ const SwapHeader = () => {
           <span>{button.name}</span>
         </Link>
       ))}
-      <button className="swap-header__settings">
+      <div
+        onMouseLeave={() => {
+          if (isOpenSlippage) setIsOpenSlippage(false);
+        }}
+        onMouseEnter={() => {
+          if (!isOpenSlippage) setIsOpenSlippage(true);
+        }}
+        className="swap-header__settings"
+      >
         <SwapCog />
-      </button>
+        {isOpenSlippage && (
+          <SlippageModal closeModal={() => setIsOpenSlippage(false)} />
+        )}
+      </div>
     </div>
   );
 };

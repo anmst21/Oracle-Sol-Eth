@@ -6,7 +6,7 @@ import {
   ConnectedWallet,
 } from "@privy-io/react-auth";
 import WalletItem from "./wallet-item";
-import { PrivyLogo } from "../icons";
+import { PensilSmall, PrivyLogo } from "../icons";
 import React, { useCallback } from "react";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { SwapWallet } from "../swap/types";
@@ -57,8 +57,7 @@ export default function Wallets({
 
   // define each section once
   const EthSection = readyEth && authenticated && ethLinked.length > 0 && (
-    <div className="wallets__container">
-      <h2>Ethereum Wallets</h2>
+    <>
       {ethLinked.map((w, i) => (
         <WalletItem
           key={i}
@@ -79,12 +78,11 @@ export default function Wallets({
           isMini={swapWindow}
         />
       ))}
-    </div>
+    </>
   );
 
   const SolSection = readySol && authenticated && solLinked.length > 0 && (
-    <div className="wallets__container">
-      <h2>Solana Wallets</h2>
+    <>
       {solLinked.map((w, i) => (
         <WalletItem
           key={i}
@@ -105,46 +103,61 @@ export default function Wallets({
           isMini={swapWindow}
         />
       ))}
-    </div>
+    </>
   );
 
   return (
-    <div className="wallets">
-      {/** render in order based on userChain */}
-      {userChain === "solana" ? (
-        <>
-          {SolSection}
-          {EthSection}
-        </>
-      ) : (
-        <>
-          {EthSection}
-          {SolSection}
-        </>
-      )}
+    <>
+      {ready && (
+        <div className="wallets">
+          {/** render in order based on userChain */}
+          {userChain === "solana" ? (
+            <>
+              {SolSection}
+              {EthSection}
+            </>
+          ) : (
+            <>
+              {EthSection}
+              {SolSection}
+            </>
+          )}
 
-      {/** always show the connect/login button */}
-      <div className="wallets__container">
-        {authenticated ? (
-          <button
-            disabled={!ready}
-            onClick={() => linkWallet()}
-            className="wallet-item__connect"
-          >
-            <span>Connect a new wallet</span>
-            <PrivyLogo />
-          </button>
-        ) : (
-          <button
-            disabled={!ready}
-            onClick={() => login()}
-            className="wallet-item__connect"
-          >
-            <span>Login</span>
-            <PrivyLogo />
-          </button>
-        )}
-      </div>
-    </div>
+          {/** always show the connect/login button */}
+
+          <div className="wallets__container">
+            {isBuy && (
+              <button
+                disabled={!ready}
+                onClick={() => login()}
+                className="wallet-item__connect"
+              >
+                <span>Paste Address</span>
+                <PensilSmall />
+              </button>
+            )}
+            {authenticated ? (
+              <button
+                disabled={!ready}
+                onClick={() => linkWallet()}
+                className="wallet-item__connect"
+              >
+                <span>Link a new wallet</span>
+                <PrivyLogo />
+              </button>
+            ) : (
+              <button
+                disabled={!ready}
+                onClick={() => login()}
+                className="wallet-item__connect"
+              >
+                <span>Login</span>
+                <PrivyLogo />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

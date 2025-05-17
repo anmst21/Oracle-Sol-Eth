@@ -4,11 +4,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import SwapWindow from "./swap-window";
 import { SwapSwitch } from "../icons";
 import { useTokenModal } from "@/context/TokenModalProvider";
-import { SwapWallet } from "./types";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { getEthToken, solanaToken } from "@/helpers/solana-token";
 import { solanaChain } from "@/helpers/solanaChain";
 import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
+import SwapMeta from "./swap-meta";
 
 const SwapContainer = () => {
   const [sellInputValue, setSellInputValue] = useState("");
@@ -149,30 +149,33 @@ const SwapContainer = () => {
   }, [buyToken]);
 
   return (
-    <div className="swap-container">
-      <SwapWindow
-        inputValue={sellInputValue}
-        setInputValue={setSellInputValue}
-        token={sellToken}
-        mode="sell"
-        isNativeBalance
-        setActiveWallet={setActiveWallet}
-        activeWallet={activeWallet}
-        tokenBalance={getTokenBalance(sellToken?.address, sellToken?.chainId)}
-      />
-      <button className="swap-container__switch">
-        <SwapSwitch />
-      </button>
-      <SwapWindow
-        inputValue={buyInputValue}
-        setInputValue={setBuyInputValue}
-        token={buyToken}
-        mode="buy"
-        setActiveWallet={setActiveBuyWallet}
-        activeWallet={activeBuyWallet}
-        tokenBalance={getTokenBalance(buyToken?.address, buyToken?.chainId)}
-      />
-    </div>
+    <>
+      <div className="swap-container">
+        <SwapWindow
+          inputValue={sellInputValue}
+          setInputValue={setSellInputValue}
+          token={sellToken}
+          mode="sell"
+          isNativeBalance
+          setActiveWallet={setActiveWallet}
+          activeWallet={activeWallet}
+          tokenBalance={getTokenBalance(sellToken?.address, sellToken?.chainId)}
+        />
+        <button className="swap-container__switch">
+          <SwapSwitch />
+        </button>
+        <SwapWindow
+          inputValue={buyInputValue}
+          setInputValue={setBuyInputValue}
+          token={buyToken}
+          mode="buy"
+          setActiveWallet={setActiveBuyWallet}
+          activeWallet={activeBuyWallet}
+          tokenBalance={getTokenBalance(buyToken?.address, buyToken?.chainId)}
+        />
+      </div>
+      <SwapMeta />
+    </>
   );
 };
 
