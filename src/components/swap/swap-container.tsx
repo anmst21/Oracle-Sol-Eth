@@ -7,8 +7,26 @@ import { useTokenModal } from "@/context/TokenModalProvider";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { getEthToken, solanaToken } from "@/helpers/solana-token";
 import { solanaChain } from "@/helpers/solanaChain";
-import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
 import SwapMeta from "./swap-meta";
+import { APIError, Execute, getClient } from "@reservoir0x/relay-sdk";
+
+import {
+  convertViemChainToRelayChain,
+  MAINNET_RELAY_API,
+  createClient,
+} from "@reservoir0x/relay-sdk";
+import { base, mainnet } from "viem/chains";
+import { parseUnits } from "viem/utils";
+import { queryTokenList } from "@reservoir0x/relay-kit-hooks";
+
+createClient({
+  baseApiUrl: MAINNET_RELAY_API,
+  source: "YOUR.SOURCE",
+  chains: [
+    convertViemChainToRelayChain(mainnet),
+    convertViemChainToRelayChain(base),
+  ],
+});
 
 const SwapContainer = () => {
   const [sellInputValue, setSellInputValue] = useState("");
@@ -23,6 +41,16 @@ const SwapContainer = () => {
     setBuyToken,
     setSellToken,
   } = useTokenModal();
+
+  const {
+    activeWallet,
+    ethLinked,
+    solLinked,
+    setActiveWallet,
+    activeBuyWallet,
+    setActiveBuyWallet,
+    adaptedWallet,
+  } = useActiveWallet();
 
   const getTokenBalance = useCallback(
     (address: string | undefined, chainId: number | undefined) => {
@@ -48,12 +76,7 @@ const SwapContainer = () => {
     [userEthTokens, userSolanaTokens, nativeSolBalance]
   );
 
-  const [activeBuyWallet, setActiveBuyWallet] = useState<
-    ConnectedWallet | ConnectedSolanaWallet | null
-  >(null);
-
-  const { activeWallet, ethLinked, solLinked, setActiveWallet } =
-    useActiveWallet();
+  console.log("activeWallet", activeWallet);
 
   useEffect(() => {
     if (activeWallet && !activeBuyWallet) {
@@ -82,6 +105,7 @@ const SwapContainer = () => {
     buyToken,
     ethLinked,
     solLinked,
+    setActiveBuyWallet,
   ]);
 
   useEffect(() => {
@@ -98,7 +122,7 @@ const SwapContainer = () => {
     ) {
       setSellToken(solanaToken);
     }
-  }, [activeWallet]);
+  }, [activeWallet, setSellToken]);
 
   useEffect(() => {
     if (
@@ -114,7 +138,7 @@ const SwapContainer = () => {
     ) {
       setBuyToken(solanaToken);
     }
-  }, [activeBuyWallet]);
+  }, [activeBuyWallet, setBuyToken]);
 
   useEffect(() => {
     if (
@@ -130,7 +154,7 @@ const SwapContainer = () => {
     ) {
       setActiveWallet(ethLinked[0]);
     }
-  }, [sellToken]);
+  }, [sellToken, setActiveWallet]);
 
   useEffect(() => {
     if (
@@ -146,7 +170,101 @@ const SwapContainer = () => {
     ) {
       setActiveBuyWallet(ethLinked[0]);
     }
-  }, [buyToken]);
+  }, [buyToken, setActiveBuyWallet]);
+
+  const [quote, setQuote] = useState<Execute | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  console.log("quote", quote, error);
+  useEffect((): void => {
+    // reset error any time inputs change
+    setError(null);
+
+    // if we don’t have everything we need, clear quote and bail
+    if (
+      !adaptedWallet ||
+      !activeWallet ||
+      !activeBuyWallet ||
+      !sellToken ||
+      !buyToken ||
+      !sellInputValue
+    ) {
+      setQuote(null);
+      return;
+    }
+
+    const client = getClient();
+    if (!client) {
+      console.warn("SDK client not initialized yet");
+      return;
+    }
+
+    const fetchQuote = async (): Promise<void> => {
+      try {
+        const tokenMeta = await queryTokenList("https://api.relay.link", {
+          chainIds: [sellToken.chainId as number],
+          address: sellToken.address,
+        });
+
+        if (tokenMeta.length === 0) {
+          throw new Error("Token metadata not found");
+        }
+
+        const decimals = tokenMeta[0].decimals;
+        if (decimals == null) {
+          throw new Error("Token decimals not available");
+        }
+
+        const amountWei = parseUnits(sellInputValue, decimals);
+
+        const q = await client.actions.getQuote({
+          chainId: sellToken.chainId as number,
+          toChainId: buyToken.chainId as number,
+          currency: sellToken.address,
+          toCurrency: buyToken.address,
+          amount: amountWei.toString(),
+          wallet: adaptedWallet,
+          recipient: activeBuyWallet.address,
+          tradeType: "EXACT_INPUT",
+          // options: {
+          //   slippageTolerance: "50",
+          // },
+        });
+
+        if (error) setError(null);
+        setQuote(q);
+      } catch (e: unknown) {
+        console.error("Failed to fetch quote:", e);
+
+        // safely extract message
+        const msg =
+          e instanceof Error
+            ? e.message
+            : typeof e === "string"
+            ? e
+            : "Unknown error";
+
+        if (msg.toLowerCase().includes("no routes found")) {
+          setError("No routes found for that pair");
+        } else if (msg.toLowerCase().includes("decimals")) {
+          setError("Unable to fetch quote");
+        } else {
+          setError(msg);
+        }
+
+        setQuote(null);
+      }
+    };
+
+    fetchQuote();
+  }, [
+    adaptedWallet,
+    activeWallet,
+    activeBuyWallet,
+    sellToken,
+    buyToken,
+    sellInputValue,
+    error,
+  ]);
 
   return (
     <>
@@ -174,7 +292,7 @@ const SwapContainer = () => {
           tokenBalance={getTokenBalance(buyToken?.address, buyToken?.chainId)}
         />
       </div>
-      <SwapMeta />
+      <SwapMeta quote={quote} />
     </>
   );
 };

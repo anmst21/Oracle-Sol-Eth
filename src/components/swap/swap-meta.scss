@@ -208,7 +208,7 @@
     &__top {
         height: 28px;
         display: flex;
-        justify-content: space-between;
+        //  justify-content: space-between;
 
         color: #889697;
         font-family: var(--font-handjet);
@@ -216,6 +216,14 @@
         font-style: normal;
         font-weight: 300;
         line-height: 20px;
+
+        &__chev {
+            display: flex;
+            height: 100%;
+            align-items: center;
+            flex: 1;
+            justify-content: flex-end;
+        }
     }
 
     &__container {

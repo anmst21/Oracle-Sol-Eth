@@ -24,8 +24,18 @@ import SlippageGas from "./SlippageGas";
 import ChevDown from "./ChevDown";
 import SliderDots from "./SliderDots";
 import PensilSmall from "./PensilSmall";
+import PensilLarge from "./PensilLarge";
+import SaveDisk from "./SaveDisk";
+import HeaderTheme from "./HeaderTheme";
+import HeaderCross from "./HeaderCross";
+import HeaderFeed from "./HeaderFeed";
 
 export {
+  HeaderFeed,
+  HeaderCross,
+  HeaderTheme,
+  SaveDisk,
+  PensilLarge,
   PensilSmall,
   SliderDots,
   ChevDown,

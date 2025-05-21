@@ -4,6 +4,9 @@ body {
     //  overflow-x: visible;
 
     // height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
     width: 100%;
     font-family: var(--font-fira-code), monospace;
     box-sizing: border-box !important;

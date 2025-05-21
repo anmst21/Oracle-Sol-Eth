@@ -109,6 +109,10 @@
     border: 1px solid var(--privy-color-border);
     font-family: var(--font-fira-code) !important;
 
+    button {
+        border-radius: 3px !important;
+    }
+
     .login-method-button {
         color: var(--privy-color-accent-text) !important;
     }

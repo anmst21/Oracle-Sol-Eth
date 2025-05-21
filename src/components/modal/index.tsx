@@ -112,77 +112,81 @@ const Modal: React.FC<ModalProps> = ({
     }));
   }, [activeChainId, chains]);
   return (
-    <div className="modal">
-      <div className="modal__header">
-        <div className="modal__header__inner">
-          <span>Select Token</span>
-          <button
-            onClick={() => closeModal()}
-            className="chain-sidebar__input__abandon"
-          >
-            <InputCross />
-          </button>
+    <div onClick={closeModal} className="modal__wrapper">
+      <div onClick={(e) => e.stopPropagation()} className="modal">
+        <div className="modal__header">
+          <div className="modal__header__inner">
+            <span>Select Token</span>
+            <button
+              onClick={() => closeModal()}
+              className="chain-sidebar__input__abandon"
+            >
+              <InputCross />
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="modal-native-coins__featured">
-        <div className="modal-native-coins__featured__header">
-          <h2>Featured</h2>
+        <div className="modal-native-coins__featured">
+          <div className="modal-native-coins__featured__header">
+            <h2>Featured</h2>
+          </div>
+          {suggestedTokens &&
+            suggestedTokens.length > 0 &&
+            suggestedTokens.map((token, i) => {
+              if (!chains) return;
+
+              return (
+                <FeaturedCoinItem
+                  key={i}
+                  coinSymbol={token.symbol}
+                  chainSrc={
+                    token.chainId ? getIconUri(token.chainId) : undefined
+                  }
+                  coinSrc={token.metadata?.logoURI}
+                  token={token}
+                  setBuyToken={setBuyToken}
+                  setSellToken={setSellToken}
+                  modalMode={modalMode}
+                />
+              );
+            })}
         </div>
-        {suggestedTokens &&
-          suggestedTokens.length > 0 &&
-          suggestedTokens.map((token, i) => {
-            if (!chains) return;
+        <div className="modal__main">
+          <ModalChains
+            setActiveChainId={setActiveChainId}
+            activeChainId={activeChainId}
+            otherChains={otherChains}
+            featuredChains={featuredChains}
+            baseChain={baseChain}
+            solanaChain={solanaChain}
+            ethereumChain={ethereumChain}
+          />
 
-            return (
-              <FeaturedCoinItem
-                key={i}
-                coinSymbol={token.symbol}
-                chainSrc={token.chainId ? getIconUri(token.chainId) : undefined}
-                coinSrc={token.metadata?.logoURI}
-                token={token}
-                setBuyToken={setBuyToken}
-                setSellToken={setSellToken}
-                modalMode={modalMode}
-              />
-            );
-          })}
-      </div>
-      <div className="modal__main">
-        <ModalChains
-          setActiveChainId={setActiveChainId}
-          activeChainId={activeChainId}
-          otherChains={otherChains}
-          featuredChains={featuredChains}
-          baseChain={baseChain}
-          solanaChain={solanaChain}
-          ethereumChain={ethereumChain}
-        />
-
-        <ModalCoins
-          featuredChains={featuredChains}
-          baseChain={baseChain}
-          solanaChain={solanaChain}
-          activeChainId={activeChainId}
-          communityCoins={communityCoins}
-          isLoadingCommunityCoins={isLoadingCommunityCoins}
-          loadCommunityCoins={loadCommunityCoins}
-          solanaTrendingCoins={solanaTrendingCoins}
-          isLoadingSolanaTrendingCoins={isLoadingSolanaTrendingCoins}
-          loadSolanaCoins={loadSolanaCoins}
-          geckoTrendingCoins={geckoTrendingCoins}
-          isLoadingGeckoCoins={isLoadingGeckoCoins}
-          loadGeckoCoinsForChain={loadGeckoCoinsForChain}
-          userEthTokens={userEthTokens}
-          setUserEthTokens={setUserEthTokens}
-          nativeSolBalance={nativeSolBalance}
-          setNativeSolBalance={setNativeSolBalance}
-          userSolanaTokens={userSolanaTokens}
-          setUserSolanaTokens={setUserSolanaTokens}
-          chainFeaturedTokens={chainFeaturedTokens}
-          setBuyToken={setBuyToken}
-          setSellToken={setSellToken}
-          modalMode={modalMode}
-        />
+          <ModalCoins
+            featuredChains={featuredChains}
+            baseChain={baseChain}
+            solanaChain={solanaChain}
+            activeChainId={activeChainId}
+            communityCoins={communityCoins}
+            isLoadingCommunityCoins={isLoadingCommunityCoins}
+            loadCommunityCoins={loadCommunityCoins}
+            solanaTrendingCoins={solanaTrendingCoins}
+            isLoadingSolanaTrendingCoins={isLoadingSolanaTrendingCoins}
+            loadSolanaCoins={loadSolanaCoins}
+            geckoTrendingCoins={geckoTrendingCoins}
+            isLoadingGeckoCoins={isLoadingGeckoCoins}
+            loadGeckoCoinsForChain={loadGeckoCoinsForChain}
+            userEthTokens={userEthTokens}
+            setUserEthTokens={setUserEthTokens}
+            nativeSolBalance={nativeSolBalance}
+            setNativeSolBalance={setNativeSolBalance}
+            userSolanaTokens={userSolanaTokens}
+            setUserSolanaTokens={setUserSolanaTokens}
+            chainFeaturedTokens={chainFeaturedTokens}
+            setBuyToken={setBuyToken}
+            setSellToken={setSellToken}
+            modalMode={modalMode}
+          />
+        </div>
       </div>
     </div>
   );

@@ -10,7 +10,13 @@ import { useTokenModal } from "@/context/TokenModalProvider";
 import { zeroAddress } from "viem";
 import GreenDot from "../green-dot";
 
-const WalletHeader = () => {
+const WalletHeader = ({
+  callback,
+  closeIfOpen,
+}: {
+  closeIfOpen: () => void;
+  callback: () => void;
+}) => {
   const { activeWallet } = useActiveWallet();
   const { nativeSolBalance, userEthTokens } = useTokenModal();
 
@@ -32,7 +38,7 @@ const WalletHeader = () => {
 
   return (
     <div className="wallet-header">
-      <div className="wallet-header__balance">
+      <div onClick={closeIfOpen} className="wallet-header__balance">
         <div className="wallet-header__balance__chain">
           <HexChain
             width={20}
@@ -50,25 +56,29 @@ const WalletHeader = () => {
       <div className="divider">
         <div />
       </div>
-      <div className="wallet-header__address">
+      <button onClick={callback} className="wallet-header__address">
         <div className="wallet-header__address__provider">
           <Wallet />
         </div>
         <div className="wallet-header__address__value">
-          {activeWallet?.meta.icon && (
-            <Image
-              alt={activeWallet?.meta.id}
-              src={activeWallet?.meta.icon.replace(/^\n+/, "").trimEnd()}
-              width={20}
-              height={20}
-            />
-          )}
+          <div className="wallet-header__address__value__image">
+            {activeWallet?.meta.icon && (
+              <Image
+                alt={activeWallet?.meta.id}
+                src={activeWallet?.meta.icon.replace(/^\n+/, "").trimEnd()}
+                width={20}
+                height={20}
+              />
+            )}
+          </div>
 
           <span>
-            {activeWallet?.address && truncateAddress(activeWallet?.address)}
+            {activeWallet?.address
+              ? truncateAddress(activeWallet?.address)
+              : "0xXX...XXXX"}
           </span>
         </div>
-      </div>
+      </button>
     </div>
   );
 };

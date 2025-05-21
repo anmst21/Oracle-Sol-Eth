@@ -16,11 +16,13 @@ export default function Wallets({
   callback,
   isBuy,
   activeAddress,
+  linkCallback,
 }: {
   callback?: (wallet?: SwapWallet) => void;
   swapWindow?: boolean;
   isBuy?: boolean;
   activeAddress?: string;
+  linkCallback?: () => void;
 }) {
   const { ready, authenticated, linkWallet, user, logout, login } = usePrivy();
 
@@ -31,6 +33,8 @@ export default function Wallets({
     setActiveWallet,
     readyEth,
     readySol,
+    //  isAddressModalOpen,
+    setIsAddressModalOpen,
   } = useActiveWallet();
 
   const userChain = user?.wallet?.chainType;
@@ -106,6 +110,10 @@ export default function Wallets({
     </>
   );
 
+  const openAddressModal = useCallback(() => {
+    setIsAddressModalOpen(true);
+  }, [setIsAddressModalOpen]);
+
   return (
     <>
       {ready && (
@@ -129,7 +137,7 @@ export default function Wallets({
             {isBuy && (
               <button
                 disabled={!ready}
-                onClick={() => login()}
+                onClick={openAddressModal}
                 className="wallet-item__connect"
               >
                 <span>Paste Address</span>
@@ -139,7 +147,7 @@ export default function Wallets({
             {authenticated ? (
               <button
                 disabled={!ready}
-                onClick={() => linkWallet()}
+                onClick={() => (linkCallback && linkCallback(), linkWallet())}
                 className="wallet-item__connect"
               >
                 <span>Link a new wallet</span>

@@ -17,6 +17,7 @@
     "@radix-ui/react-slider": "^1.3.4",
     "@reservoir0x/relay-kit-hooks": "^1.9.8",
     "@reservoir0x/relay-sdk": "^1.7.4",
+    "@reservoir0x/relay-solana-wallet-adapter": "^2.0.5",
     "@solana/spl-token": "^0.4.13",
     "@solana/spl-token-registry": "^0.2.4574",
     "@solana/web3.js": "^1.98.2",

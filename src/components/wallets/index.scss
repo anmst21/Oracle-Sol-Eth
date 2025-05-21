@@ -1,3 +1,5 @@
+@import "./address-modal.scss";
+
 .divider {
     display: flex;
     width: 20px;
@@ -41,7 +43,13 @@
             padding: 4px 6px 4px 5px;
 
 
-            img {
+            &__image {
+                width: 20px;
+                height: 20px;
+                display: flex;
+                overflow: hidden;
+                align-items: center;
+                justify-content: center;
                 border-radius: 1000px;
                 border: 1px solid #889697;
             }

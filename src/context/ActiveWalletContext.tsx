@@ -15,6 +15,23 @@ import {
   ConnectedWallet,
   ConnectedSolanaWallet,
 } from "@privy-io/react-auth";
+import AddressModal from "@/components/wallets/address-modal";
+import { createWalletClient, custom } from "viem";
+import { adaptSolanaWallet } from "@reservoir0x/relay-solana-wallet-adapter";
+
+import { extractChain } from "viem";
+import * as viemChains from "viem/chains";
+import { AdaptedWallet, adaptViemWallet } from "@reservoir0x/relay-sdk";
+import {
+  connection,
+  sendTransactionAdapter,
+} from "@/helpers/solana-connection";
+
+const chain = (id: number) =>
+  extractChain({
+    chains: Object.values(viemChains), // pulls in all built-in chains
+    id: id as never,
+  });
 
 interface ActiveWalletContextValue {
   ethLinked: ConnectedWallet[];
@@ -23,8 +40,15 @@ interface ActiveWalletContextValue {
   setActiveWallet: React.Dispatch<
     React.SetStateAction<ConnectedWallet | ConnectedSolanaWallet | null>
   >;
+  adaptedWallet: AdaptedWallet | null;
   readyEth: boolean;
   readySol: boolean;
+  setActiveBuyWallet: React.Dispatch<
+    React.SetStateAction<ConnectedWallet | ConnectedSolanaWallet | null>
+  >;
+  activeBuyWallet: ConnectedWallet | ConnectedSolanaWallet | null;
+  setIsAddressModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isAddressModalOpen: boolean;
 }
 
 const ActiveWalletContext = createContext<ActiveWalletContextValue | undefined>(
@@ -39,6 +63,14 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
   const [activeWallet, setActiveWallet] = useState<
     ConnectedWallet | ConnectedSolanaWallet | null
   >(null);
+
+  const [activeBuyWallet, setActiveBuyWallet] = useState<
+    ConnectedWallet | ConnectedSolanaWallet | null
+  >(null);
+
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+
+  console.log("isAddressModalOpen", isAddressModalOpen);
 
   // helper to sort so user address is first
   function sortByUserFirst<T extends { address?: string }>(
@@ -93,6 +125,35 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
     solanaWallets,
   ]);
 
+  //active wallet privider
+
+  const [adaptedWallet, setAdaptedWallet] = useState<AdaptedWallet | null>(
+    null
+  );
+  console.log("adaptedWallet", adaptedWallet);
+  useEffect(() => {
+    if (activeWallet && activeWallet?.type === "ethereum") {
+      const walletClient = createWalletClient({
+        chain: chain(Number(activeWallet.chainId.split(":")[1])),
+        transport: custom(window.ethereum!),
+      });
+
+      const adaptedViemClient = adaptViemWallet(walletClient);
+
+      setAdaptedWallet(adaptedViemClient);
+    }
+
+    if (activeWallet && activeWallet?.type === "solana" && connection) {
+      const adaptedSolanaWallet = adaptSolanaWallet(
+        activeWallet.address,
+        792703809, //chain id that Relay uses to identify solana
+        connection,
+        sendTransactionAdapter
+      );
+      setAdaptedWallet(adaptedSolanaWallet);
+    }
+  }, [activeWallet]);
+
   return (
     <ActiveWalletContext.Provider
       value={{
@@ -102,9 +163,15 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
         setActiveWallet,
         readyEth,
         readySol,
+        setActiveBuyWallet,
+        activeBuyWallet,
+        setIsAddressModalOpen,
+        isAddressModalOpen,
+        adaptedWallet,
       }}
     >
       {children}
+      {isAddressModalOpen && <AddressModal />}
     </ActiveWalletContext.Provider>
   );
 }

@@ -2,10 +2,22 @@ import React from "react";
 import { ModalInfo } from "../icons";
 
 type Props = {
-  type: "solana" | "ethereum";
+  type: string;
+  totalImpactUsd: string;
+  totalImpactPercent: string;
+  swapImpactUsd: string;
+  gasValueUsd: string;
+  relayFeeUsd: string;
 };
 
-const PriceImpactInfo = ({ type = "solana" }: Props) => {
+const PriceImpactInfo = ({
+  type = "solana",
+  totalImpactUsd,
+  totalImpactPercent,
+  swapImpactUsd,
+  gasValueUsd,
+  relayFeeUsd,
+}: Props) => {
   const PriceUsd = ({ value }: { value: string }) => {
     return (
       <span className="price-usd">
@@ -16,9 +28,15 @@ const PriceImpactInfo = ({ type = "solana" }: Props) => {
   };
 
   const impactProps = [
-    { key: "swap", header: "Swap Impact", value: "0,05" },
-    { key: "gas", header: "Gas", value: "0,05" },
-    { key: "fee", header: "Relay Fee", value: "0,05" },
+    {
+      key: "swap",
+      header: "Swap Impact",
+      value: swapImpactUsd.startsWith("-")
+        ? swapImpactUsd.slice(1)
+        : swapImpactUsd,
+    },
+    { key: "gas", header: "Gas", value: gasValueUsd },
+    { key: "fee", header: "Relay Fee", value: relayFeeUsd },
   ];
 
   return (
@@ -28,10 +46,16 @@ const PriceImpactInfo = ({ type = "solana" }: Props) => {
         <span className="price-impact-info__header__h1">Price Impact</span>
 
         <div className="price-impact-info__header__impact">
-          <PriceUsd value="0,05" />
+          <PriceUsd
+            value={
+              totalImpactUsd.startsWith("-")
+                ? totalImpactUsd.slice(1)
+                : totalImpactUsd
+            }
+          />
           <span className="price-impact-info__header__impact__change">
             {"("}
-            {"0,05"}
+            {totalImpactPercent}
             {"%)"}
           </span>
         </div>
@@ -43,9 +67,7 @@ const PriceImpactInfo = ({ type = "solana" }: Props) => {
             <div className="impact-props__header">
               <span>{item.header}</span>
               {item.key === "gas" && (
-                <div className="impact-props__header__type">
-                  {type === "solana" ? "Solana" : "Ethereum"}
-                </div>
+                <div className="impact-props__header__type">{type}</div>
               )}
             </div>
             <div className="impact-props__value">

@@ -8,6 +8,7 @@ import { GeckoTokensProvider } from "@/context/GeckoTerminalCoinsProvider";
 import MoonPayContextProvider from "@/context/MoonpayProvider";
 import { TokenModalProvider } from "@/context/TokenModalProvider";
 import { ActiveWalletProvider } from "@/context/ActiveWalletContext";
+import Header from "@/components/header";
 
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
@@ -45,6 +46,7 @@ export default async function RootLayout({
                 <MoonPayContextProvider>
                   <ActiveWalletProvider>
                     <TokenModalProvider>
+                      <Header />
                       <div className="main">
                         {/* <TokenModal
               geckoCoins={gecko}

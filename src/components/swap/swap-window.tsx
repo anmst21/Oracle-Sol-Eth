@@ -24,11 +24,10 @@ type Props = {
   token: UnifiedToken | null;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
   inputValue: string;
-  setActiveWallet:
-    | React.Dispatch<React.SetStateAction<SwapWallet | null>>
-    | React.Dispatch<
-        React.SetStateAction<ConnectedWallet | ConnectedSolanaWallet | null>
-      >;
+  setActiveWallet: React.Dispatch<
+    React.SetStateAction<ConnectedWallet | ConnectedSolanaWallet | null>
+  >;
+
   activeWallet: ConnectedWallet | ConnectedSolanaWallet | SwapWallet | null;
   tokenBalance: string | undefined;
   s?: () => void;
@@ -65,7 +64,7 @@ const SwapWindow = ({
   }, [setIsOpen, setModalMode, mode]);
 
   const callback = useCallback(
-    (wallet: SwapWallet | undefined) => {
+    (wallet: ConnectedWallet | ConnectedSolanaWallet | null) => {
       setIsOpenAddressModal(false);
       if (mode === "buy" && wallet) {
         setActiveWallet(wallet);
@@ -161,7 +160,9 @@ const SwapWindow = ({
             <div className="swap-window__wallet">
               <WalletModal
                 isBuy={mode === "buy"}
-                callback={(wallet: SwapWallet | undefined) => {
+                callback={(
+                  wallet: ConnectedWallet | ConnectedSolanaWallet | null
+                ) => {
                   callback(wallet);
                 }}
                 swapWindow
