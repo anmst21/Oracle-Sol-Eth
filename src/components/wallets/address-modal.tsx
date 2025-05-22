@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { InputCross, PensilLarge, SaveDisk } from "../icons";
 import WalletItem from "./wallet-item";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
@@ -7,7 +7,8 @@ import {
   ConnectedWallet,
   usePrivy,
 } from "@privy-io/react-auth";
-
+import { isValidSolanaAddress } from "@/helpers/is-valid-solana-address";
+import { isAddress as isValidEthereumAddress } from "viem";
 const AddressModal = () => {
   const {
     ethLinked,
@@ -21,13 +22,50 @@ const AddressModal = () => {
     setIsAddressModalOpen,
   } = useActiveWallet();
 
+  const [manualAddress, setManualAddress] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  console.warn("Address Modal Error", error);
+
   const { authenticated, user, logout } = usePrivy();
 
   const setWallet = useCallback(
-    (w: ConnectedWallet | ConnectedSolanaWallet | null) => {
-      setActiveBuyWallet(w);
+    (wallet: ConnectedWallet | ConnectedSolanaWallet | null) => {
+      if (wallet)
+        setActiveBuyWallet({
+          address: wallet?.address,
+          type: wallet.type,
+          chainId:
+            wallet.type === "ethereum"
+              ? Number(wallet.chainId.split(":")[1])
+              : 792703809,
+        });
     },
     [setActiveBuyWallet]
+  );
+
+  const handleEthAddress = useCallback(
+    (address: string) => {
+      setActiveBuyWallet({
+        address,
+        type: "ethereum",
+        chainId: 1,
+      });
+      setIsAddressModalOpen(false);
+    },
+    [setActiveBuyWallet, setIsAddressModalOpen]
+  );
+
+  const handleSolAddress = useCallback(
+    (address: string) => {
+      setActiveBuyWallet({
+        address,
+        type: "solana",
+        chainId: 792703809,
+      });
+      setIsAddressModalOpen(false);
+    },
+    [setActiveBuyWallet, setIsAddressModalOpen]
   );
 
   const EthSection = readyEth && authenticated && ethLinked.length > 0 && (
@@ -75,11 +113,25 @@ const AddressModal = () => {
       ))}
     </>
   );
+
   const userChain = user?.wallet?.chainType;
 
   const closeModal = useCallback(() => {
     setIsAddressModalOpen(false);
   }, [setIsAddressModalOpen]);
+
+  const handleSave = () => {
+    setError(null);
+    if (isValidEthereumAddress(manualAddress)) {
+      handleEthAddress(manualAddress);
+    } else if (isValidSolanaAddress(manualAddress)) {
+      handleSolAddress(manualAddress);
+    } else {
+      setError("Invalid ETH or SOL address");
+    }
+
+    closeModal();
+  };
 
   return (
     <div onClick={closeModal} className="address-modal__wrapper">
@@ -99,7 +151,12 @@ const AddressModal = () => {
           </div>
           <div className="address-modal__bottom">
             <label className="address-modal__input">
-              <input placeholder="Enter Address" type="text" />
+              <input
+                value={manualAddress}
+                onChange={(e) => setManualAddress(e.target.value.trim())}
+                placeholder="Enter Address"
+                type="text"
+              />
               <PensilLarge />
             </label>
             <div className="address-modal__use">
@@ -119,7 +176,7 @@ const AddressModal = () => {
               )}
             </div>
           </div>
-          <button className="address-modal__cta">
+          <button onClick={handleSave} className="address-modal__cta">
             <SaveDisk />
             <span>Save</span>
           </button>

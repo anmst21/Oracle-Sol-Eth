@@ -8,8 +8,8 @@ import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { getEthToken, solanaToken } from "@/helpers/solana-token";
 import { solanaChain } from "@/helpers/solanaChain";
 import SwapMeta from "./swap-meta";
-import { APIError, Execute, getClient } from "@reservoir0x/relay-sdk";
-
+import { Execute, getClient } from "@reservoir0x/relay-sdk";
+import { TradeType } from "./types";
 import {
   convertViemChainToRelayChain,
   MAINNET_RELAY_API,
@@ -85,10 +85,18 @@ const SwapContainer = () => {
           ? Number(activeWallet.chainId.split(":")[1])
           : 792703809;
       if (!buyToken) {
-        setActiveBuyWallet(activeWallet);
+        setActiveBuyWallet({
+          address: activeWallet.address,
+          chainId,
+          type: activeWallet.type,
+        });
       } else {
         if (buyToken && buyToken.chainId === 792703809) {
-          setActiveBuyWallet(solLinked[0]);
+          setActiveBuyWallet({
+            chainId: solanaChain.id,
+            address: solLinked[0].address,
+            type: "ethereum",
+          });
         }
         if (buyToken && buyToken.chainId !== 792703809) {
           setActiveWallet(ethLinked[0]);
@@ -96,6 +104,7 @@ const SwapContainer = () => {
       }
 
       setSellToken(getEthToken(chainId));
+      setBuyToken(getEthToken(chainId));
     }
   }, [
     activeWallet,
@@ -161,32 +170,133 @@ const SwapContainer = () => {
       activeBuyWallet?.type === "ethereum" &&
       buyToken?.chainId === solanaChain.id
     ) {
-      setActiveBuyWallet(solLinked[0]);
+      setActiveBuyWallet({
+        chainId: solanaChain.id,
+        address: solLinked[0].address,
+        type: "ethereum",
+      });
     }
 
     if (
       activeBuyWallet?.type === "solana" &&
       buyToken?.chainId !== solanaChain.id
     ) {
-      setActiveBuyWallet(ethLinked[0]);
+      setActiveBuyWallet({
+        chainId: Number(ethLinked[0].chainId.split(":")[1]),
+        address: ethLinked[0].address,
+        type: "ethereum",
+      });
     }
   }, [buyToken, setActiveBuyWallet]);
 
   const [quote, setQuote] = useState<Execute | null>(null);
   const [error, setError] = useState<string | null>(null);
-  console.log("quote", quote, error);
-  useEffect((): void => {
-    // reset error any time inputs change
-    setError(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
+  const [tradeType, setTradeType] = useState<TradeType>(TradeType.EXACT_INPUT);
 
+  console.log("quote", quote, error, tradeType);
+
+  const handleTokenSwitch = useCallback(() => {
+    if (isLoading) return;
+    // 1. swap tokens
+    setIsSwitching(true);
+    // 2. swap wallets
+
+    const resolveActiveBuyWallet = () => {
+      if (activeBuyWallet) {
+        const result = (
+          activeBuyWallet?.type === "solana" ? solLinked : ethLinked
+        ).find((wallet) => wallet.address === activeBuyWallet.address);
+        if (result) {
+          return result;
+        } else {
+          return ethLinked[0] || solLinked[0];
+        }
+      } else return ethLinked[0] || solLinked[0];
+    };
+
+    setActiveWallet(resolveActiveBuyWallet());
+    if (activeWallet) {
+      const chainId =
+        activeWallet.type === "ethereum"
+          ? Number(activeWallet.chainId.split(":")[1])
+          : 792703809;
+      setActiveBuyWallet({
+        address: activeWallet?.address,
+        type: activeWallet?.type,
+        chainId,
+      });
+    }
+
+    setSellToken(buyToken!);
+    setBuyToken(sellToken!);
+
+    // 3. swap input values based on tradeType
+    if (tradeType === TradeType.EXACT_INPUT) {
+      // we stay in EXACT_INPUT mode, so the new sellInput is the old buyInput
+      setBuyInputValue(sellInputValue);
+      setSellInputValue("");
+      setTradeType(TradeType.EXACT_OUTPUT);
+    } else {
+      // in EXACT_OUTPUT, new buyInput is the old sellInput
+
+      setSellInputValue(buyInputValue);
+      setBuyInputValue("");
+      setTradeType(TradeType.EXACT_INPUT);
+    }
+    setIsSwitching(false);
+  }, [
+    setIsSwitching,
+    setSellToken,
+    setBuyToken,
+    ethLinked,
+    solLinked,
+    setActiveWallet,
+    setActiveBuyWallet,
+    setSellInputValue,
+    setBuyInputValue,
+    setTradeType,
+    activeBuyWallet,
+    activeWallet,
+    buyInputValue,
+    buyToken,
+    isLoading,
+    sellInputValue,
+    sellToken,
+    tradeType,
+  ]);
+
+  useEffect(() => {
+    if (
+      tradeType === TradeType.EXACT_INPUT &&
+      quote &&
+      quote.details?.currencyOut?.amountFormatted
+    ) {
+      setBuyInputValue(quote.details?.currencyOut?.amountFormatted);
+    }
+    if (
+      tradeType === TradeType.EXACT_OUTPUT &&
+      quote &&
+      quote.details?.currencyIn?.amountFormatted
+    ) {
+      setSellInputValue(quote.details?.currencyIn?.amountFormatted);
+    }
+  }, [quote, tradeType]);
+
+  console.log("quote active", activeBuyWallet, buyToken);
+
+  const fetchQuote = useCallback(async (): Promise<void> => {
+    setError(null);
+    if (isSwitching) return;
+    // if (isLoading) return;
     // if we don’t have everything we need, clear quote and bail
     if (
       !adaptedWallet ||
       !activeWallet ||
       !activeBuyWallet ||
       !sellToken ||
-      !buyToken ||
-      !sellInputValue
+      !buyToken
     ) {
       setQuote(null);
       return;
@@ -197,74 +307,106 @@ const SwapContainer = () => {
       console.warn("SDK client not initialized yet");
       return;
     }
+    try {
+      setIsLoading(true);
+      const tokenMeta = await queryTokenList("https://api.relay.link", {
+        chainIds: [
+          (tradeType === TradeType.EXACT_INPUT ? sellToken : buyToken)
+            .chainId as number,
+        ],
+        address: (tradeType === TradeType.EXACT_INPUT ? sellToken : buyToken)
+          .address,
+      });
 
-    const fetchQuote = async (): Promise<void> => {
-      try {
-        const tokenMeta = await queryTokenList("https://api.relay.link", {
-          chainIds: [sellToken.chainId as number],
-          address: sellToken.address,
-        });
-
-        if (tokenMeta.length === 0) {
-          throw new Error("Token metadata not found");
-        }
-
-        const decimals = tokenMeta[0].decimals;
-        if (decimals == null) {
-          throw new Error("Token decimals not available");
-        }
-
-        const amountWei = parseUnits(sellInputValue, decimals);
-
-        const q = await client.actions.getQuote({
-          chainId: sellToken.chainId as number,
-          toChainId: buyToken.chainId as number,
-          currency: sellToken.address,
-          toCurrency: buyToken.address,
-          amount: amountWei.toString(),
-          wallet: adaptedWallet,
-          recipient: activeBuyWallet.address,
-          tradeType: "EXACT_INPUT",
-          // options: {
-          //   slippageTolerance: "50",
-          // },
-        });
-
-        if (error) setError(null);
-        setQuote(q);
-      } catch (e: unknown) {
-        console.error("Failed to fetch quote:", e);
-
-        // safely extract message
-        const msg =
-          e instanceof Error
-            ? e.message
-            : typeof e === "string"
-            ? e
-            : "Unknown error";
-
-        if (msg.toLowerCase().includes("no routes found")) {
-          setError("No routes found for that pair");
-        } else if (msg.toLowerCase().includes("decimals")) {
-          setError("Unable to fetch quote");
-        } else {
-          setError(msg);
-        }
-
-        setQuote(null);
+      if (tokenMeta.length === 0) {
+        throw new Error("Token metadata not found");
       }
-    };
 
-    fetchQuote();
+      const decimals = tokenMeta[0].decimals;
+      if (decimals == null) {
+        throw new Error("Token decimals not available");
+      }
+
+      const amountWei = parseUnits(
+        tradeType === TradeType.EXACT_INPUT ? sellInputValue : buyInputValue,
+        decimals
+      );
+      console.log("quote props", {
+        chainId: sellToken.chainId as number,
+        toChainId: buyToken.chainId as number,
+        currency: sellToken.address,
+        toCurrency: buyToken.address,
+        amount: amountWei.toString(),
+        wallet: adaptedWallet,
+        recipient: activeBuyWallet.address,
+        tradeType,
+      });
+
+      const q = await client.actions.getQuote({
+        chainId: sellToken.chainId as number,
+        toChainId: buyToken.chainId as number,
+        currency: sellToken.address,
+        toCurrency: buyToken.address,
+        amount: amountWei.toString(),
+        wallet: adaptedWallet,
+        recipient: activeBuyWallet.address,
+        tradeType,
+        // options: {
+        //   slippageTolerance: "50",
+        // },
+      });
+
+      if (error) setError(null);
+      setQuote(q);
+      setIsLoading(false);
+    } catch (e: unknown) {
+      console.error("Failed to fetch quote:", e);
+      setIsLoading(false);
+      // safely extract message
+      const msg =
+        e instanceof Error
+          ? e.message
+          : typeof e === "string"
+          ? e
+          : "Unknown error";
+
+      if (msg.toLowerCase().includes("no routes found")) {
+        setError("No routes found for that pair");
+      } else if (msg.toLowerCase().includes("decimals")) {
+        setError("Unable to fetch quote");
+      } else {
+        setError(msg);
+      }
+      if (tradeType === TradeType.EXACT_INPUT) setBuyInputValue("");
+      if (tradeType === TradeType.EXACT_OUTPUT) setSellInputValue("");
+      setQuote(null);
+    }
   }, [
-    adaptedWallet,
-    activeWallet,
     activeBuyWallet,
-    sellToken,
+    activeWallet,
+    adaptedWallet,
+    buyInputValue,
     buyToken,
-    sellInputValue,
     error,
+    isSwitching,
+    sellInputValue,
+    sellToken,
+    tradeType,
   ]);
+
+  useEffect(() => {
+    // reset error any time inputs change
+    if (
+      (buyInputValue.length > 0 || sellInputValue.length > 0) &&
+      adaptedWallet &&
+      activeBuyWallet &&
+      activeWallet &&
+      sellToken &&
+      buyToken &&
+      !isSwitching
+    )
+      fetchQuote();
+  }, [adaptedWallet, activeBuyWallet, sellToken, buyToken, isSwitching]);
 
   return (
     <>
@@ -276,10 +418,15 @@ const SwapContainer = () => {
           mode="sell"
           isNativeBalance
           setActiveWallet={setActiveWallet}
+          setActiveBuyWallet={setActiveBuyWallet}
           activeWallet={activeWallet}
           tokenBalance={getTokenBalance(sellToken?.address, sellToken?.chainId)}
+          tradeType={tradeType}
+          setTradeType={setTradeType}
+          fetchQuote={fetchQuote}
+          isSwitching={isSwitching}
         />
-        <button className="swap-container__switch">
+        <button onClick={handleTokenSwitch} className="swap-container__switch">
           <SwapSwitch />
         </button>
         <SwapWindow
@@ -288,8 +435,13 @@ const SwapContainer = () => {
           token={buyToken}
           mode="buy"
           setActiveWallet={setActiveBuyWallet}
+          setActiveBuyWallet={setActiveBuyWallet}
           activeWallet={activeBuyWallet}
           tokenBalance={getTokenBalance(buyToken?.address, buyToken?.chainId)}
+          tradeType={tradeType}
+          setTradeType={setTradeType}
+          fetchQuote={fetchQuote}
+          isSwitching={isSwitching}
         />
       </div>
       <SwapMeta quote={quote} />

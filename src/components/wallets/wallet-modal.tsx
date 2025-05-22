@@ -18,7 +18,7 @@ export default function Wallets({
   activeAddress,
   linkCallback,
 }: {
-  callback?: (wallet?: SwapWallet) => void;
+  callback?: (wallet?: SwapWallet | null) => void;
   swapWindow?: boolean;
   isBuy?: boolean;
   activeAddress?: string;

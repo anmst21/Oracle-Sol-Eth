@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowSmall,
   CoinFade,
@@ -13,10 +13,11 @@ import { UnifiedToken } from "@/types/coin-types";
 import Image from "next/image";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import GreenDot from "../green-dot";
-import { SwapWallet } from "./types";
+import { SwapWallet, TradeType } from "./types";
 import WalletModal from "../wallets/wallet-modal";
 import { useTokenPrice } from "@reservoir0x/relay-kit-hooks";
 import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
+import { useDebounce } from "@/hooks/useDebounce";
 
 type Props = {
   mode: "buy" | "sell";
@@ -24,13 +25,19 @@ type Props = {
   token: UnifiedToken | null;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
   inputValue: string;
-  setActiveWallet: React.Dispatch<
-    React.SetStateAction<ConnectedWallet | ConnectedSolanaWallet | null>
-  >;
-
-  activeWallet: ConnectedWallet | ConnectedSolanaWallet | SwapWallet | null;
+  setActiveWallet:
+    | React.Dispatch<
+        React.SetStateAction<ConnectedWallet | ConnectedSolanaWallet | null>
+      >
+    | React.Dispatch<React.SetStateAction<SwapWallet | null>>;
+  setActiveBuyWallet: React.Dispatch<React.SetStateAction<SwapWallet | null>>;
+  activeWallet: SwapWallet | ConnectedWallet | ConnectedSolanaWallet | null;
   tokenBalance: string | undefined;
   s?: () => void;
+  tradeType: TradeType;
+  setTradeType: React.Dispatch<React.SetStateAction<TradeType>>;
+  fetchQuote: () => Promise<void>;
+  isSwitching: boolean;
 };
 
 const presetOptions = [
@@ -53,7 +60,11 @@ const SwapWindow = ({
   inputValue,
   setInputValue,
   tokenBalance = "0.000000",
-  s,
+  tradeType,
+  setTradeType,
+  fetchQuote,
+  isSwitching,
+  setActiveBuyWallet,
 }: Props) => {
   const { setIsOpen, setModalMode, isOpen } = useTokenModal();
 
@@ -64,13 +75,13 @@ const SwapWindow = ({
   }, [setIsOpen, setModalMode, mode]);
 
   const callback = useCallback(
-    (wallet: ConnectedWallet | ConnectedSolanaWallet | null) => {
+    (wallet: SwapWallet | null | undefined) => {
       setIsOpenAddressModal(false);
       if (mode === "buy" && wallet) {
-        setActiveWallet(wallet);
+        setActiveBuyWallet(wallet);
       }
     },
-    [mode, setActiveWallet]
+    [mode, setActiveBuyWallet]
   );
 
   const priceOptions =
@@ -101,6 +112,37 @@ const SwapWindow = ({
 
   const [intBalancePart, decBalancePart] = tokenBalance.split(".");
 
+  const debouncedRaw = useDebounce(inputValue, 300);
+
+  useEffect(() => {
+    if (
+      mode === "sell" &&
+      tradeType === TradeType.EXACT_INPUT &&
+      !isSwitching
+    ) {
+      fetchQuote();
+    }
+    if (
+      mode === "buy" &&
+      tradeType === TradeType.EXACT_OUTPUT &&
+      !isSwitching
+    ) {
+      fetchQuote();
+    }
+  }, [debouncedRaw, isSwitching]);
+
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (mode === "sell" && tradeType !== TradeType.EXACT_INPUT) {
+        setTradeType(TradeType.EXACT_INPUT);
+      }
+      if (mode === "buy" && tradeType !== TradeType.EXACT_OUTPUT) {
+        setTradeType(TradeType.EXACT_OUTPUT);
+      }
+      setInputValue(e.currentTarget.value);
+    },
+    [mode, tradeType, setTradeType, setInputValue]
+  );
   return (
     <div className="swap-window">
       <div className="swap-window__input">
@@ -120,10 +162,7 @@ const SwapWindow = ({
             placeholder="0"
             // if your state is a string:
             value={inputValue}
-            onChange={(e) => {
-              const raw = e.currentTarget.value;
-              setInputValue(raw);
-            }}
+            onChange={onChange}
           />
           <InputCoin />
         </label>
@@ -160,9 +199,7 @@ const SwapWindow = ({
             <div className="swap-window__wallet">
               <WalletModal
                 isBuy={mode === "buy"}
-                callback={(
-                  wallet: ConnectedWallet | ConnectedSolanaWallet | null
-                ) => {
+                callback={(wallet) => {
                   callback(wallet);
                 }}
                 swapWindow
@@ -209,15 +246,17 @@ const SwapWindow = ({
             {(mode === "sell" ? presetOptions : buyPresetOptions).map(
               (option, i) => (
                 <button
-                  onClick={() =>
+                  onClick={() => (
                     setInputValue(
                       (
                         (mode === "buy"
                           ? Number(inputValue)
                           : Number(tokenBalance)) * option.multiplier
                       ).toString()
-                    )
-                  }
+                    ),
+                    setTradeType(TradeType.EXACT_OUTPUT),
+                    fetchQuote()
+                  )}
                   className="swap-window__token__ammount__option"
                   key={i}
                 >

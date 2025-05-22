@@ -62,7 +62,7 @@ const WalletHeader = ({
         </div>
         <div className="wallet-header__address__value">
           <div className="wallet-header__address__value__image">
-            {activeWallet?.meta.icon && (
+            {activeWallet?.meta?.icon && (
               <Image
                 alt={activeWallet?.meta.id}
                 src={activeWallet?.meta.icon.replace(/^\n+/, "").trimEnd()}

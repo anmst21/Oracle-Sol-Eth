@@ -18,7 +18,7 @@ import {
 import AddressModal from "@/components/wallets/address-modal";
 import { createWalletClient, custom } from "viem";
 import { adaptSolanaWallet } from "@reservoir0x/relay-solana-wallet-adapter";
-
+import { SwapWallet } from "@/components/swap/types";
 import { extractChain } from "viem";
 import * as viemChains from "viem/chains";
 import { AdaptedWallet, adaptViemWallet } from "@reservoir0x/relay-sdk";
@@ -43,10 +43,8 @@ interface ActiveWalletContextValue {
   adaptedWallet: AdaptedWallet | null;
   readyEth: boolean;
   readySol: boolean;
-  setActiveBuyWallet: React.Dispatch<
-    React.SetStateAction<ConnectedWallet | ConnectedSolanaWallet | null>
-  >;
-  activeBuyWallet: ConnectedWallet | ConnectedSolanaWallet | null;
+  setActiveBuyWallet: React.Dispatch<React.SetStateAction<SwapWallet | null>>;
+  activeBuyWallet: SwapWallet | null;
   setIsAddressModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isAddressModalOpen: boolean;
 }
@@ -64,9 +62,9 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
     ConnectedWallet | ConnectedSolanaWallet | null
   >(null);
 
-  const [activeBuyWallet, setActiveBuyWallet] = useState<
-    ConnectedWallet | ConnectedSolanaWallet | null
-  >(null);
+  const [activeBuyWallet, setActiveBuyWallet] = useState<SwapWallet | null>(
+    null
+  );
 
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
@@ -130,28 +128,37 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
   const [adaptedWallet, setAdaptedWallet] = useState<AdaptedWallet | null>(
     null
   );
-  console.log("adaptedWallet", adaptedWallet);
+  console.log("activeWallet", activeWallet);
   useEffect(() => {
-    if (activeWallet && activeWallet?.type === "ethereum") {
-      const walletClient = createWalletClient({
-        chain: chain(Number(activeWallet.chainId.split(":")[1])),
-        transport: custom(window.ethereum!),
-      });
+    // bail early if we have nothing to adapt
+    if (!activeWallet) return;
 
-      const adaptedViemClient = adaptViemWallet(walletClient);
+    // async IIFE so we can await getEthereumProvider()
+    (async () => {
+      if (activeWallet.type === "ethereum") {
+        // 1. pull out the EIP-1193 provider
+        const provider = await activeWallet.getEthereumProvider();
 
-      setAdaptedWallet(adaptedViemClient);
-    }
+        // 2. build your WalletClient with the actual provider (not a Promise)
+        const walletClient = createWalletClient({
+          chain: chain(Number(activeWallet.chainId.split(":")[1])),
+          transport: custom(provider),
+        });
 
-    if (activeWallet && activeWallet?.type === "solana" && connection) {
-      const adaptedSolanaWallet = adaptSolanaWallet(
-        activeWallet.address,
-        792703809, //chain id that Relay uses to identify solana
-        connection,
-        sendTransactionAdapter
-      );
-      setAdaptedWallet(adaptedSolanaWallet);
-    }
+        // 3. adapt & set state
+        setAdaptedWallet(adaptViemWallet(walletClient));
+      } else if (activeWallet.type === "solana" && connection) {
+        // sync for Solana
+        setAdaptedWallet(
+          adaptSolanaWallet(
+            activeWallet.address,
+            792703809, // Relay’s Solana chain ID
+            connection,
+            sendTransactionAdapter
+          )
+        );
+      }
+    })();
   }, [activeWallet]);
 
   return (
