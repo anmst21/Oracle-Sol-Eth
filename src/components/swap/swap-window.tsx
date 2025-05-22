@@ -16,8 +16,14 @@ import GreenDot from "../green-dot";
 import { SwapWallet, TradeType } from "./types";
 import WalletModal from "../wallets/wallet-modal";
 import { useTokenPrice } from "@reservoir0x/relay-kit-hooks";
-import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
+import {
+  ConnectedSolanaWallet,
+  ConnectedWallet,
+  usePrivy,
+} from "@privy-io/react-auth";
 import { useDebounce } from "@/hooks/useDebounce";
+import { solanaChain } from "@/helpers/solanaChain";
+import classNames from "classnames";
 
 type Props = {
   mode: "buy" | "sell";
@@ -143,6 +149,22 @@ const SwapWindow = ({
     },
     [mode, tradeType, setTradeType, setInputValue]
   );
+
+  const onOptionClick = useCallback(
+    (mult: number) => (
+      setInputValue(
+        (
+          (mode === "buy" ? Number(inputValue) : Number(tokenBalance)) * mult
+        ).toString()
+      ),
+      mode === "sell"
+        ? setTradeType(TradeType.EXACT_INPUT)
+        : setTradeType(TradeType.EXACT_OUTPUT),
+      fetchQuote()
+    ),
+    [fetchQuote, mode, inputValue, tokenBalance, setTradeType, setInputValue]
+  );
+
   return (
     <div className="swap-window">
       <div className="swap-window__input">
@@ -175,21 +197,35 @@ const SwapWindow = ({
       </div>
       <div className="swap-window__token">
         <div
-          onMouseEnter={() => setIsOpenAddressModal(true)}
+          onClick={() => setIsOpenAddressModal(true)}
           onMouseLeave={() => setIsOpenAddressModal(false)}
-          className="swap-window__token__wallet"
+          className={classNames("swap-window__token__wallet", {
+            "swap-window__token__wallet--error":
+              (token?.chainId === solanaChain.id &&
+                activeWallet?.type !== "solana") ||
+              (token?.chainId !== solanaChain.id &&
+                activeWallet?.type !== "ethereum" &&
+                token !== null &&
+                activeWallet !== null),
+          })}
         >
           <div className="swap-window__token__wallet__pfp">
-            {activeWallet?.address && (
-              <CoinFade
-                key={activeWallet?.address}
-                address={activeWallet?.address}
+            {!activeWallet ? (
+              <HexChain width={20} question />
+            ) : (
+              <HexChain
+                width={20}
+                uri={
+                  activeWallet?.type === "ethereum"
+                    ? getIconUri(1)
+                    : getIconUri(solanaChain.id)
+                }
               />
             )}
           </div>
           <span>
             {!activeWallet?.address
-              ? "0x00...XXXX"
+              ? "XxXX...XXXX"
               : truncateAddress(activeWallet?.address)}
           </span>
           <div className="recipient-window__address__arrow">
@@ -246,17 +282,7 @@ const SwapWindow = ({
             {(mode === "sell" ? presetOptions : buyPresetOptions).map(
               (option, i) => (
                 <button
-                  onClick={() => (
-                    setInputValue(
-                      (
-                        (mode === "buy"
-                          ? Number(inputValue)
-                          : Number(tokenBalance)) * option.multiplier
-                      ).toString()
-                    ),
-                    setTradeType(TradeType.EXACT_OUTPUT),
-                    fetchQuote()
-                  )}
+                  onClick={() => onOptionClick(option.multiplier)}
                   className="swap-window__token__ammount__option"
                   key={i}
                 >

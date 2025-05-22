@@ -18,6 +18,9 @@ import {
 import { base, mainnet } from "viem/chains";
 import { parseUnits } from "viem/utils";
 import { queryTokenList } from "@reservoir0x/relay-kit-hooks";
+import { useSlippage } from "@/context/SlippageContext";
+import BuyBtn from "./buy-btn";
+import { usePrivy } from "@privy-io/react-auth";
 
 createClient({
   baseApiUrl: MAINNET_RELAY_API,
@@ -31,6 +34,12 @@ createClient({
 const SwapContainer = () => {
   const [sellInputValue, setSellInputValue] = useState("");
   const [buyInputValue, setBuyInputValue] = useState("");
+
+  const {
+    isCustomSlippage,
+    value: slippageValue,
+    isDragging: isDraggingSlippage,
+  } = useSlippage();
 
   const {
     sellToken,
@@ -117,21 +126,21 @@ const SwapContainer = () => {
     setActiveBuyWallet,
   ]);
 
-  useEffect(() => {
-    if (
-      activeWallet?.type === "ethereum" &&
-      sellToken?.chainId === solanaChain.id
-    ) {
-      setSellToken(getEthToken(Number(activeWallet.chainId.split(":")[1])));
-    }
+  // useEffect(() => {
+  //   if (
+  //     activeWallet?.type === "ethereum" &&
+  //     sellToken?.chainId === solanaChain.id
+  //   ) {
+  //     setSellToken(getEthToken(Number(activeWallet.chainId.split(":")[1])));
+  //   }
 
-    if (
-      activeWallet?.type === "solana" &&
-      sellToken?.chainId !== solanaChain.id
-    ) {
-      setSellToken(solanaToken);
-    }
-  }, [activeWallet, setSellToken]);
+  //   if (
+  //     activeWallet?.type === "solana" &&
+  //     sellToken?.chainId !== solanaChain.id
+  //   ) {
+  //     setSellToken(solanaToken);
+  //   }
+  // }, [activeWallet, setSellToken]);
 
   useEffect(() => {
     if (
@@ -165,29 +174,29 @@ const SwapContainer = () => {
     }
   }, [sellToken, setActiveWallet]);
 
-  useEffect(() => {
-    if (
-      activeBuyWallet?.type === "ethereum" &&
-      buyToken?.chainId === solanaChain.id
-    ) {
-      setActiveBuyWallet({
-        chainId: solanaChain.id,
-        address: solLinked[0].address,
-        type: "ethereum",
-      });
-    }
+  // useEffect(() => {
+  //   if (
+  //     activeBuyWallet?.type === "ethereum" &&
+  //     buyToken?.chainId === solanaChain.id
+  //   ) {
+  //     setActiveBuyWallet({
+  //       chainId: solanaChain.id,
+  //       address: solLinked[0].address,
+  //       type: "ethereum",
+  //     });
+  //   }
 
-    if (
-      activeBuyWallet?.type === "solana" &&
-      buyToken?.chainId !== solanaChain.id
-    ) {
-      setActiveBuyWallet({
-        chainId: Number(ethLinked[0].chainId.split(":")[1]),
-        address: ethLinked[0].address,
-        type: "ethereum",
-      });
-    }
-  }, [buyToken, setActiveBuyWallet]);
+  //   if (
+  //     activeBuyWallet?.type === "solana" &&
+  //     buyToken?.chainId !== solanaChain.id
+  //   ) {
+  //     setActiveBuyWallet({
+  //       chainId: Number(ethLinked[0].chainId.split(":")[1]),
+  //       address: ethLinked[0].address,
+  //       type: "ethereum",
+  //     });
+  //   }
+  // }, [buyToken, setActiveBuyWallet]);
 
   const [quote, setQuote] = useState<Execute | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -237,6 +246,7 @@ const SwapContainer = () => {
       // we stay in EXACT_INPUT mode, so the new sellInput is the old buyInput
       setBuyInputValue(sellInputValue);
       setSellInputValue("");
+
       setTradeType(TradeType.EXACT_OUTPUT);
     } else {
       // in EXACT_OUTPUT, new buyInput is the old sellInput
@@ -282,15 +292,20 @@ const SwapContainer = () => {
     ) {
       setSellInputValue(quote.details?.currencyIn?.amountFormatted);
     }
-  }, [quote, tradeType]);
+  }, [quote]);
 
   console.log("quote active", activeBuyWallet, buyToken);
 
   const fetchQuote = useCallback(async (): Promise<void> => {
     setError(null);
     if (isSwitching) return;
-    // if (isLoading) return;
-    // if we don’t have everything we need, clear quote and bail
+
+    if (
+      (buyInputValue.length === 0 && tradeType === TradeType.EXACT_OUTPUT) ||
+      (sellInputValue.length === 0 && tradeType === TradeType.EXACT_INPUT)
+    )
+      return;
+
     if (
       !adaptedWallet ||
       !activeWallet ||
@@ -298,17 +313,21 @@ const SwapContainer = () => {
       !sellToken ||
       !buyToken
     ) {
+      // if (isLoading) return;
+      // if we don’t have everything we need, clear quote and bail
       setQuote(null);
       return;
     }
 
-    const client = getClient();
-    if (!client) {
-      console.warn("SDK client not initialized yet");
-      return;
-    }
     try {
       setIsLoading(true);
+
+      const client = getClient();
+      if (!client) {
+        console.warn("SDK client not initialized yet");
+        return;
+      }
+
       const tokenMeta = await queryTokenList("https://api.relay.link", {
         chainIds: [
           (tradeType === TradeType.EXACT_INPUT ? sellToken : buyToken)
@@ -351,9 +370,11 @@ const SwapContainer = () => {
         wallet: adaptedWallet,
         recipient: activeBuyWallet.address,
         tradeType,
-        // options: {
-        //   slippageTolerance: "50",
-        // },
+        options: {
+          slippageTolerance: isCustomSlippage
+            ? Math.round(slippageValue * 100).toString()
+            : undefined,
+        },
       });
 
       if (error) setError(null);
@@ -392,21 +413,64 @@ const SwapContainer = () => {
     sellInputValue,
     sellToken,
     tradeType,
+    slippageValue,
+    isCustomSlippage,
   ]);
 
   useEffect(() => {
     // reset error any time inputs change
+
     if (
-      (buyInputValue.length > 0 || sellInputValue.length > 0) &&
       adaptedWallet &&
       activeBuyWallet &&
       activeWallet &&
       sellToken &&
       buyToken &&
-      !isSwitching
+      !isSwitching &&
+      !isDraggingSlippage
     )
       fetchQuote();
-  }, [adaptedWallet, activeBuyWallet, sellToken, buyToken, isSwitching]);
+  }, [
+    adaptedWallet,
+    activeBuyWallet,
+    sellToken,
+    activeWallet,
+    buyToken,
+    isSwitching,
+    slippageValue,
+    isDraggingSlippage,
+  ]);
+
+  const onBuy = useCallback(async () => {
+    if (quote && adaptedWallet) {
+      const aaaaaaaaaa = await adaptedWallet.getChainId();
+
+      console.log("aaaaaaaaaa", aaaaaaaaaa, await adaptedWallet.address());
+      await getClient().actions.execute({
+        quote,
+        wallet: adaptedWallet,
+        onProgress: ({
+          steps,
+          fees,
+          breakdown,
+          currentStep,
+          currentStepItem,
+          txHashes,
+          details,
+        }) => {
+          console.log({
+            steps,
+            fees,
+            breakdown,
+            currentStep,
+            currentStepItem,
+            txHashes,
+            details,
+          });
+        },
+      });
+    }
+  }, [adaptedWallet, quote]);
 
   return (
     <>
@@ -444,6 +508,27 @@ const SwapContainer = () => {
           isSwitching={isSwitching}
         />
       </div>
+      <BuyBtn
+        isInsuficientBalance={
+          quote !== null &&
+          quote?.details?.currencyIn?.amount !== undefined &&
+          quote?.details?.userBalance !== undefined &&
+          Number(quote?.details?.currencyIn?.amount) >=
+            Number(quote?.details?.userBalance)
+        }
+        isNoInputData={
+          (buyInputValue.length === 0 &&
+            tradeType === TradeType.EXACT_OUTPUT) ||
+          (sellInputValue.length === 0 && tradeType === TradeType.EXACT_INPUT)
+        }
+        isNoTokenData={!buyToken || !sellToken}
+        isNoWalletData={!activeWallet || !activeBuyWallet}
+        isLoadingQuote={isLoading}
+        error={error}
+        quote={quote}
+        onBuy={onBuy}
+        isAdaptedWallet={adaptedWallet !== null}
+      />
       <SwapMeta quote={quote} />
     </>
   );

@@ -1,27 +1,47 @@
-import React, { useState } from "react";
+import React, { useCallback } from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { SliderDots } from "../icons";
+import GreenDot from "../green-dot";
+import { useSlippage } from "@/context/SlippageContext";
 
-type Props = {};
-
-const ModalInput = (props: Props) => {
-  const [value, setValue] = useState<number>(2);
-  const [isDragging, setIsDragging] = useState(false);
+const ModalInput = () => {
+  const { value, setValue, isDragging, setIsDragging } = useSlippage();
   console.log("isDragging", isDragging);
+
+  const splittedValue = value.toString().split(".");
+
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const parsed = parseFloat(e.target.value);
+      if (isNaN(parsed)) return;
+      // clamp 0–100, then round to two decimals
+      const clamped = Math.min(Math.max(parsed, 0), 100);
+      setValue(parseFloat(clamped.toFixed(2)));
+    },
+    [setValue]
+  );
+
+  const onSliderChange = useCallback(
+    ([v]: [number]): void => {
+      setValue(parseFloat(v.toFixed(2)));
+    },
+    [setValue]
+  );
+
+  const setDragging = useCallback(
+    (value: boolean) => setIsDragging(value),
+    [setIsDragging]
+  );
   return (
     <div className="modal-input">
       <label className="percentage-input">
         <input
           type="number"
+          step={0.01}
           min={0}
           max={100}
-          value={value}
-          onChange={(e) => {
-            let v = Number(e.target.value);
-            if (v < 0) v = 0;
-            if (v > 100) v = 100;
-            setValue(v);
-          }}
+          value={value.toFixed(2)}
+          onChange={onInputChange}
         />
         <span>%</span>
       </label>
@@ -30,20 +50,24 @@ const ModalInput = (props: Props) => {
           className="SliderRoot"
           value={[value]}
           max={100}
-          step={1}
-          onValueChange={([v]) => setValue(v)}
+          step={0.01}
+          onValueChange={onSliderChange}
           aria-label="Percentage"
         >
           <Slider.Track className="SliderTrack">
             <Slider.Range className="SliderRange" />
           </Slider.Track>
           <Slider.Thumb
-            onPointerDown={() => setIsDragging(true)}
-            onPointerUp={() => setIsDragging(false)}
+            onPointerDown={() => setDragging(true)}
+            onPointerUp={() => setDragging(false)}
             className="SliderThumb"
           >
             <SliderDots />
-            {isDragging && <div className="slider-tooltip">{value}%</div>}
+            {isDragging && (
+              <div className="slider-tooltip">
+                <GreenDot int={splittedValue[0]} dec={splittedValue[1]} />%
+              </div>
+            )}
           </Slider.Thumb>
         </Slider.Root>
 

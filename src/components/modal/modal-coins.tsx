@@ -415,6 +415,34 @@ const ModalCoins = ({
               })}
             </div>
           )}
+
+        {activeChainId !== 0 && !searchTerm.length && (
+          <div className="modal-native-coins__container">
+            <div className="chain-sidebar__header">
+              <h2>Related Tokens</h2>
+            </div>
+            {chainFeaturedTokens.length > 0 &&
+              chainFeaturedTokens.map((token, i) => {
+                return (
+                  <ModalCoinItem
+                    key={i}
+                    userBalance={token.balance}
+                    priceUsd={token.priceUsd}
+                    coinAddress={token.address}
+                    coinSymbol={token.symbol}
+                    chainSrc={getIconUri(activeChainId)}
+                    coinSrc={token.logo}
+                    coinName={token.name}
+                    chainId={activeChainId}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                  />
+                );
+              })}
+          </div>
+        )}
+
         {!isLoadingCommunityCoins &&
           filteredCommunityCoins.length > 0 &&
           !searchTerm.length && (
@@ -513,33 +541,6 @@ const ModalCoins = ({
               })}
             </div>
           )}
-
-        {activeChainId !== 0 && !searchTerm.length && (
-          <div className="modal-native-coins__container">
-            <div className="chain-sidebar__header">
-              <h2>Related Tokens</h2>
-            </div>
-            {chainFeaturedTokens.length > 0 &&
-              chainFeaturedTokens.map((token, i) => {
-                return (
-                  <ModalCoinItem
-                    key={i}
-                    userBalance={token.balance}
-                    priceUsd={token.priceUsd}
-                    coinAddress={token.address}
-                    coinSymbol={token.symbol}
-                    chainSrc={getIconUri(activeChainId)}
-                    coinSrc={token.logo}
-                    coinName={token.name}
-                    chainId={activeChainId}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
-                    modalMode={modalMode}
-                  />
-                );
-              })}
-          </div>
-        )}
       </div>
     </div>
   );

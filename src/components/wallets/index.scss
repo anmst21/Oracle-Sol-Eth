@@ -19,6 +19,11 @@
     display: flex;
 
 
+    .wallet-item__connect {
+        width: 330px;
+    }
+
+
     &__address {
         display: flex;
         gap: 4px;
@@ -144,6 +149,8 @@
     flex-direction: column;
     gap: 4px;
     padding: 4px;
+
+
 
     &__client {
 

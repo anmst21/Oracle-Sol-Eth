@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import WalletHeader from "@/components/wallets/wallet-header";
 import Wallets from "@/components/wallets/wallet-modal";
 import { Portal } from "../slippage-modal/portal";
+import { usePrivy } from "@privy-io/react-auth";
+import { PrivyLogo } from "../icons";
 
 const HeaderWalletButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,11 +33,11 @@ const HeaderWalletButton = () => {
   // true toggle
   const onClick = () => setIsOpen((prev) => !prev);
 
-  const closeIfOpen = () => {
+  const closeIfOpen = useCallback(() => {
     if (isOpen) {
       setIsOpen(false);
     }
-  };
+  }, [setIsOpen, isOpen]);
 
   return (
     // attach the ref here, so header + dropdown are “inside”

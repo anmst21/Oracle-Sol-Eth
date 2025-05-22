@@ -35,7 +35,7 @@ const SwapHeader = () => {
         onMouseLeave={() => {
           if (isOpenSlippage) setIsOpenSlippage(false);
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           if (!isOpenSlippage) setIsOpenSlippage(true);
         }}
         className="swap-header__settings"

@@ -111,6 +111,7 @@ const Modal: React.FC<ModalProps> = ({
       name: token.name!,
     }));
   }, [activeChainId, chains]);
+
   return (
     <div onClick={closeModal} className="modal__wrapper">
       <div onClick={(e) => e.stopPropagation()} className="modal">

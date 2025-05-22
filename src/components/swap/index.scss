@@ -1,4 +1,5 @@
 @import "./swap-meta.scss";
+@import "./buy-btn.scss";
 
 .swap-page {
     display: flex;
@@ -107,7 +108,7 @@
             align-items: center;
             padding: 4px 8px;
             height: 29px;
-
+            cursor: pointer;
             font-size: 14px;
             font-style: normal;
             font-weight: 400;
@@ -115,12 +116,18 @@
             color: #D9F1E9;
             position: relative;
 
+            &--error {
+                border: 1px solid rgba(241, 61, 32, 0.20);
+
+                background: rgba(241, 61, 32, 0.05);
+            }
+
             &__pfp {
                 display: flex;
                 border-radius: 100px;
                 width: 20px;
                 height: 20px;
-                background: rgba(136, 150, 151, 0.05);
+                color: #889697;
 
 
                 //  border: 1px solid #D9F1E9;

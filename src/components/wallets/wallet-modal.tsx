@@ -74,7 +74,7 @@ export default function Wallets({
           isLinked
           loginOrLink={w.loginOrLink}
           unlink={w.unlink}
-          logout={logout}
+          logout={() => (linkCallback && linkCallback(), logout())}
           selectCallback={() => selectCallback(w)}
           activeWalletAddress={
             activeAddress ? activeAddress : activeWallet?.address
@@ -99,7 +99,7 @@ export default function Wallets({
           isLinked
           loginOrLink={w.loginOrLink}
           unlink={w.unlink}
-          logout={logout}
+          logout={() => (linkCallback && linkCallback(), logout())}
           selectCallback={() => selectCallback(w)}
           activeWalletAddress={
             activeAddress ? activeAddress : activeWallet?.address
@@ -113,6 +113,8 @@ export default function Wallets({
   const openAddressModal = useCallback(() => {
     setIsAddressModalOpen(true);
   }, [setIsAddressModalOpen]);
+
+  const disableLogin = !ready || (ready && authenticated);
 
   return (
     <>
@@ -136,7 +138,7 @@ export default function Wallets({
           <div className="wallets__container">
             {isBuy && (
               <button
-                disabled={!ready}
+                disabled={!authenticated}
                 onClick={openAddressModal}
                 className="wallet-item__connect"
               >
@@ -146,7 +148,7 @@ export default function Wallets({
             )}
             {authenticated ? (
               <button
-                disabled={!ready}
+                disabled={!authenticated}
                 onClick={() => (linkCallback && linkCallback(), linkWallet())}
                 className="wallet-item__connect"
               >
@@ -155,7 +157,7 @@ export default function Wallets({
               </button>
             ) : (
               <button
-                disabled={!ready}
+                disabled={disableLogin}
                 onClick={() => login()}
                 className="wallet-item__connect"
               >

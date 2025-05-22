@@ -53,7 +53,12 @@ const PriceImpactInfo = ({
                 : totalImpactUsd
             }
           />
-          <span className="price-impact-info__header__impact__change">
+          <span
+            style={{
+              color: totalImpactPercent.startsWith("-") ? "#F13D20" : "#AEE900",
+            }}
+            className="price-impact-info__header__impact__change"
+          >
             {"("}
             {totalImpactPercent}
             {"%)"}

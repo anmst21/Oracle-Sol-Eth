@@ -4,13 +4,14 @@ import classNames from "classnames";
 import ModalInfo from "./modal-info";
 import { Portal } from "./portal";
 import ModalInput from "./modal-input";
+import { useSlippage } from "@/context/SlippageContext";
 
 type Props = {
   closeModal: () => void;
 };
 
 const SlippageModal = ({ closeModal }: Props) => {
-  const [isCustom, setIsCustom] = useState(false);
+  const { isCustomSlippage, setIsCustomSlippage } = useSlippage();
   const [isOpenInfo, setIsOpenInfo] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -52,23 +53,23 @@ const SlippageModal = ({ closeModal }: Props) => {
           <div className="slippage-modal__button">
             <button
               className={classNames({
-                "slippage-modal__button--active": !isCustom,
+                "slippage-modal__button--active": !isCustomSlippage,
               })}
-              onClick={() => setIsCustom(false)}
+              onClick={() => setIsCustomSlippage(false)}
             >
               Auto
             </button>
             <button
               className={classNames({
-                "slippage-modal__button--active": isCustom,
+                "slippage-modal__button--active": isCustomSlippage,
               })}
-              onClick={() => setIsCustom(true)}
+              onClick={() => setIsCustomSlippage(true)}
             >
               Custom
             </button>
           </div>
 
-          {isCustom ? (
+          {isCustomSlippage ? (
             <ModalInput />
           ) : (
             <div className="slippage-modal__warning">

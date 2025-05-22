@@ -3,6 +3,7 @@ import { ChevDown, SlippageGas, ModalInfo } from "../icons";
 import PriceImpactInfo from "./price-impact-info";
 import { Portal } from "../slippage-modal/portal";
 import { Execute } from "@reservoir0x/relay-sdk";
+import { useSlippage } from "@/context/SlippageContext";
 
 type Props = {
   quote: Execute | null;
@@ -11,6 +12,15 @@ type Props = {
 const SwapMeta = ({ quote }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenInfo, setIsOpenInfo] = useState(false);
+
+  const {
+    isCustomSlippage,
+    setIsCustomSlippage,
+    value,
+    setValue,
+    isDragging,
+    setIsDragging,
+  } = useSlippage();
 
   const totalImpactPercent = quote?.details?.totalImpact?.percent || "0";
   const totalImpactUsd = Number(
@@ -44,10 +54,7 @@ const SwapMeta = ({ quote }: Props) => {
     },
     {
       name: "Max Slippage",
-      value: [
-        quote?.details?.slippageTolerance?.destination?.percent || "1.99",
-        "%",
-      ],
+      value: [isCustomSlippage ? value : 1.99, "%"],
       key: "slippage",
     },
   ];
@@ -170,7 +177,9 @@ const SwapMeta = ({ quote }: Props) => {
                     <div className="swap-meta-item__value">
                       {item.key === "cost" && <SlippageGas />}
                       {item.key === "slippage" && (
-                        <div className="slippage-badge">Auto</div>
+                        <div className="slippage-badge">
+                          {isCustomSlippage ? "Custom" : "Auto"}
+                        </div>
                       )}
                       <span className="swap-meta-item__value__text">
                         {item.value.map((v, i) => (

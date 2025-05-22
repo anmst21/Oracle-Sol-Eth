@@ -1,0 +1,18 @@
+.buy-btn {
+    display: flex;
+    border: 1px solid rgba(174, 233, 0, 0.40);
+    background: rgba(174, 233, 0, 0.10);
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: rgba(174, 233, 0, 0.80);
+
+    span {
+        color: rgba(174, 233, 0, 0.80);
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 6 00;
+        line-height: 20px;
+    }
+}

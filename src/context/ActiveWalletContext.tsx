@@ -111,6 +111,14 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
       }
       if (found) {
         setActiveWallet(found);
+        setActiveBuyWallet({
+          address: found.address,
+          type: found.type,
+          chainId:
+            found.type === "ethereum"
+              ? Number(found.chainId.split(":")[1])
+              : 792703809,
+        });
       }
     }
   }, [
@@ -160,6 +168,15 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
       }
     })();
   }, [activeWallet]);
+
+  useEffect(() => {
+    if (ready && !authenticated && activeWallet) {
+      setActiveWallet(null);
+    }
+    if (ready && !authenticated && activeBuyWallet) {
+      setActiveBuyWallet(null);
+    }
+  }, [authenticated, ready, activeBuyWallet, activeWallet]);
 
   return (
     <ActiveWalletContext.Provider
