@@ -136,7 +136,7 @@ export default function Wallets({
           {/** always show the connect/login button */}
 
           <div className="wallets__container">
-            {isBuy && (
+            {isBuy && authenticated && (
               <button
                 disabled={!authenticated}
                 onClick={openAddressModal}

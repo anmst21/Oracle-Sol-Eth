@@ -38,7 +38,7 @@ const BuyBtn = ({
     disabled = true;
   } else if (!authenticated) {
     // 2. SDK ready but user not logged in
-    label = "Connect Wallet";
+    label = "Login with Wallet";
     disabled = false;
     handleClick = login;
   } else if (error && !quote && !isLoadingQuote) {

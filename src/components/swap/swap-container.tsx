@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SwapWindow from "./swap-window";
 import { SwapSwitch } from "../icons";
 import { useTokenModal } from "@/context/TokenModalProvider";
@@ -8,7 +8,7 @@ import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { getEthToken, solanaToken } from "@/helpers/solana-token";
 import { solanaChain } from "@/helpers/solanaChain";
 import SwapMeta from "./swap-meta";
-import { Execute, getClient } from "@reservoir0x/relay-sdk";
+import { Execute, getClient, RelayChain } from "@reservoir0x/relay-sdk";
 import { TradeType } from "./types";
 import {
   convertViemChainToRelayChain,
@@ -17,19 +17,21 @@ import {
 } from "@reservoir0x/relay-sdk";
 import { base, mainnet } from "viem/chains";
 import { parseUnits } from "viem/utils";
-import { queryTokenList } from "@reservoir0x/relay-kit-hooks";
+import { queryTokenList, useRelayChains } from "@reservoir0x/relay-kit-hooks";
 import { useSlippage } from "@/context/SlippageContext";
 import BuyBtn from "./buy-btn";
 import { usePrivy } from "@privy-io/react-auth";
+import { SendTransactionError } from "@solana/web3.js";
+import { connection } from "../connects";
 
-createClient({
-  baseApiUrl: MAINNET_RELAY_API,
-  source: "YOUR.SOURCE",
-  chains: [
-    convertViemChainToRelayChain(mainnet),
-    convertViemChainToRelayChain(base),
-  ],
-});
+// createClient({
+//   baseApiUrl: MAINNET_RELAY_API,
+//   source: "YOUR.SOURCE",
+//   chains: [
+//     convertViemChainToRelayChain(mainnet),
+//     convertViemChainToRelayChain(base),
+//   ],
+// });
 
 const SwapContainer = () => {
   const [sellInputValue, setSellInputValue] = useState("");
@@ -49,6 +51,7 @@ const SwapContainer = () => {
     userSolanaTokens,
     setBuyToken,
     setSellToken,
+    //   chains,
   } = useTokenModal();
 
   const {
@@ -295,16 +298,27 @@ const SwapContainer = () => {
   }, [quote]);
 
   console.log("quote active", activeBuyWallet, buyToken);
+  const { chains } = useRelayChains();
+  const client = useMemo(
+    () =>
+      createClient({
+        baseApiUrl: MAINNET_RELAY_API,
+        source: "YOUR.SOURCE",
+        chains: chains as RelayChain[],
+      }),
+    [chains]
+  );
 
   const fetchQuote = useCallback(async (): Promise<void> => {
     setError(null);
-    if (isSwitching) return;
+    setIsLoading(true);
+    if (isSwitching) return setIsLoading(false);
 
     if (
       (buyInputValue.length === 0 && tradeType === TradeType.EXACT_OUTPUT) ||
       (sellInputValue.length === 0 && tradeType === TradeType.EXACT_INPUT)
     )
-      return;
+      return setIsLoading(false);
 
     if (
       !adaptedWallet ||
@@ -316,16 +330,14 @@ const SwapContainer = () => {
       // if (isLoading) return;
       // if we don’t have everything we need, clear quote and bail
       setQuote(null);
-      return;
+      return setIsLoading(false);
     }
 
     try {
-      setIsLoading(true);
-
-      const client = getClient();
+      //   const client = getClient();
       if (!client) {
         console.warn("SDK client not initialized yet");
-        return;
+        return setIsLoading(false);
       }
 
       const tokenMeta = await queryTokenList("https://api.relay.link", {
@@ -382,7 +394,7 @@ const SwapContainer = () => {
       setIsLoading(false);
     } catch (e: unknown) {
       console.error("Failed to fetch quote:", e);
-      setIsLoading(false);
+
       // safely extract message
       const msg =
         e instanceof Error
@@ -393,10 +405,19 @@ const SwapContainer = () => {
 
       if (msg.toLowerCase().includes("no routes found")) {
         setError("No routes found for that pair");
+        setIsLoading(false);
       } else if (msg.toLowerCase().includes("decimals")) {
+        setIsLoading(false);
         setError("Unable to fetch quote");
+      } else if (msg.includes("Invalid address")) {
+        setError("Invalid address for chain");
+        setIsLoading(false);
+      } else if (msg.includes("Swap output amount is too small")) {
+        setError("Swap output amount is too small");
+        setIsLoading(false);
       } else {
         setError(msg);
+        setIsLoading(false);
       }
       if (tradeType === TradeType.EXACT_INPUT) setBuyInputValue("");
       if (tradeType === TradeType.EXACT_OUTPUT) setSellInputValue("");
@@ -409,11 +430,13 @@ const SwapContainer = () => {
     buyInputValue,
     buyToken,
     error,
+    // client,
     isSwitching,
     sellInputValue,
     sellToken,
     tradeType,
     slippageValue,
+    client,
     isCustomSlippage,
   ]);
 
@@ -439,13 +462,15 @@ const SwapContainer = () => {
     isSwitching,
     slippageValue,
     isDraggingSlippage,
+    isCustomSlippage,
   ]);
 
   const onBuy = useCallback(async () => {
-    if (quote && adaptedWallet) {
-      const aaaaaaaaaa = await adaptedWallet.getChainId();
+    if (quote && adaptedWallet && sellToken?.chainId) {
+      const chainId = await adaptedWallet.getChainId();
+      if (chainId !== sellToken?.chainId)
+        adaptedWallet.switchChain(sellToken?.chainId);
 
-      console.log("aaaaaaaaaa", aaaaaaaaaa, await adaptedWallet.address());
       await getClient().actions.execute({
         quote,
         wallet: adaptedWallet,
@@ -470,7 +495,7 @@ const SwapContainer = () => {
         },
       });
     }
-  }, [adaptedWallet, quote]);
+  }, [adaptedWallet, quote, sellToken?.chainId]);
 
   return (
     <>
@@ -489,6 +514,8 @@ const SwapContainer = () => {
           setTradeType={setTradeType}
           fetchQuote={fetchQuote}
           isSwitching={isSwitching}
+          tokenPrice={quote?.details?.currencyIn?.amountUsd}
+          isLoadingQuote={isLoading}
         />
         <button onClick={handleTokenSwitch} className="swap-container__switch">
           <SwapSwitch />
@@ -506,6 +533,8 @@ const SwapContainer = () => {
           setTradeType={setTradeType}
           fetchQuote={fetchQuote}
           isSwitching={isSwitching}
+          tokenPrice={quote?.details?.currencyOut?.amountUsd}
+          isLoadingQuote={isLoading}
         />
       </div>
       <BuyBtn
@@ -529,7 +558,7 @@ const SwapContainer = () => {
         onBuy={onBuy}
         isAdaptedWallet={adaptedWallet !== null}
       />
-      <SwapMeta quote={quote} />
+      <SwapMeta isLoading={isLoading} quote={quote} />
     </>
   );
 };

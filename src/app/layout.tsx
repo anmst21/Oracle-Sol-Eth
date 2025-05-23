@@ -10,6 +10,7 @@ import { TokenModalProvider } from "@/context/TokenModalProvider";
 import { ActiveWalletProvider } from "@/context/ActiveWalletContext";
 import { SlippageProvider } from "@/context/SlippageContext";
 import Header from "@/components/header";
+import { RelayKitProviderWrapper as RelayKitProvider } from "@/context/RelayKitProvider";
 
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
@@ -47,17 +48,19 @@ export default async function RootLayout({
                 <MoonPayContextProvider>
                   <ActiveWalletProvider>
                     <TokenModalProvider>
-                      <SlippageProvider>
-                        <Header />
-                        <div className="main">
-                          {/* <TokenModal
-              geckoCoins={gecko}
-              communityCoins={community}
-              solanaCoins={solana}
-            /> */}
-                          {children}
-                        </div>
-                      </SlippageProvider>
+                      <RelayKitProvider>
+                        <SlippageProvider>
+                          <Header />
+                          <div className="main">
+                                                          {/* <TokenModal
+                                            geckoCoins={gecko}
+                                            communityCoins={community}
+                                            solanaCoins={solana}
+                                          /> */}
+                            {children}
+                          </div>
+                        </SlippageProvider>
+                      </RelayKitProvider>
                     </TokenModalProvider>
                   </ActiveWalletProvider>
                 </MoonPayContextProvider>

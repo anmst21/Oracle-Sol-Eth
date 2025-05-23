@@ -50,6 +50,11 @@
         &__arrow {
             display: flex;
             margin-left: auto;
+            transition: all .3s ease-in-out;
+
+            &--inactive {
+                opacity: .5;
+            }
         }
     }
 

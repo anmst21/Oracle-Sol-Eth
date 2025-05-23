@@ -39,11 +39,11 @@ const chainItems = chains.map((chain) => ({
 
 console.log("chainItems", chainItems);
 
-createClient({
-  baseApiUrl: MAINNET_RELAY_API,
-  source: "oracl3.net",
-  chains,
-});
+// createClient({
+//   baseApiUrl: MAINNET_RELAY_API,
+//   source: "oracl3.net",
+//   chains,
+// });
 
 function Base64Image({ src }: { src: string }) {
   return (

@@ -22,10 +22,7 @@ import { SwapWallet } from "@/components/swap/types";
 import { extractChain } from "viem";
 import * as viemChains from "viem/chains";
 import { AdaptedWallet, adaptViemWallet } from "@reservoir0x/relay-sdk";
-import {
-  connection,
-  sendTransactionAdapter,
-} from "@/helpers/solana-connection";
+import { connection } from "@/helpers/solana-connection";
 
 const chain = (id: number) =>
   extractChain({
@@ -136,7 +133,7 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
   const [adaptedWallet, setAdaptedWallet] = useState<AdaptedWallet | null>(
     null
   );
-  console.log("activeWallet", activeWallet);
+
   useEffect(() => {
     // bail early if we have nothing to adapt
     if (!activeWallet) return;
@@ -155,14 +152,27 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
 
         // 3. adapt & set state
         setAdaptedWallet(adaptViemWallet(walletClient));
-      } else if (activeWallet.type === "solana" && connection) {
-        // sync for Solana
+      }
+      if (activeWallet?.type === "solana" && connection) {
+        // narrow the type so TS knows we have a solana wallet
+        const solWallet = activeWallet as ConnectedSolanaWallet;
+
         setAdaptedWallet(
           adaptSolanaWallet(
-            activeWallet.address,
-            792703809, // Relay’s Solana chain ID
+            solWallet.address,
+            792703809,
             connection,
-            sendTransactionAdapter
+            // our new sign‐and‐send wrapper:
+            async (tx, opts) => {
+              // 1) let Privy’s wallet instance sign it
+              const signed = await solWallet.signTransaction(tx);
+
+              // 2) send the raw bytes
+              const raw = signed.serialize();
+              const sig = await connection.sendRawTransaction(raw, opts);
+
+              return { signature: sig };
+            }
           )
         );
       }

@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ArrowSmall,
-  CoinFade,
   HexChain,
   InputCoin,
   SwapArrow,
@@ -15,7 +14,6 @@ import { getIconUri } from "@/helpers/get-icon-uri";
 import GreenDot from "../green-dot";
 import { SwapWallet, TradeType } from "./types";
 import WalletModal from "../wallets/wallet-modal";
-import { useTokenPrice } from "@reservoir0x/relay-kit-hooks";
 import {
   ConnectedSolanaWallet,
   ConnectedWallet,
@@ -24,6 +22,9 @@ import {
 import { useDebounce } from "@/hooks/useDebounce";
 import { solanaChain } from "@/helpers/solanaChain";
 import classNames from "classnames";
+import SkeletonLoaderWrapper from "../skeleton";
+import { AnimatePresence, motion } from "motion/react";
+import { slidingTextAnimation } from "./animation";
 
 type Props = {
   mode: "buy" | "sell";
@@ -44,6 +45,8 @@ type Props = {
   setTradeType: React.Dispatch<React.SetStateAction<TradeType>>;
   fetchQuote: () => Promise<void>;
   isSwitching: boolean;
+  tokenPrice: string | undefined;
+  isLoadingQuote: boolean;
 };
 
 const presetOptions = [
@@ -61,7 +64,7 @@ const buyPresetOptions = [
 const SwapWindow = ({
   mode,
   token,
-  setActiveWallet,
+  tokenPrice,
   activeWallet,
   inputValue,
   setInputValue,
@@ -71,8 +74,9 @@ const SwapWindow = ({
   fetchQuote,
   isSwitching,
   setActiveBuyWallet,
+  isLoadingQuote,
 }: Props) => {
-  const { setIsOpen, setModalMode, isOpen } = useTokenModal();
+  const { setIsOpen, setModalMode } = useTokenModal();
 
   const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
   const openTokenModal = useCallback(() => {
@@ -90,29 +94,7 @@ const SwapWindow = ({
     [mode, setActiveBuyWallet]
   );
 
-  const priceOptions =
-    token?.address && token?.chainId
-      ? {
-          address: token?.address,
-          chainId: token?.chainId,
-        }
-      : undefined;
-
-  const {
-    data: ethPriceResponse,
-    isLoading,
-    error,
-  } = useTokenPrice("https://api.relay.link", priceOptions, {
-    // Optional query options
-    refetchInterval: 60000, // Refresh every minute
-  });
-
-  console.log("ethPriceResponse", ethPriceResponse);
-
-  const valueUsd =
-    inputValue.length > 0 && ethPriceResponse?.price
-      ? (ethPriceResponse?.price * Number(inputValue)).toFixed(2)
-      : "XX.XX";
+  const valueUsd = tokenPrice ? Number(tokenPrice).toFixed(2) : "XX.XX";
 
   const [intUsdPart, decUsdPart] = valueUsd.split(".");
 
@@ -165,6 +147,12 @@ const SwapWindow = ({
     [fetchQuote, mode, inputValue, tokenBalance, setTradeType, setInputValue]
   );
 
+  const isLoading =
+    (tradeType === TradeType.EXACT_INPUT && mode === "buy" && isLoadingQuote) ||
+    (tradeType === TradeType.EXACT_OUTPUT && mode === "sell" && isLoadingQuote);
+
+  const { ready } = usePrivy();
+
   return (
     <div className="swap-window">
       <div className="swap-window__input">
@@ -174,23 +162,52 @@ const SwapWindow = ({
             <span>Balance:</span>
           </div>
           <div className="swap-window__input__balance__value">
-            <GreenDot int={intBalancePart} dec={decBalancePart} />
+            <SkeletonLoaderWrapper
+              radius={2}
+              height={18}
+              width={48.95}
+              isLoading={isLoadingQuote}
+            >
+              <AnimatePresence initial={false} mode="popLayout">
+                <motion.span
+                  key={tokenBalance ?? "balances"}
+                  {...slidingTextAnimation}
+                >
+                  <GreenDot int={intBalancePart} dec={decBalancePart} />
+                </motion.span>
+              </AnimatePresence>
+            </SkeletonLoaderWrapper>
           </div>
         </div>
+
         <label className="swap-window__input__main">
-          <input
-            type="number"
-            inputMode="decimal"
-            placeholder="0"
-            // if your state is a string:
-            value={inputValue}
-            onChange={onChange}
-          />
+          <SkeletonLoaderWrapper
+            radius={2}
+            height={24}
+            width={"100%"}
+            isLoading={isLoading}
+          >
+            <input
+              type="number"
+              inputMode="decimal"
+              placeholder="0"
+              // if your state is a string:
+              value={inputValue}
+              onChange={onChange}
+            />
+          </SkeletonLoaderWrapper>
           <InputCoin />
         </label>
         <div className="swap-window__input__quote">
           <div className="swap-window__input__quote__value">
-            <GreenDot int={intUsdPart} dec={decUsdPart} />
+            <SkeletonLoaderWrapper
+              radius={2}
+              height={18}
+              width={30}
+              isLoading={isLoadingQuote}
+            >
+              <GreenDot int={intUsdPart} dec={decUsdPart} />
+            </SkeletonLoaderWrapper>
           </div>
           <div className="swap-window__input__quote__usd">USD</div>
         </div>
@@ -209,26 +226,47 @@ const SwapWindow = ({
                 activeWallet !== null),
           })}
         >
-          <div className="swap-window__token__wallet__pfp">
-            {!activeWallet ? (
-              <HexChain width={20} question />
-            ) : (
-              <HexChain
-                width={20}
-                uri={
-                  activeWallet?.type === "ethereum"
-                    ? getIconUri(1)
-                    : getIconUri(solanaChain.id)
-                }
-              />
-            )}
-          </div>
-          <span>
-            {!activeWallet?.address
-              ? "XxXX...XXXX"
-              : truncateAddress(activeWallet?.address)}
-          </span>
-          <div className="recipient-window__address__arrow">
+          <SkeletonLoaderWrapper
+            width={20}
+            height={20}
+            isLoading={!ready || isSwitching}
+          >
+            <div className="swap-window__token__wallet__pfp">
+              {!activeWallet ? (
+                <HexChain width={20} question />
+              ) : (
+                <HexChain
+                  width={20}
+                  uri={
+                    activeWallet?.type === "ethereum"
+                      ? getIconUri(1)
+                      : getIconUri(solanaChain.id)
+                  }
+                />
+              )}
+            </div>
+          </SkeletonLoaderWrapper>
+          <SkeletonLoaderWrapper
+            width={92.5}
+            height={20}
+            isLoading={!ready || isSwitching}
+          >
+            <AnimatePresence initial={false} mode="popLayout">
+              <motion.span
+                key={activeWallet?.address ?? "placeholder"}
+                {...slidingTextAnimation}
+              >
+                {!activeWallet?.address
+                  ? "XxXX...XXXX"
+                  : truncateAddress(activeWallet.address)}
+              </motion.span>
+            </AnimatePresence>
+          </SkeletonLoaderWrapper>
+          <div
+            className={classNames("recipient-window__address__arrow", {
+              "recipient-window__address__arrow--inactive": !ready,
+            })}
+          >
             <ArrowSmall />
           </div>
           {isOpenAddressModal && (
@@ -268,10 +306,16 @@ const SwapWindow = ({
               )}
             </div>
           </div>
-          <div className="token-to-buy__token__text">
-            <h4>{token ? token.symbol : "Select"}</h4>
-            <span>{token ? truncateAddress(token.address) : "Token"}</span>
-          </div>
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.div
+              key={tokenBalance ?? "balances"}
+              {...slidingTextAnimation}
+              className="token-to-buy__token__text"
+            >
+              <h4>{token ? token.symbol : "Select"}</h4>
+              <span>{token ? truncateAddress(token.address) : "Token"}</span>
+            </motion.div>
+          </AnimatePresence>
           <div className="token-to-buy__token__arrow">
             <SwapArrow />
           </div>

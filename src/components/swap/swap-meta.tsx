@@ -1,26 +1,28 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ChevDown, SlippageGas, ModalInfo } from "../icons";
 import PriceImpactInfo from "./price-impact-info";
 import { Portal } from "../slippage-modal/portal";
 import { Execute } from "@reservoir0x/relay-sdk";
 import { useSlippage } from "@/context/SlippageContext";
+import SkeletonLoaderWrapper from "../skeleton";
+import { AnimatePresence, motion } from "framer-motion";
+import classNames from "classnames";
+import { formatUnits } from "viem";
+import Link from "next/link";
+
+const relayDocUri = "https://docs.relay.link/what-is-relay";
 
 type Props = {
   quote: Execute | null;
+  isLoading: boolean;
 };
 
-const SwapMeta = ({ quote }: Props) => {
+const SwapMeta = ({ quote, isLoading }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenInfo, setIsOpenInfo] = useState(false);
+  const [isOpenSlippage, setIsOpenSlippage] = useState(false);
 
-  const {
-    isCustomSlippage,
-    setIsCustomSlippage,
-    value,
-    setValue,
-    isDragging,
-    setIsDragging,
-  } = useSlippage();
+  const { isCustomSlippage, value } = useSlippage();
 
   const totalImpactPercent = quote?.details?.totalImpact?.percent || "0";
   const totalImpactUsd = Number(
@@ -87,19 +89,6 @@ const SwapMeta = ({ quote }: Props) => {
   };
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  //   return (
-  //     <div  className="slippage-modal__wrapper" id="modal-root">
-  //       {wrapperRef.current && (
-  //         <Portal>
-  //           {isOpenInfo && (
-  //             <ModalInfo
-  //               paragraph="We'll set the slippage automatically to minimize the failure rate"
-  //               closeModal={() => setIsOpenInfo(false)}
-  //             />
-  //           )}
-  //         </Portal>
-  //       )}
-
   const inAmmount = parseFloat(
     quote?.details?.currencyIn?.amountFormatted || "0.00"
   );
@@ -128,105 +117,225 @@ const SwapMeta = ({ quote }: Props) => {
     ? (!reverseInOut ? inPerOut : outPerIn).toFixed(6)
     : "XX.XXXXXX";
 
-  console.log({ inAmmount, outAmmount, inPerOut, outPerIn });
+  const minOut = Number(
+    quote?.details?.currencyOut?.minimumAmount &&
+      quote?.details?.currencyOut?.currency?.decimals
+      ? formatUnits(
+          BigInt(quote?.details?.currencyOut?.minimumAmount),
+          quote?.details?.currencyOut?.currency?.decimals
+        )
+      : "0"
+  ).toFixed(6);
+
+  const detailsVariants = {
+    open: {
+      height: "auto",
+      transition: { when: "beforeChildren", staggerChildren: 0.1 },
+    },
+    collapsed: {
+      height: 0,
+      transition: { when: "afterChildren" },
+    },
+  };
+
+  const itemVariants = {
+    open: { opacity: 1, y: 0 },
+    collapsed: { opacity: 0, y: -10 },
+  };
+
+  useEffect(() => {
+    if (isOpen && !quote && !isLoading) {
+      setIsOpen(false);
+    }
+  }, [quote, isOpen, isLoading]);
+
   return (
-    <div id="price-impact" ref={wrapperRef} className="swap-meta__wrapper">
+    <motion.div
+      variants={detailsVariants}
+      id="price-impact"
+      ref={wrapperRef}
+      className="swap-meta__wrapper"
+    >
       <div className="swap-meta__container">
         <div className="swap-meta">
-          <div className="swap-meta__top">
-            <button
-              onClick={() => setReverseInOut(!reverseInOut)}
-              className="swap-meta__top__value"
-              disabled={!quote}
+          <div
+            className={classNames("swap-meta__top", {
+              "swap-meta__top--empty": !quote,
+            })}
+          >
+            <SkeletonLoaderWrapper
+              radius={2}
+              height={22}
+              width={"50%"}
+              isLoading={isLoading}
             >
-              <MetaHeaderItem
-                value="1.00"
-                ticker={getTicker(
-                  quote?.details?.currencyIn?.currency?.symbol,
-                  quote?.details?.currencyOut?.currency?.symbol,
+              <button
+                onClick={() => setReverseInOut(!reverseInOut)}
+                className="swap-meta__top__value"
+                disabled={!quote}
+              >
+                <MetaHeaderItem
+                  value="1.00"
+                  ticker={getTicker(
+                    quote?.details?.currencyIn?.currency?.symbol,
+                    quote?.details?.currencyOut?.currency?.symbol,
 
-                  "SELL"
-                )}
-              />
-              <span> = </span>
-              <MetaHeaderItem
-                value={dropDownValue}
-                //ticker="BUY"
-                ticker={getTicker(
-                  quote?.details?.currencyOut?.currency?.symbol,
-                  quote?.details?.currencyIn?.currency?.symbol,
-                  "BUY"
-                )}
-              />
-            </button>
+                    "SELL"
+                  )}
+                />
+                <span> = </span>
+                <MetaHeaderItem
+                  value={dropDownValue}
+                  //ticker="BUY"
+                  ticker={getTicker(
+                    quote?.details?.currencyOut?.currency?.symbol,
+                    quote?.details?.currencyIn?.currency?.symbol,
+                    "BUY"
+                  )}
+                />
+              </button>
+            </SkeletonLoaderWrapper>
             <button
               onClick={() => (quote ? setIsOpen(!isOpen) : undefined)}
               className="swap-meta__top__chev"
             >
-              <ChevDown />
+              <ChevDown isOpen={isOpen} />
             </button>
           </div>
-          {isOpen && (
-            <div className="swap-meta__details">
-              {details.map((item) => {
-                return (
-                  <div className="swap-meta-item" key={item.key}>
-                    <div className="swap-meta-item__name">
-                      <span>{item.name}</span>
-                    </div>
-                    <div className="swap-meta-item__value">
-                      {item.key === "cost" && <SlippageGas />}
-                      {item.key === "slippage" && (
-                        <div className="slippage-badge">
-                          {isCustomSlippage ? "Custom" : "Auto"}
-                        </div>
-                      )}
-                      <span className="swap-meta-item__value__text">
-                        {item.value.map((v, i) => (
-                          <span
-                            className={`swap-meta-item__value__text__${i}`}
-                            key={i}
-                          >
-                            {v}
-                          </span>
-                        ))}
-                      </span>
-                      {item.key === "impact" && (
-                        <div
-                          onMouseLeave={() => {
-                            if (isOpenInfo) setIsOpenInfo(false);
-                          }}
-                          onMouseEnter={() => {
-                            if (!isOpenInfo) setIsOpenInfo(true);
-                          }}
-                          className="swap-meta-item__impact"
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                className="swap-meta__details"
+                initial="collapsed"
+                animate="open"
+                exit="collapsed"
+                variants={detailsVariants}
+                style={{ overflow: "hidden" }}
+              >
+                {details.map((item) => {
+                  return (
+                    <div className="swap-meta-item" key={item.key}>
+                      <div className="swap-meta-item__name">
+                        <span>{item.name}</span>
+                      </div>
+
+                      <div className="swap-meta-item__value">
+                        <SkeletonLoaderWrapper
+                          radius={2}
+                          height={16}
+                          width={"50%"}
+                          isLoading={isLoading}
                         >
-                          <ModalInfo />
-                          {wrapperRef.current && (
-                            <Portal hostId="price-impact">
-                              {isOpenInfo && (
-                                <PriceImpactInfo
-                                  type={gasCurrencyName}
-                                  totalImpactUsd={totalImpactUsd}
-                                  totalImpactPercent={totalImpactPercent}
-                                  swapImpactUsd={swapImpactUsd}
-                                  gasValueUsd={gasValueUsd}
-                                  relayFeeUsd={relayFeeUsd}
-                                />
+                          <>
+                            {item.key === "cost" && <SlippageGas />}
+                            {item.key === "slippage" && (
+                              <div
+                                onMouseLeave={() => {
+                                  if (isOpenSlippage && item.key === "slippage")
+                                    setIsOpenSlippage(false);
+                                }}
+                                onMouseEnter={() => {
+                                  if (
+                                    !isOpenSlippage &&
+                                    item.key === "slippage"
+                                  )
+                                    setIsOpenSlippage(true);
+                                }}
+                                className="slippage-badge swap-meta-item__value__text--modal"
+                              >
+                                {isCustomSlippage ? "Custom" : "Auto"}
+                              </div>
+                            )}
+                            <Link
+                              target={
+                                item.key === "route" ? "_blank" : undefined
+                              }
+                              href={item.key === "route" ? relayDocUri : {}}
+                              onMouseLeave={() => {
+                                if (isOpenSlippage && item.key === "slippage")
+                                  setIsOpenSlippage(false);
+                              }}
+                              onMouseEnter={() => {
+                                if (!isOpenSlippage && item.key === "slippage")
+                                  setIsOpenSlippage(true);
+                              }}
+                              className={classNames(
+                                "swap-meta-item__value__text",
+                                {
+                                  "swap-meta-item__value__text--modal":
+                                    item.key === "slippage" ||
+                                    item.key === "route",
+                                  "swap-meta-item__value__text--hover":
+                                    item.key === "route",
+                                }
                               )}
-                            </Portal>
-                          )}
-                        </div>
-                      )}
+                            >
+                              {item.value.map((v, i) => (
+                                <span
+                                  className={`swap-meta-item__value__text__${i}`}
+                                  key={i}
+                                >
+                                  {v}
+                                </span>
+                              ))}
+                              {item.key === "slippage" &&
+                                wrapperRef.current && (
+                                  <Portal hostId="price-impact">
+                                    <AnimatePresence>
+                                      {isOpenSlippage && (
+                                        <PriceImpactInfo
+                                          totalImpactUsd={minOut}
+                                          minModal
+                                          index={1}
+                                        />
+                                      )}
+                                    </AnimatePresence>
+                                  </Portal>
+                                )}
+                            </Link>
+                            {item.key === "impact" && (
+                              <div
+                                onMouseLeave={() => {
+                                  if (isOpenInfo) setIsOpenInfo(false);
+                                }}
+                                onMouseEnter={() => {
+                                  if (!isOpenInfo) setIsOpenInfo(true);
+                                }}
+                                className="swap-meta-item__impact"
+                              >
+                                <ModalInfo />
+                                {wrapperRef.current && (
+                                  <Portal hostId="price-impact">
+                                    <AnimatePresence>
+                                      {isOpenInfo && (
+                                        <PriceImpactInfo
+                                          type={gasCurrencyName}
+                                          totalImpactUsd={totalImpactUsd}
+                                          totalImpactPercent={
+                                            totalImpactPercent
+                                          }
+                                          swapImpactUsd={swapImpactUsd}
+                                          gasValueUsd={gasValueUsd}
+                                          relayFeeUsd={relayFeeUsd}
+                                        />
+                                      )}
+                                    </AnimatePresence>
+                                  </Portal>
+                                )}
+                              </div>
+                            )}
+                          </>
+                        </SkeletonLoaderWrapper>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
