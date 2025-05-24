@@ -7,6 +7,10 @@
     gap: 8px;
 }
 
+.modal-info {
+    transition: all .2s ease-in-out;
+}
+
 .swap-window {
     display: flex;
     padding: 8px;
@@ -14,6 +18,7 @@
     border: 1px solid rgba(136, 150, 151, 0.20);
     background: rgba(136, 150, 151, 0.05);
     gap: 4px;
+    max-height: 140px;
 
 
     &__wallet {
@@ -34,6 +39,7 @@
         }
 
         .wallets {
+            color: #D9F1E9;
             border-radius: 6px;
         }
     }
@@ -113,8 +119,12 @@
             font-style: normal;
             font-weight: 400;
             line-height: normal;
-            color: #D9F1E9;
+
             position: relative;
+
+            span {
+                color: #D9F1E9;
+            }
 
             &--error {
                 border: 1px solid rgba(241, 61, 32, 0.20);
@@ -127,7 +137,7 @@
                 border-radius: 100px;
                 width: 20px;
                 height: 20px;
-                color: #889697;
+                //  color: #889697;
 
 
                 //  border: 1px solid #D9F1E9;
@@ -165,7 +175,7 @@
 
             input {
 
-                width: 100%;
+                width: calc(100% - 10px);
                 color: #D9F1E9;
                 font-size: 18px;
                 font-style: normal;
@@ -317,4 +327,65 @@
         background: rgba(136, 150, 151, 0.05);
         margin-left: auto;
     }
+}
+
+
+.swap-window__token__wallet,
+.token-to-buy__token,
+.swap-window__token__ammount__option,
+.swap-header__settings {
+
+    transition: all .2s ease-in-out;
+
+    .recipient-window__address__arrow,
+    .token-to-buy__token__arrow {
+        position: relative;
+        transition: transform .2s ease-in-out;
+    }
+
+
+    &:hover {
+        border: 1px solid rgba(217, 241, 233, 0.15);
+        color: rgba(217, 241, 233, 0.8);
+        background: rgba(217, 241, 233, 0.1);
+
+        .recipient-window__address__arrow,
+        .token-to-buy__token__arrow {
+            transform: translateX(2px);
+        }
+
+    }
+
+
+    &:active {
+        color: rgba(174, 233, 0, 0.8);
+        border: 1px solid rgba(174, 233, 0, 0.15);
+        background: rgba(174, 233, 0, 0.1);
+
+        .recipient-window__address__arrow,
+        .token-to-buy__token__arrow {
+            transform: translateX(4px);
+        }
+    }
+
+}
+
+
+.swap-window__token__ammount__option {
+    span {
+        transition: all .2s ease-in-out;
+    }
+
+    &:active {
+        span {
+            scale: 1.1;
+        }
+    }
+}
+
+
+.swap-header__settings--active {
+    color: rgba(174, 233, 0, 0.8) !important;
+    border: 1px solid rgba(174, 233, 0, 0.15) !important;
+    background: rgba(174, 233, 0, 0.1) !important;
 }

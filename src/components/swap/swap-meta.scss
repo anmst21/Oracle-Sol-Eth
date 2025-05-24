@@ -13,6 +13,19 @@
 }
 
 
+.modal-info-icon {
+    display: flex;
+    transition: all .3s ease-in-out;
+
+    &:hover {
+        color: #D9F1E9;
+    }
+
+    &--active {
+        color: #D9F1E9;
+    }
+}
+
 
 .price-impact-info--1 {
     background-color: red;
@@ -174,6 +187,15 @@
     line-height: 16px;
 
 
+    .to-gap {
+        gap: 4px
+    }
+
+    .wrapper {
+        justify-content: flex-end;
+        align-items: flex-end;
+    }
+
     &__impact {
         display: flex;
         position: relative;
@@ -273,6 +295,16 @@
             align-items: center;
             flex: 1;
             justify-content: flex-end;
+
+            transition: all .2s ease-in-out;
+
+            &:hover {
+                color: #D9F1E9;
+            }
+
+            &--active {
+                color: #AEE900;
+            }
         }
     }
 

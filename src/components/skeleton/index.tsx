@@ -1,66 +1,78 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { useEffect, useState, CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-type SkeletonLoaderWrapperProps = {
-  /** Wraps any component and overlays a skeleton while loading */
+type Props = {
   isLoading: boolean;
-  /** Optional explicit width and height for wrapper */
-  width?: string | number;
-  height?: string | number;
+  width?: number | string;
+  height?: number | string;
   radius?: number;
+  flex?: boolean;
   children: React.ReactNode;
 };
 
-const fadeVariants = {
+const fade = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
   exit: { opacity: 0 },
 };
 
-const SkeletonLoaderWrapper: React.FC<SkeletonLoaderWrapperProps> = ({
+export default function SkeletonLoaderWrapper({
   isLoading,
   width,
   height,
-  children,
   radius = 2,
-}) => {
+  flex,
+  children,
+}: Props) {
   const [showLoader, setShowLoader] = useState(isLoading);
 
-  const style: CSSProperties = {};
-  if (width !== undefined) style.width = showLoader ? width : "auto";
-  if (height !== undefined) style.height = height;
-  style.borderRadius = radius;
-
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let t: ReturnType<typeof setTimeout>;
     if (isLoading) {
-      // show immediately
       setShowLoader(true);
     } else {
-      // delay removal by 500ms
-      timeout = setTimeout(() => setShowLoader(false), 500);
+      t = setTimeout(() => setShowLoader(false), 500);
     }
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(t);
   }, [isLoading]);
 
+  const style: CSSProperties = {
+    // undefined → CSS auto, which Framer will measure
+    width: showLoader ? width : undefined,
+    height,
+    flex: flex ? 1 : undefined,
+    borderRadius: radius,
+  };
+
   return (
-    <div className="wrapper" style={style}>
-      <AnimatePresence>
+    <motion.div
+      className="wrapper"
+      style={style}
+      layout
+      transition={{ type: "tween", duration: 0.2 }}
+    >
+      <AnimatePresence initial={false} mode="popLayout">
         {showLoader ? (
           <motion.div
+            key="skeleton"
             className="skeleton"
-            variants={fadeVariants}
+            variants={fade}
             initial="initial"
             animate="animate"
             exit="exit"
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           />
         ) : (
-          children
+          <motion.div
+            className="to-gap"
+            style={{ display: "flex" }}
+            key="content"
+            layout
+          >
+            {children}
+          </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
-};
-
-export default SkeletonLoaderWrapper;
+}

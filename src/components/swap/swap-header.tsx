@@ -38,7 +38,9 @@ const SwapHeader = () => {
         onClick={() => {
           if (!isOpenSlippage) setIsOpenSlippage(true);
         }}
-        className="swap-header__settings"
+        className={classNames("swap-header__settings", {
+          "swap-header__settings--active": isOpenSlippage,
+        })}
       >
         <SwapCog />
         {isOpenSlippage && (

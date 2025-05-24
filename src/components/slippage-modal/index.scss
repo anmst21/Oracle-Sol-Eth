@@ -21,6 +21,18 @@
 
 
 
+    &::before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: -10px;
+        width: 70px;
+        height: 24px;
+        // background-color: red;
+    }
+
+
+
     &__header {
         border-radius: 6px;
         border: 1px solid rgba(136, 150, 151, 0.10);
@@ -72,7 +84,9 @@
     border-radius: 8px;
     background: rgba(136, 150, 151, 0.05);
 
-
+    .info-active {
+        color: #D9F1E9;
+    }
 
     &__button {
         border-radius: 6px;
@@ -84,7 +98,23 @@
         width: 100%;
 
 
+        .underline {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: 0;
+            z-index: -1;
+            border: 1px solid rgba(174, 233, 0, 0.25) !important;
+
+            background: rgba(174, 233, 0, 0.10);
+            color: #AEE900;
+            border-radius: 4px;
+        }
+
+
         button {
+            position: relative;
             border-radius: 4px;
             display: flex;
             flex: 1;
@@ -94,6 +124,11 @@
 
 
             color: rgba(217, 241, 233, 0.80);
+            transition: all .2s ease-in-out;
+
+            &:hover {
+                color: #D9F1E9;
+            }
 
             font-size: 14px;
             font-style: normal;
@@ -104,12 +139,12 @@
 
 
 
-        &--active {
-            border: 1px solid rgba(174, 233, 0, 0.25) !important;
+        // &--active {
+        //     border: 1px solid rgba(174, 233, 0, 0.25) !important;
 
-            background: rgba(174, 233, 0, 0.10);
-            color: #AEE900;
-        }
+        //     background: rgba(174, 233, 0, 0.10);
+        //     color: #AEE900;
+        // }
     }
 
 
@@ -167,9 +202,10 @@
             top: 0;
             height: 50px;
             width: 35px;
-            background-color: red;
+
 
         }
+
 
         &__item {
             display: flex;
@@ -180,6 +216,12 @@
             cursor: pointer;
             position: relative;
 
+            transition: all .2s ease-in-out;
+
+            &:hover {
+
+                color: #D9F1E9;
+            }
 
 
         }
@@ -206,12 +248,12 @@
         position: relative;
 
 
-        &::after {
+        &::before {
             content: "";
             //    background-color: red;
             position: absolute;
             height: 60px;
-            width: 50px;
+            width: 100%;
             z-index: -1;
             right: 0;
             bottom: calc(100% - 20px);

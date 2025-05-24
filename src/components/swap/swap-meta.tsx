@@ -138,10 +138,10 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
     },
   };
 
-  const itemVariants = {
-    open: { opacity: 1, y: 0 },
-    collapsed: { opacity: 0, y: -10 },
-  };
+  // const itemVariants = {
+  //   open: { opacity: 1, y: 0 },
+  //   collapsed: { opacity: 0, y: -10 },
+  // };
 
   useEffect(() => {
     if (isOpen && !quote && !isLoading) {
@@ -197,7 +197,9 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
             </SkeletonLoaderWrapper>
             <button
               onClick={() => (quote ? setIsOpen(!isOpen) : undefined)}
-              className="swap-meta__top__chev"
+              className={classNames("swap-meta__top__chev", {
+                "swap-meta__top__chev--active": isOpen,
+              })}
             >
               <ChevDown isOpen={isOpen} />
             </button>
@@ -303,7 +305,13 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
                                 }}
                                 className="swap-meta-item__impact"
                               >
-                                <ModalInfo />
+                                <div
+                                  className={classNames("modal-info-icon", {
+                                    "modal-info-icon--active": isOpenInfo,
+                                  })}
+                                >
+                                  <ModalInfo />
+                                </div>
                                 {wrapperRef.current && (
                                   <Portal hostId="price-impact">
                                     <AnimatePresence>

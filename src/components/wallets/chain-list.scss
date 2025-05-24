@@ -1,0 +1,143 @@
+.chain-list {
+    border-radius: 12px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(136, 150, 151, 0.05);
+    backdrop-filter: blur(75px);
+    padding: 12px;
+    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    max-height: 500px;
+    overflow: scroll;
+    z-index: 1;
+
+
+    &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+
+    scrollbar-width: none;
+
+    -ms-overflow-style: none;
+
+}
+
+
+.chain-item {
+    border-radius: 8px;
+    background: rgba(136, 150, 151, 0.05);
+    backdrop-filter: blur(75px);
+    padding: 4px;
+    gap: 4px;
+    display: flex;
+    flex-direction: column;
+    transition: all .2s ease-in-out;
+
+    .chain-item__info__balance,
+    .chain-item__info__name,
+    .chain-item__info__chain,
+    .chain-item__select {
+        transition: all .2s ease-in-out;
+    }
+
+    &--active {
+        background: rgba(174, 233, 0, 0.05);
+
+        .chain-item__select {
+            border: 1px solid rgba(174, 233, 0, 0.15);
+        }
+
+
+        .chain-item__info__balance,
+        .chain-item__info__name,
+        .chain-item__info__chain,
+        .chain-item__select {
+            color: rgba(174, 233, 0, 0.80) !important;
+            background: rgba(174, 233, 0, 0.10) !important;
+
+        }
+    }
+
+    &__info {
+        display: flex;
+        height: 28px;
+        gap: 4px;
+
+
+
+        color: #889697;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+
+
+        &__name,
+        &__balance {
+            padding: 0 8px;
+        }
+
+
+        &__chain,
+        &__name,
+        &__balance {
+            border-radius: 6px;
+            background: rgba(136, 150, 151, 0.05);
+            display: flex;
+            align-items: center;
+        }
+
+        &__chain {
+            width: 28px;
+            justify-content: center;
+        }
+
+        &__name {}
+
+        &__balance {
+            .wrapper {
+                justify-content: flex-end;
+            }
+
+            flex: 1;
+
+        }
+    }
+
+    &__select {
+
+
+
+        border-radius: 5px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        background: rgba(217, 241, 233, 0.05);
+
+        height: 28px;
+        padding: 4px 5px;
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+
+        color: rgba(217, 241, 233, 0.80);
+
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+}
+
+.chain-item:has(.chain-item__select:hover) {
+
+    .chain-item__info__chain,
+    .chain-item__info__name,
+    .chain-item__info__balance,
+    .chain-item__select {
+        color: rgba(217, 241, 233, 0.80);
+        background: rgba(217, 241, 233, 0.10);
+    }
+}

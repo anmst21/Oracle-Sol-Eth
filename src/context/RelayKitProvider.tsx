@@ -10,9 +10,7 @@ import {
 import { useTokenModal } from "./TokenModalProvider";
 
 import { ReactNode } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
 // createClient({
 //   baseApiUrl: MAINNET_RELAY_API,
 //   source: "YOUR.SOURCE",
@@ -40,10 +38,8 @@ export function RelayKitProviderWrapper({
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <RelayKitProvider options={options}>
-        {children as unknown as ReactNode}
-      </RelayKitProvider>
-    </QueryClientProvider>
+    <RelayKitProvider options={options}>
+      {children as unknown as ReactNode}
+    </RelayKitProvider>
   );
 }

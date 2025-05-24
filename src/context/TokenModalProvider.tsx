@@ -37,6 +37,8 @@ interface TokenModalContextValue {
   userSolanaTokens: UnifiedToken[] | null;
   setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
   setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  isLoadingNativeSolBalance: boolean;
+  isLoadingUserEthTokens: boolean;
 }
 
 const TokenModalContext = createContext<TokenModalContextValue | undefined>(
@@ -55,6 +57,10 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
   const [userEthTokens, setUserEthTokens] = useState<UnifiedToken[] | null>(
     null
   );
+  const [isLoadingUserEthTokens, setIsLoadingUserEthTokens] = useState(false);
+  const [isLoadingNativeSolBalance, setIsLoadingNativeSolBalance] =
+    useState(false);
+
   const [nativeSolBalance, setNativeSolBalance] =
     useState<SolBalanceResponse | null>(null);
 
@@ -109,18 +115,22 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
 
   const solNativeBalance = useCallback(
     async (address: string) => {
+      setIsLoadingNativeSolBalance(true);
       const balance = await getSolBalance(address);
       setNativeSolBalance(balance);
+      setIsLoadingNativeSolBalance(false);
     },
     [setNativeSolBalance]
   );
 
   const ethCoins = useCallback(
     async (address: string) => {
+      setIsLoadingUserEthTokens(true);
       const tokens = await getUserEthTokens({
         address,
       });
       setUserEthTokens(tokens);
+      setIsLoadingUserEthTokens(false);
     },
     [setUserEthTokens]
   );
@@ -138,18 +148,27 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
   const { activeWallet } = useActiveWallet();
   useEffect(() => {
     if (activeWallet) {
-      if (activeWallet.type === "ethereum") {
+      if (activeWallet.type === "ethereum" && !userEthTokens) {
         ethCoins(activeWallet.address);
       }
 
-      if (activeWallet.type === "solana") {
+      if (activeWallet.type === "solana" && !userSolanaTokens) {
         solCoins(activeWallet.address);
       }
-      if (activeWallet.type === "solana") {
+      if (activeWallet.type === "solana" && !nativeSolBalance) {
         solNativeBalance(activeWallet.address);
       }
     }
-  }, [ethCoins, solCoins, solNativeBalance, activeWallet]);
+  }, [
+    ethCoins,
+    solCoins,
+    solNativeBalance,
+    activeWallet,
+    userEthTokens,
+    userSolanaTokens,
+    nativeSolBalance,
+  ]);
+
   console.log({ nativeSolBalance, userEthTokens, activeWallet });
 
   //Number(chainId.split(":")[1])
@@ -169,6 +188,8 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
         userSolanaTokens,
         setBuyToken,
         setSellToken,
+        isLoadingNativeSolBalance,
+        isLoadingUserEthTokens,
       }}
     >
       {children}

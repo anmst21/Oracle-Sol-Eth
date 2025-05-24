@@ -26,6 +26,19 @@ import SkeletonLoaderWrapper from "../skeleton";
 import { AnimatePresence, motion } from "motion/react";
 import { slidingTextAnimation } from "./animation";
 
+const containerVariants = {
+  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" } },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.2, ease: "easeInOut" },
+  },
+};
+
+const buttonVariants = {
+  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" } },
+  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeInOut" } },
+};
+
 type Props = {
   mode: "buy" | "sell";
   isNativeBalance?: boolean;
@@ -168,14 +181,7 @@ const SwapWindow = ({
               width={48.95}
               isLoading={isLoadingQuote}
             >
-              <AnimatePresence initial={false} mode="popLayout">
-                <motion.span
-                  key={tokenBalance ?? "balances"}
-                  {...slidingTextAnimation}
-                >
-                  <GreenDot int={intBalancePart} dec={decBalancePart} />
-                </motion.span>
-              </AnimatePresence>
+              <GreenDot int={intBalancePart} dec={decBalancePart} />
             </SkeletonLoaderWrapper>
           </div>
         </div>
@@ -184,8 +190,9 @@ const SwapWindow = ({
           <SkeletonLoaderWrapper
             radius={2}
             height={24}
-            width={"100%"}
+            width={"auto"}
             isLoading={isLoading}
+            flex
           >
             <input
               type="number"
@@ -269,18 +276,26 @@ const SwapWindow = ({
           >
             <ArrowSmall />
           </div>
-          {isOpenAddressModal && (
-            <div className="swap-window__wallet">
-              <WalletModal
-                isBuy={mode === "buy"}
-                callback={(wallet) => {
-                  callback(wallet);
-                }}
-                swapWindow
-                activeAddress={activeWallet?.address}
-              />
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            {isOpenAddressModal && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                className="swap-window__wallet"
+              >
+                <WalletModal
+                  isBuy={mode === "buy"}
+                  callback={(wallet) => {
+                    callback(wallet);
+                  }}
+                  swapWindow
+                  activeAddress={activeWallet?.address}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <button onClick={openTokenModal} className="token-to-buy__token">
@@ -293,13 +308,18 @@ const SwapWindow = ({
                 uri={token.chainId ? getIconUri(token.chainId) : undefined}
               />
             )}
-            <div className="user-placeholder">
+            <div
+              className={classNames("user-placeholder", {
+                "user-placeholder--empty": !token,
+              })}
+            >
               {token && token.logo ? (
                 <Image
                   src={token.logo}
                   width={30}
                   height={30}
                   alt={`${mode} token input`}
+                  key={token.name}
                 />
               ) : (
                 <UserQuestion />
@@ -320,24 +340,44 @@ const SwapWindow = ({
             <SwapArrow />
           </div>
         </button>
-        {Number(tokenBalance) !== 0 ||
-        (token && mode === "buy" && inputValue.length > 0) ? (
-          <div className="swap-window__token__ammount">
-            {(mode === "sell" ? presetOptions : buyPresetOptions).map(
-              (option, i) => (
-                <button
-                  onClick={() => onOptionClick(option.multiplier)}
-                  className="swap-window__token__ammount__option"
-                  key={i}
-                >
-                  {option.value}
-                </button>
-              )
-            )}
-          </div>
-        ) : (
-          <div className="swap-window__token__ammount__placeholder" />
-        )}
+        <AnimatePresence mode="wait">
+          {Number(tokenBalance) !== 0 ||
+          (token && mode === "buy" && inputValue.length > 0) ? (
+            <motion.div
+              key="options"
+              variants={containerVariants}
+              initial="exit"
+              animate="enter"
+              exit="exit"
+              className="swap-window__token__ammount"
+            >
+              {(mode === "sell" ? presetOptions : buyPresetOptions).map(
+                (option) => (
+                  <motion.button
+                    key={option.value} // unique key per option
+                    variants={buttonVariants}
+                    initial="exit"
+                    animate="enter"
+                    exit="exit"
+                    onClick={() => onOptionClick(option.multiplier)}
+                    className="swap-window__token__ammount__option"
+                  >
+                    <span>{option.value}</span>
+                  </motion.button>
+                )
+              )}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="placeholder"
+              variants={containerVariants}
+              initial="exit"
+              animate="enter"
+              exit="exit"
+              className="swap-window__token__ammount__placeholder"
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

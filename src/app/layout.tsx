@@ -11,6 +11,7 @@ import { ActiveWalletProvider } from "@/context/ActiveWalletContext";
 import { SlippageProvider } from "@/context/SlippageContext";
 import Header from "@/components/header";
 import { RelayKitProviderWrapper as RelayKitProvider } from "@/context/RelayKitProvider";
+import QueryClientProvider from "@/context/QueryClientProvider";
 
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
@@ -41,33 +42,35 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${firaCode.variable} ${handjet.variable}`}>
-        <PrivyProvider>
-          <SolanaCoinsProvider>
-            <CommunityCoinsProvider>
-              <GeckoTokensProvider>
-                <MoonPayContextProvider>
-                  <ActiveWalletProvider>
-                    <TokenModalProvider>
-                      <RelayKitProvider>
-                        <SlippageProvider>
-                          <Header />
-                          <div className="main">
-                                                          {/* <TokenModal
+        <QueryClientProvider>
+          <PrivyProvider>
+            <SolanaCoinsProvider>
+              <CommunityCoinsProvider>
+                <GeckoTokensProvider>
+                  <MoonPayContextProvider>
+                    <ActiveWalletProvider>
+                      <TokenModalProvider>
+                        <RelayKitProvider>
+                          <SlippageProvider>
+                            <Header />
+                            <div className="main">
+                              {/* <TokenModal
                                             geckoCoins={gecko}
                                             communityCoins={community}
                                             solanaCoins={solana}
                                           /> */}
-                            {children}
-                          </div>
-                        </SlippageProvider>
-                      </RelayKitProvider>
-                    </TokenModalProvider>
-                  </ActiveWalletProvider>
-                </MoonPayContextProvider>
-              </GeckoTokensProvider>
-            </CommunityCoinsProvider>
-          </SolanaCoinsProvider>
-        </PrivyProvider>
+                              {children}
+                            </div>
+                          </SlippageProvider>
+                        </RelayKitProvider>
+                      </TokenModalProvider>
+                    </ActiveWalletProvider>
+                  </MoonPayContextProvider>
+                </GeckoTokensProvider>
+              </CommunityCoinsProvider>
+            </SolanaCoinsProvider>
+          </PrivyProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

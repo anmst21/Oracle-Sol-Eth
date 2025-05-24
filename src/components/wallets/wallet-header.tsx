@@ -10,13 +10,24 @@ import { useTokenModal } from "@/context/TokenModalProvider";
 import { zeroAddress } from "viem";
 import GreenDot from "../green-dot";
 import { usePrivy } from "@privy-io/react-auth";
+import { AnimatePresence, motion } from "motion/react";
+import { slidingTextAnimation } from "../swap/animation";
+import classNames from "classnames";
 
 const WalletHeader = ({
   callback,
+  chainCallback,
+  closeIfOpenChains,
   closeIfOpen,
+  isOpenWallet,
+  isOpenChains,
 }: {
-  closeIfOpen: () => void;
+  chainCallback: () => void;
   callback: () => void;
+  closeIfOpenChains: () => void;
+  closeIfOpen: () => void;
+  isOpenWallet: boolean;
+  isOpenChains: boolean;
 }) => {
   const { activeWallet } = useActiveWallet();
   const { nativeSolBalance, userEthTokens } = useTokenModal();
@@ -52,8 +63,14 @@ const WalletHeader = ({
         </button>
       ) : (
         <>
-          <div onClick={closeIfOpen} className="wallet-header__balance">
-            <div className="wallet-header__balance__chain">
+          <button
+            onClick={() => (chainCallback(), closeIfOpen())}
+            className="wallet-header__balance"
+          >
+            <div
+              key={activeWallet?.address}
+              className="wallet-header__balance__chain"
+            >
               <HexChain
                 width={20}
                 uri={
@@ -63,19 +80,38 @@ const WalletHeader = ({
                 }
               />
             </div>
-            <div className="wallet-header__balance__number">
-              <GreenDot int={balance[0]} dec={balance[1]} />
+
+            <div
+              className={classNames("wallet-header__balance__number", {
+                "button--active": isOpenChains,
+              })}
+            >
+              <AnimatePresence mode="popLayout">
+                <motion.span {...slidingTextAnimation} key={activeBalance}>
+                  <GreenDot int={balance[0]} dec={balance[1]} />
+                </motion.span>
+              </AnimatePresence>
             </div>
-          </div>
+          </button>
           <div className="divider">
             <div />
           </div>
-          <button onClick={callback} className="wallet-header__address">
+          <button
+            onClick={() => (callback(), closeIfOpenChains())}
+            className="wallet-header__address"
+          >
             <div className="wallet-header__address__provider">
               <Wallet />
             </div>
-            <div className="wallet-header__address__value">
-              <div className="wallet-header__address__value__image">
+            <div
+              className={classNames("wallet-header__address__value", {
+                "button--active": isOpenWallet,
+              })}
+            >
+              <div
+                key={activeWallet?.address}
+                className="wallet-header__address__value__image"
+              >
                 {activeWallet?.meta?.icon && (
                   <Image
                     alt={activeWallet?.meta.id}
@@ -85,12 +121,16 @@ const WalletHeader = ({
                   />
                 )}
               </div>
-
-              <span>
-                {activeWallet?.address
-                  ? truncateAddress(activeWallet?.address)
-                  : "0xXX...XXXX"}
-              </span>
+              <AnimatePresence mode="popLayout">
+                <motion.span
+                  key={activeWallet?.address}
+                  {...slidingTextAnimation}
+                >
+                  {activeWallet?.address
+                    ? truncateAddress(activeWallet?.address)
+                    : "0xXX...XXXX"}
+                </motion.span>
+              </AnimatePresence>
             </div>
           </button>
         </>

@@ -30,6 +30,7 @@ function Icon({
         fill="none"
         viewBox="0 0 22 24"
         className={className}
+        //  style={{ transition: "all .3s ease-in-out" }}
       >
         <defs>
           <pattern
@@ -49,7 +50,7 @@ function Icon({
               <>
                 <path fill="transparent" d="M0 0H22V24H0z"></path>
                 <path
-                  fill="#889697"
+                  fill="currentColor"
                   d="M10.03 15.235v-1.058h1.06V15.236h-1.06zm0-.588V13.588h1.06v1.06h-1.06zm0-1.176v-1.06h1.06v1.06h-1.06zm0-.589V11.823h1.06v1.06h-1.06zm.589-.588V11.235H11.678v1.06h-1.06zm.588 0V11.235H12.266v1.06H11.207zm.588-.588V10.647h1.06V11.706h-1.06zm-2.94-.588v-1.06H9.913v1.06h-1.06zm2.94 0v-1.06h1.06v1.06h-1.06zm-2.94-.589V9.47H9.913v1.06h-1.06zm2.94 0V9.47h1.06v1.06h-1.06zm-2.94-.588V8.882H9.913v1.06h-1.06zm2.94 0V8.882h1.06v1.06h-1.06zm-2.353-.588V8.294h1.06V9.353h-1.06zm.589 0V8.294h1.058V9.353H10.03zm.588 0V8.294H11.678V9.353h-1.06zm.588 0V8.294H12.266V9.353H11.207z"
                 ></path>
               </>

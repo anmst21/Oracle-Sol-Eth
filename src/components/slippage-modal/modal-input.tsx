@@ -3,6 +3,7 @@ import * as Slider from "@radix-ui/react-slider";
 import { SliderDots } from "../icons";
 import GreenDot from "../green-dot";
 import { useSlippage } from "@/context/SlippageContext";
+import { AnimatePresence, motion } from "motion/react";
 
 const ModalInput = () => {
   const { value, setValue, isDragging, setIsDragging } = useSlippage();
@@ -64,9 +65,17 @@ const ModalInput = () => {
           >
             <SliderDots />
             {isDragging && (
-              <div className="slider-tooltip">
-                <GreenDot int={splittedValue[0]} dec={splittedValue[1]} />%
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="slider-tooltip"
+                >
+                  <GreenDot int={splittedValue[0]} dec={splittedValue[1]} />%
+                </motion.div>
+              </AnimatePresence>
             )}
           </Slider.Thumb>
         </Slider.Root>

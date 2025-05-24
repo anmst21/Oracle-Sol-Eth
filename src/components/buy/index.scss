@@ -50,7 +50,7 @@
         &__arrow {
             display: flex;
             margin-left: auto;
-            transition: all .3s ease-in-out;
+            //     transition: all .3s ease-in-out;
 
             &--inactive {
                 opacity: .5;
@@ -68,7 +68,7 @@
 
 
 .user-placeholder {
-    border: 1px solid #889697;
+    border: 1.5px solid currentColor;
     overflow: hidden;
     width: 32px;
     height: 32px;
@@ -77,11 +77,14 @@
     justify-content: center;
     background-color: #889697;
     border-radius: 1000px;
-    color: #0F0E1B;
+    //  color: #0F0E1B;
     position: relative;
     left: -10px;
+    // transition: all .2s ease-in-out;
 
-
+    svg {
+        color: #252732;
+    }
 
     &--md {
         width: 24px;
@@ -119,6 +122,27 @@
         background: rgba(217, 241, 233, 0.05);
         padding: 0 12px;
         align-items: center;
+
+        .user-placeholder--empty {
+            border: none;
+            transition: background-color .2s ease-in-out;
+        }
+
+        &:hover {
+            .user-placeholder--empty {
+                background-color: #D9F1E9;
+                border-color: #D9F1E9;
+            }
+        }
+
+        &:active {
+            .user-placeholder--empty {
+                background-color: #AEE900;
+                border-color: #AEE900;
+            }
+        }
+
+
 
         &__text {
             display: flex;
