@@ -69,6 +69,20 @@
         background: rgba(15, 14, 27, 0.20);
         align-items: center;
 
+        transition: all .2s ease-in-out;
+
+        &:hover {
+            border: 1px solid rgba(217, 241, 233, 0.15);
+            color: rgba(217, 241, 233, 1);
+            background: rgba(217, 241, 233, 0.10);
+        }
+
+        &:focus-within {
+            border: 1px solid #AEE900;
+            background: rgba(174, 233, 0, 0.10);
+            color: #AEE900;
+        }
+
         input {
             flex: 1;
 
@@ -137,13 +151,16 @@
         top: 0;
         bottom: 0;
         z-index: 300;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     &__container {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        // position: absolute;
+        // left: 50%;
+        // top: 50%;
+        // transform: translate(-50%, -50%);
         width: 320px;
         padding: 12px;
 

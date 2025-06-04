@@ -13,12 +13,9 @@
 
 .swap-window {
     display: flex;
-    padding: 8px;
-    border-radius: 12px;
-    border: 1px solid rgba(136, 150, 151, 0.20);
-    background: rgba(136, 150, 151, 0.05);
+
     gap: 4px;
-    max-height: 140px;
+    max-height: 122px;
 
 
     &__wallet {
@@ -172,6 +169,28 @@
         &__main {
             display: flex;
             cursor: pointer;
+            transition: all .2s ease-in-out;
+
+
+            border-radius: 6px;
+            border: 1px solid rgba(136, 150, 151, 0.10);
+            background: rgba(15, 14, 27, 0.20);
+            padding: 6px 12px;
+            align-items: center;
+            display: flex;
+            height: 48px;
+
+            &:hover {
+                border: 1px solid rgba(217, 241, 233, 0.15);
+                color: rgba(217, 241, 233, 1);
+                background: rgba(217, 241, 233, 0.10);
+            }
+
+            &:focus-within {
+                border: 1px solid #AEE900;
+                background: rgba(174, 233, 0, 0.10);
+                color: #AEE900;
+            }
 
             input {
 
@@ -203,15 +222,7 @@
             }
         }
 
-        &__main {
-            border-radius: 6px;
-            border: 1px solid rgba(136, 150, 151, 0.10);
-            background: rgba(15, 14, 27, 0.20);
-            padding: 6px 12px;
-            align-items: center;
-            display: flex;
-            height: 48px;
-        }
+
 
         &__balance {
             display: flex;
@@ -264,21 +275,80 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    border-radius: 12px;
+    padding: 8px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(136, 150, 151, 0.05);
 
     &__switch {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 24px;
-        height: 24px;
-        border-radius: 4px;
-        border: 1px solid #889697;
-        background: #151521;
 
+        flex: 1;
+        height: 32px;
+        min-height: 32px;
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
+        gap: 8px;
+
+        color: #889697;
+
+
+        border-radius: 8px;
+        background: rgba(136, 150, 151, 0.05);
+        transition: all .2s ease-in-out;
+
+
+
+
+
+        &::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            top: 4px;
+            bottom: 4px;
+            border-radius: 5px;
+            border: 1px solid rgba(136, 150, 151, 0.10);
+            background: rgba(217, 241, 233, 0.05);
+            transition: all .2s ease-in-out;
+        }
+
+
+        &:hover {
+            background: rgba(217, 241, 233, 0.05);
+
+
+            color: rgba(217, 241, 233, 0.80);
+
+            &::after {
+                border: 1px solid rgba(217, 241, 233, 0.15);
+                background: rgba(217, 241, 233, 0.10);
+            }
+        }
+
+
+        &:active {
+            color: rgba(174, 233, 0, 0.80);
+            background: rgba(174, 233, 0, 0.05);
+
+            &::after {
+                border: 1px solid rgba(174, 233, 0, 0.10);
+                background: rgba(174, 233, 0, 0.10);
+            }
+
+
+        }
+
+
+        span {
+            color: rgba(217, 241, 233, 0.80);
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 16px;
+        }
     }
 }
 
@@ -306,11 +376,24 @@
         height: 32px;
         align-items: center;
         border-radius: 4px;
+        transition: all .2s ease-in-out;
+
+        &:hover {
+            border: 1px solid rgba(217, 241, 233, 0.15);
+            color: rgba(217, 241, 233, 1);
+            background: rgba(217, 241, 233, 0.10);
+        }
+
+        &:active {
+            border: 1px solid #AEE900;
+            background: rgba(174, 233, 0, 0.10);
+            color: #AEE900;
+        }
 
         &--active {
-            border-color: #AEE900;
-            color: #AEE900;
-            background: rgba(174, 233, 0, 0.10);
+            border-color: #AEE900 !important;
+            color: #AEE900 !important;
+            background: rgba(174, 233, 0, 0.10) !important;
         }
     }
 

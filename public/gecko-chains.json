@@ -1,0 +1,560 @@
+[
+  {
+    "id": 1,
+    "name": "eth",
+    "type": "network",
+    "attributes": {
+      "name": "Ethereum",
+      "coingecko_asset_platform_id": "ethereum"
+    }
+  },
+  {
+    "id": 56,
+    "name": "bsc",
+    "type": "network",
+    "attributes": {
+      "name": "BNB Chain",
+      "coingecko_asset_platform_id": "binance-smart-chain"
+    }
+  },
+  {
+    "id": 137,
+    "name": "polygon_pos",
+    "type": "network",
+    "attributes": {
+      "name": "Polygon POS",
+      "coingecko_asset_platform_id": "polygon-pos"
+    }
+  },
+  {
+    "id": 43114,
+    "name": "avax",
+    "type": "network",
+    "attributes": {
+      "name": "Avalanche",
+      "coingecko_asset_platform_id": "avalanche"
+    }
+  },
+  {
+    "id": 25,
+    "name": "cro",
+    "type": "network",
+    "attributes": {
+      "name": "Cronos",
+      "coingecko_asset_platform_id": "cronos"
+    }
+  },
+  {
+    "id": 288,
+    "name": "boba",
+    "type": "network",
+    "attributes": {
+      "name": "Boba Network",
+      "coingecko_asset_platform_id": "boba"
+    }
+  },
+  {
+    "id": 1088,
+    "name": "metis",
+    "type": "network",
+    "attributes": {
+      "name": "Metis",
+      "coingecko_asset_platform_id": "metis-andromeda"
+    }
+  },
+  {
+    "id": 42161,
+    "name": "arbitrum",
+    "type": "network",
+    "attributes": {
+      "name": "Arbitrum",
+      "coingecko_asset_platform_id": "arbitrum-one"
+    }
+  },
+  {
+    "id": 42220,
+    "name": "celo",
+    "type": "network",
+    "attributes": {
+      "name": "CELO",
+      "coingecko_asset_platform_id": "celo"
+    }
+  },
+  {
+    "id": 100,
+    "name": "xdai",
+    "type": "network",
+    "attributes": {
+      "name": "Gnosis XDAI",
+      "coingecko_asset_platform_id": "xdai"
+    }
+  },
+  {
+    "id": 10,
+    "name": "optimism",
+    "type": "network",
+    "attributes": {
+      "name": "Optimism",
+      "coingecko_asset_platform_id": "optimistic-ethereum"
+    }
+  },
+  {
+    "id": 2020,
+    "name": "ronin",
+    "type": "network",
+    "attributes": {
+      "name": "Ronin",
+      "coingecko_asset_platform_id": "ronin"
+    }
+  },
+  {
+    "id": 792703809,
+    "name": "solana",
+    "type": "network",
+    "attributes": {
+      "name": "Solana",
+      "coingecko_asset_platform_id": "solana"
+    }
+  },
+  {
+    "id": 42170,
+    "name": "arbitrum_nova",
+    "type": "network",
+    "attributes": {
+      "name": "Arbitrum Nova",
+      "coingecko_asset_platform_id": "arbitrum-nova"
+    }
+  },
+  {
+    "id": 324,
+    "name": "zksync",
+    "type": "network",
+    "attributes": {
+      "name": "ZkSync",
+      "coingecko_asset_platform_id": "zksync"
+    }
+  },
+  {
+    "id": 1101,
+    "name": "polygon-zkevm",
+    "type": "network",
+    "attributes": {
+      "name": "Polygon zkEVM",
+      "coingecko_asset_platform_id": "polygon-zkevm"
+    }
+  },
+  {
+    "id": 5000,
+    "name": "mantle",
+    "type": "network",
+    "attributes": {
+      "name": "Mantle",
+      "coingecko_asset_platform_id": "mantle"
+    }
+  },
+  {
+    "id": 59144,
+    "name": "linea",
+    "type": "network",
+    "attributes": {
+      "name": "Linea",
+      "coingecko_asset_platform_id": "linea"
+    }
+  },
+  {
+    "name": "base",
+    "id": 8453,
+    "type": "network",
+    "attributes": {
+      "name": "Base",
+      "coingecko_asset_platform_id": "base"
+    }
+  },
+  {
+    "id": 1329,
+    "name": "sei-network",
+    "type": "network",
+    "attributes": {
+      "name": "Sei Network",
+      "coingecko_asset_platform_id": "sei-network"
+    }
+  },
+  {
+    "id": 169,
+    "name": "manta-pacific",
+    "type": "network",
+    "attributes": {
+      "name": "Manta Pacific",
+      "coingecko_asset_platform_id": "manta-pacific"
+    }
+  },
+  {
+    "id": 534352,
+    "name": "scroll",
+    "type": "network",
+    "attributes": {
+      "name": "Scroll",
+      "coingecko_asset_platform_id": "scroll"
+    }
+  },
+  {
+    "id": 34443,
+    "name": "mode",
+    "type": "network",
+    "attributes": {
+      "name": "Mode",
+      "coingecko_asset_platform_id": "mode"
+    }
+  },
+  {
+    "id": 660279,
+    "name": "xai",
+    "type": "network",
+    "attributes": {
+      "name": "Xai",
+      "coingecko_asset_platform_id": "xai"
+    }
+  },
+  {
+    "id": 81457,
+    "name": "blast",
+    "type": "network",
+    "attributes": {
+      "name": "Blast",
+      "coingecko_asset_platform_id": "blast"
+    }
+  },
+  {
+    "id": 7777777,
+    "name": "zora-network",
+    "type": "network",
+    "attributes": {
+      "name": "Zora",
+      "coingecko_asset_platform_id": "zora-network"
+    }
+  },
+  {
+    "id": 666666666,
+    "name": "degenchain",
+    "type": "network",
+    "attributes": {
+      "name": "Degen Chain",
+      "coingecko_asset_platform_id": "degen"
+    }
+  },
+  {
+    "id": 888888888,
+    "name": "ancient8",
+    "type": "network",
+    "attributes": {
+      "name": "Ancient8",
+      "coingecko_asset_platform_id": "ancient8"
+    }
+  },
+  {
+    "id": 60808,
+    "name": "bob-network",
+    "type": "network",
+    "attributes": {
+      "name": "BOB Network",
+      "coingecko_asset_platform_id": "bob-network"
+    }
+  },
+  {
+    "id": 690,
+    "name": "redstone",
+    "type": "network",
+    "attributes": {
+      "name": "Redstone",
+      "coingecko_asset_platform_id": "redstone"
+    }
+  },
+  {
+    "id": 7560,
+    "name": "cyber",
+    "type": "network",
+    "attributes": {
+      "name": "Cyber",
+      "coingecko_asset_platform_id": "cyber"
+    }
+  },
+  {
+    "id": 167000,
+    "name": "taiko",
+    "type": "network",
+    "attributes": {
+      "name": "Taiko",
+      "coingecko_asset_platform_id": "taiko"
+    }
+  },
+  {
+    "id": 1996,
+    "name": "sanko-mainnet",
+    "type": "network",
+    "attributes": {
+      "name": "Sanko",
+      "coingecko_asset_platform_id": "sanko"
+    }
+  },
+  {
+    "id": 17071,
+    "name": "onchain",
+    "type": "network",
+    "attributes": {
+      "name": "OnChain",
+      "coingecko_asset_platform_id": null
+    }
+  },
+  {
+    "id": 5112,
+    "name": "ham",
+    "type": "network",
+    "attributes": {
+      "name": "Ham",
+      "coingecko_asset_platform_id": "ham"
+    }
+  },
+  {
+    "id": 1380012617,
+    "name": "rari",
+    "type": "network",
+    "attributes": {
+      "name": "Rari",
+      "coingecko_asset_platform_id": "rari"
+    }
+  },
+  {
+    "id": 48900,
+    "name": "zircuit",
+    "type": "network",
+    "attributes": {
+      "name": "Zircuit",
+      "coingecko_asset_platform_id": "zircuit"
+    }
+  },
+  {
+    "id": 1625,
+    "name": "gravity-alpha",
+    "type": "network",
+    "attributes": {
+      "name": "Gravity",
+      "coingecko_asset_platform_id": "gravity-alpha"
+    }
+  },
+  {
+    "id": 728126428,
+    "name": "tron",
+    "type": "network",
+    "attributes": {
+      "name": "Tron",
+      "coingecko_asset_platform_id": "tron"
+    }
+  },
+  {
+    "id": 185,
+    "name": "mint",
+    "type": "network",
+    "attributes": {
+      "name": "Mint",
+      "coingecko_asset_platform_id": "mint"
+    }
+  },
+  {
+    "id": 747,
+    "name": "flow-evm",
+    "type": "network",
+    "attributes": {
+      "name": "Flow EVM",
+      "coingecko_asset_platform_id": "flow-evm"
+    }
+  },
+  {
+    "id": 360,
+    "name": "shape",
+    "type": "network",
+    "attributes": {
+      "name": "Shape",
+      "coingecko_asset_platform_id": null
+    }
+  },
+  {
+    "id": 480,
+    "name": "world-chain",
+    "type": "network",
+    "attributes": {
+      "name": "World Chain",
+      "coingecko_asset_platform_id": "world-chain"
+    }
+  },
+  {
+    "id": 33139,
+    "name": "apechain",
+    "type": "network",
+    "attributes": {
+      "name": "ApeChain",
+      "coingecko_asset_platform_id": "apechain"
+    }
+  },
+  {
+    "id": 2818,
+    "name": "morph-l2",
+    "type": "network",
+    "attributes": {
+      "name": "Morph L2",
+      "coingecko_asset_platform_id": "morph-l2"
+    }
+  },
+  {
+    "id": 543210,
+    "name": "zero-network",
+    "type": "network",
+    "attributes": {
+      "name": "Zero Network",
+      "coingecko_asset_platform_id": "zero-network"
+    }
+  },
+  {
+    "id": 9286185,
+    "name": "eclipse",
+    "type": "network",
+    "attributes": {
+      "name": "Eclipse",
+      "coingecko_asset_platform_id": "eclipse"
+    }
+  },
+  {
+    "id": 146,
+    "name": "sonic",
+    "type": "network",
+    "attributes": {
+      "name": "Sonic",
+      "coingecko_asset_platform_id": "sonic"
+    }
+  },
+  {
+    "id": 57073,
+    "name": "ink",
+    "type": "network",
+    "attributes": {
+      "name": "Ink",
+      "coingecko_asset_platform_id": "ink"
+    }
+  },
+  {
+    "id": 33979,
+    "name": "funki",
+    "type": "network",
+    "attributes": {
+      "name": "Funki",
+      "coingecko_asset_platform_id": "funki"
+    }
+  },
+  {
+    "id": 1923,
+    "name": "swellchain",
+    "type": "network",
+    "attributes": {
+      "name": "Swellchain",
+      "coingecko_asset_platform_id": "swellchain"
+    }
+  },
+  {
+    "id": 1868,
+    "name": "soneium",
+    "type": "network",
+    "attributes": {
+      "name": "Soneium",
+      "coingecko_asset_platform_id": "soneium"
+    }
+  },
+  {
+    "id": 1135,
+    "name": "lisk",
+    "type": "network",
+    "attributes": {
+      "name": "Lisk",
+      "coingecko_asset_platform_id": "lisk"
+    }
+  },
+  {
+    "id": 2741,
+    "name": "abstract",
+    "type": "network",
+    "attributes": {
+      "name": "Abstract",
+      "coingecko_asset_platform_id": "abstract"
+    }
+  },
+  {
+    "id": 80094,
+    "name": "berachain",
+    "type": "network",
+    "attributes": {
+      "name": "Berachain",
+      "coingecko_asset_platform_id": "berachain"
+    }
+  },
+  {
+    "id": 130,
+    "name": "unichain",
+    "type": "network",
+    "attributes": {
+      "name": "Unichain",
+      "coingecko_asset_platform_id": "unichain"
+    }
+  },
+  {
+    "id": 1514,
+    "name": "story",
+    "type": "network",
+    "attributes": {
+      "name": "Story",
+      "coingecko_asset_platform_id": "story"
+    }
+  },
+  {
+    "id": 999,
+    "name": "hyperevm",
+    "type": "network",
+    "attributes": {
+      "name": "HyperEVM",
+      "coingecko_asset_platform_id": "hyperevm"
+    }
+  },
+  {
+    "id": 21000000,
+    "name": "corn",
+    "type": "network",
+    "attributes": {
+      "name": "Corn",
+      "coingecko_asset_platform_id": "corn"
+    }
+  },
+  {
+    "id": 5330,
+    "name": "superseed",
+    "type": "network",
+    "attributes": {
+      "name": "Superseed",
+      "coingecko_asset_platform_id": "superseed"
+    }
+  },
+  {
+    "id": 55244,
+    "name": "superposition",
+    "type": "network",
+    "attributes": {
+      "name": "Superposition",
+      "coingecko_asset_platform_id": null
+    }
+  },
+  {
+    "id": 43111,
+    "name": "hemi",
+    "type": "network",
+    "attributes": {
+      "name": "Hemi",
+      "coingecko_asset_platform_id": "hemi"
+    }
+  }
+]

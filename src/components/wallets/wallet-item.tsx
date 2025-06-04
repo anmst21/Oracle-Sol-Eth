@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { HexChain, SwapCopy, Wallet, WalletStar } from "../icons";
+import { HexChain, DiskMini, SwapCopy, Wallet, WalletStar } from "../icons";
 import Image from "next/image";
 import { truncateAddress } from "@/helpers/truncate-address";
 import { getIconUri } from "@/helpers/get-icon-uri";
@@ -8,17 +8,18 @@ import classNames from "classnames";
 type Props = {
   chainId: string;
   address: string;
-  name: string;
-  icon: string | undefined;
+  name?: string;
+  icon?: string | undefined;
   id: string;
   userWalletAdderess: string | undefined;
   isLinked: boolean;
-  loginOrLink: () => Promise<void>;
-  unlink: () => Promise<void>;
-  logout: () => Promise<void>;
+  loginOrLink?: () => Promise<void>;
+  unlink?: () => Promise<void>;
+  logout?: () => Promise<void>;
   selectCallback: () => void;
   activeWalletAddress: string | undefined;
   isMini: boolean | undefined;
+  isPasted?: boolean;
 };
 
 const WalletItem = ({
@@ -35,6 +36,7 @@ const WalletItem = ({
   selectCallback,
   activeWalletAddress,
   isMini,
+  isPasted,
 }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -78,6 +80,11 @@ const WalletItem = ({
           {address === userWalletAdderess && (
             <div className="wallet-item__star">
               <WalletStar />
+            </div>
+          )}
+          {isPasted && (
+            <div className="wallet-item__star">
+              <DiskMini />
             </div>
           )}
         </button>

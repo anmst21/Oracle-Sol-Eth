@@ -9,6 +9,8 @@ import { InputCross } from "../icons";
 import { UnifiedToken } from "@/types/coin-types";
 import { SolBalanceResponse } from "@/actions/get-sol-balance";
 import { ModalMode } from "@/types/modal-mode";
+import { motion } from "motion/react";
+import FeaturedSkeleton from "./featured-skeleton";
 
 interface ModalProps {
   loadChains: () => Promise<void>;
@@ -81,11 +83,16 @@ const Modal: React.FC<ModalProps> = ({
 }) => {
   const [activeChainId, setActiveChainId] = useState(0);
 
-  const { data: suggestedTokens } = useTokenList("https://api.relay.link", {
-    limit: 10,
-    term: "",
-    chainIds: activeChainId === 0 ? undefined : [activeChainId],
-  });
+  const { data: suggestedTokens, isLoading: isLoadingSuggested } = useTokenList(
+    "https://api.relay.link",
+    {
+      limit: 10,
+      term: "",
+      chainIds: activeChainId === 0 ? [1, 8453, 792703809] : [activeChainId],
+    }
+  );
+
+  console.log("suggested", suggestedTokens);
 
   useEffect(() => {
     if (!isLoadedChains && !isLoadingChains && !chainsError) {
@@ -114,7 +121,14 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div onClick={closeModal} className="modal__wrapper">
-      <div onClick={(e) => e.stopPropagation()} className="modal">
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        onClick={(e) => e.stopPropagation()}
+        className="modal"
+      >
         <div className="modal__header">
           <div className="modal__header__inner">
             <span>Select Token</span>
@@ -130,26 +144,29 @@ const Modal: React.FC<ModalProps> = ({
           <div className="modal-native-coins__featured__header">
             <h2>Featured</h2>
           </div>
-          {suggestedTokens &&
-            suggestedTokens.length > 0 &&
-            suggestedTokens.map((token, i) => {
-              if (!chains) return;
+          {suggestedTokens && suggestedTokens.length > 0
+            ? suggestedTokens.map((token, i) => {
+                if (!chains) return;
 
-              return (
-                <FeaturedCoinItem
-                  key={i}
-                  coinSymbol={token.symbol}
-                  chainSrc={
-                    token.chainId ? getIconUri(token.chainId) : undefined
-                  }
-                  coinSrc={token.metadata?.logoURI}
-                  token={token}
-                  setBuyToken={setBuyToken}
-                  setSellToken={setSellToken}
-                  modalMode={modalMode}
-                />
-              );
-            })}
+                return (
+                  <FeaturedCoinItem
+                    key={i}
+                    coinSymbol={token.symbol}
+                    chainSrc={
+                      token.chainId ? getIconUri(token.chainId) : undefined
+                    }
+                    coinSrc={token.metadata?.logoURI}
+                    token={token}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    isLoading={isLoadingSuggested}
+                  />
+                );
+              })
+            : Array.from({ length: 7 }, (_, idx) => (
+                <FeaturedSkeleton key={idx} />
+              ))}
         </div>
         <div className="modal__main">
           <ModalChains
@@ -160,6 +177,7 @@ const Modal: React.FC<ModalProps> = ({
             baseChain={baseChain}
             solanaChain={solanaChain}
             ethereumChain={ethereumChain}
+            isLoadingChains={isLoadingChains}
           />
 
           <ModalCoins
@@ -188,7 +206,7 @@ const Modal: React.FC<ModalProps> = ({
             modalMode={modalMode}
           />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

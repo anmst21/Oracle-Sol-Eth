@@ -12,6 +12,7 @@ import { RelayChain } from "@/types/relay-query-chain-type";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { ModalMode } from "@/types/modal-mode";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
+import NativeCoinSkeleton from "./native-coin-skeleton";
 
 type Props = {
   activeChainId: number;
@@ -75,6 +76,10 @@ const ModalCoins = ({
   // console.log("searchTokens", searchTokens);
   const debouncedTerm = useDebounce(searchTerm, 500);
 
+  const { chains, isLoading } = useRelayChains();
+
+  const chainIds = useMemo(() => chains?.map((chain) => chain.id), [chains]);
+
   useEffect(() => {
     if (!debouncedTerm) {
       setSearchTokens([]);
@@ -84,12 +89,13 @@ const ModalCoins = ({
 
     let cancelled = false;
     setLoadingSearchList(true);
+    setSearchTokens([]);
     setErrorSearching(null);
 
     queryTokenList("https://api.relay.link", {
       limit: 10,
       term: isAddress(debouncedTerm) ? undefined : debouncedTerm,
-      chainIds: activeChainId === 0 ? undefined : [activeChainId],
+      chainIds: activeChainId === 0 ? chainIds : [activeChainId],
       address: isAddress(debouncedTerm) ? debouncedTerm : undefined,
     })
       .then((data) => {
@@ -105,7 +111,7 @@ const ModalCoins = ({
     return () => {
       cancelled = true;
     };
-  }, [debouncedTerm, activeChainId]);
+  }, [debouncedTerm, activeChainId, chainIds]);
 
   useEffect(() => {
     if (!geckoTrendingCoins) loadGeckoCoinsForChain("base");
@@ -127,8 +133,6 @@ const ModalCoins = ({
     () => userEthTokens?.filter((t) => t.address !== zeroAddress) ?? [],
     [userEthTokens]
   );
-
-  const { chains, isLoading } = useRelayChains();
 
   const allTokens = useMemo<UnifiedToken[]>(() => {
     const out: UnifiedToken[] = [];
@@ -234,7 +238,7 @@ const ModalCoins = ({
       : communityCoins.filter((c) => c.chainId === activeChainId);
   }, [communityCoins, activeChainId]);
 
-  const { activeWallet } = useActiveWallet();
+  // const { activeWallet } = useActiveWallet();
 
   return (
     <div className="coins-list">
@@ -257,13 +261,14 @@ const ModalCoins = ({
           )}
         </label>
       </div>
+
       <div className="modal-native-coins">
         {searchTokens && searchTokens.length > 0 && searchTerm.length > 0 && (
           <div className="modal-native-coins__container">
             <div className="chain-sidebar__header">
               <h2>Search Result</h2>
             </div>
-            {filteredUnique.length &&
+            {filteredUnique.length > 0 &&
               filteredUnique.map((t, i) => {
                 const chain = chains?.find((c) => c.id === t.chainId);
                 return (
@@ -288,8 +293,7 @@ const ModalCoins = ({
 
         {ethNativeList.length > 0 &&
           (activeChainId === 1 || activeChainId === 0) &&
-          !searchTerm.length &&
-          activeWallet?.type === "ethereum" && (
+          searchTerm.length === 0 && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
                 <h2>Native Ethereum Balance</h2>
@@ -322,8 +326,7 @@ const ModalCoins = ({
         {nativeSolBalance &&
           nativeSolBalance.balance !== 0 &&
           (activeChainId === 792703809 || activeChainId === 0) &&
-          !searchTerm.length &&
-          activeWallet?.type === "solana" && (
+          !searchTerm.length && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
                 <h2>Native Solana Balance</h2>
@@ -351,8 +354,7 @@ const ModalCoins = ({
 
         {ethOtherList.length > 0 &&
           activeChainId !== 792703809 &&
-          !searchTerm.length &&
-          activeWallet?.type === "ethereum" && (
+          !searchTerm.length && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
                 <h2>Other Ethereum Tokens</h2>
@@ -388,7 +390,6 @@ const ModalCoins = ({
         {userSolanaTokens &&
           userSolanaTokens.length > 0 &&
           (activeChainId === 792703809 || activeChainId === 0) &&
-          activeWallet?.type === "solana" &&
           !searchTerm.length && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
@@ -474,6 +475,41 @@ const ModalCoins = ({
               })}
             </div>
           )}
+
+        {!isLoadingSolanaTrendingCoins &&
+          solanaTrendingCoins &&
+          solanaTrendingCoins.length > 0 &&
+          (activeChainId === 792703809 || activeChainId === 0) &&
+          !searchTerm.length && (
+            <div className="modal-native-coins__container">
+              <div className="chain-sidebar__header">
+                <h2>Solana Trending Coins</h2>
+                <h2>Price/Native</h2>
+              </div>
+
+              {solanaTrendingCoins.map((token, i) => {
+                return (
+                  <ModalCoinItem
+                    key={i}
+                    priceUsd={token.priceUsd}
+                    priceNative={token.priceNative}
+                    coinAddress={token.address}
+                    coinSymbol={token.symbol}
+                    chainSrc={
+                      token.chainId ? getIconUri(token.chainId) : undefined
+                    }
+                    coinSrc={token.logo}
+                    coinName={token.name}
+                    setBuyToken={setBuyToken}
+                    setSellToken={setSellToken}
+                    modalMode={modalMode}
+                    chainId={token.chainId}
+                  />
+                );
+              })}
+            </div>
+          )}
+
         {!isLoadingGeckoCoins &&
           baseChain &&
           geckoTrendingCoins &&
@@ -508,39 +544,31 @@ const ModalCoins = ({
               })}
             </div>
           )}
-        {!isLoadingSolanaTrendingCoins &&
-          solanaTrendingCoins &&
-          solanaTrendingCoins.length > 0 &&
-          (activeChainId === 792703809 || activeChainId === 0) &&
-          !searchTerm.length && (
+
+        {isLoadingCommunityCoins &&
+          isLoadingGeckoCoins &&
+          isLoadingSolanaTrendingCoins && (
             <div className="modal-native-coins__container">
               <div className="chain-sidebar__header">
-                <h2>Solana Trending Coins</h2>
-                <h2>Price/Native</h2>
+                <h2>Loading Coins</h2>
+                <h2>Balance/Native</h2>
               </div>
-
-              {solanaTrendingCoins.map((token, i) => {
-                return (
-                  <ModalCoinItem
-                    key={i}
-                    priceUsd={token.priceUsd}
-                    priceNative={token.priceNative}
-                    coinAddress={token.address}
-                    coinSymbol={token.symbol}
-                    chainSrc={
-                      token.chainId ? getIconUri(token.chainId) : undefined
-                    }
-                    coinSrc={token.logo}
-                    coinName={token.name}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
-                    modalMode={modalMode}
-                    chainId={token.chainId}
-                  />
-                );
-              })}
+              {Array.from({ length: 7 }, (_, idx) => (
+                <NativeCoinSkeleton key={idx} />
+              ))}
             </div>
           )}
+        {searchTerm.length > 0 && searchTokens.length === 0 && (
+          <div className="modal-native-coins__container">
+            <div className="chain-sidebar__header">
+              <h2>Searching</h2>
+              <h2>Balance/Native</h2>
+            </div>
+            {Array.from({ length: 7 }, (_, idx) => (
+              <NativeCoinSkeleton key={idx} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

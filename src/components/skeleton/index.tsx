@@ -7,7 +7,7 @@ type Props = {
   height?: number | string;
   radius?: number;
   flex?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const fade = {

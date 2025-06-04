@@ -29,8 +29,26 @@ import SaveDisk from "./SaveDisk";
 import HeaderTheme from "./HeaderTheme";
 import HeaderCross from "./HeaderCross";
 import HeaderFeed from "./HeaderFeed";
+import DiskMini from "./DiskMini";
+import ChartIcon from "./ChartIcon";
+import HistoryIcon from "./HistoryIcon";
+import StepCheck from "./StepCheck";
+import StepUri from "./StepUri";
+import CheckLg from "./CheckLg";
+import SwapZap from "./SwapZap";
+import DashedCircle from "./DashedCircle";
+import ChevDownFooter from "./ChevDownFooter";
 
 export {
+  ChevDownFooter,
+  DashedCircle,
+  SwapZap,
+  CheckLg,
+  StepUri,
+  StepCheck,
+  HistoryIcon,
+  ChartIcon,
+  DiskMini,
   HeaderFeed,
   HeaderCross,
   HeaderTheme,

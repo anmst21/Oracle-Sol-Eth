@@ -1,15 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import { SwapIcon, SwapBuy, SwapCog } from "../icons";
+import { SwapIcon, SwapBuy, SwapCog, HistoryIcon, ChartIcon } from "../icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import classNames from "classnames";
 import SlippageModal from "../slippage-modal";
+import { AnimatePresence } from "motion/react";
 
 const buttons = [
   { name: "Swap", icon: <SwapIcon />, href: "/swap" },
   { name: "Buy", icon: <SwapBuy />, href: "/buy" },
+  { name: "Chart", icon: <ChartIcon />, href: "/chart" },
+  { name: "History", icon: <HistoryIcon />, href: "/history" },
 ];
 
 const SwapHeader = () => {
@@ -43,9 +46,11 @@ const SwapHeader = () => {
         })}
       >
         <SwapCog />
-        {isOpenSlippage && (
-          <SlippageModal closeModal={() => setIsOpenSlippage(false)} />
-        )}
+        <AnimatePresence mode="wait">
+          {isOpenSlippage && (
+            <SlippageModal closeModal={() => setIsOpenSlippage(false)} />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

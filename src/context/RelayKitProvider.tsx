@@ -23,7 +23,7 @@ export function RelayKitProviderWrapper({
   children: React.ReactNode;
 }) {
   const { chains } = useTokenModal();
-
+  console.log("chains", chains);
   const options = {
     appName: "Oracl3",
     appFees: [

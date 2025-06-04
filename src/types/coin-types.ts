@@ -22,4 +22,5 @@ export type UnifiedToken = {
   priceNative?: number;
   balance?: number;
   source: "relay" | "eth" | "sol" | "community" | "gecko" | "solTrending";
+  decimals?: number;
 };

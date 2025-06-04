@@ -12,6 +12,7 @@ import { SlippageProvider } from "@/context/SlippageContext";
 import Header from "@/components/header";
 import { RelayKitProviderWrapper as RelayKitProvider } from "@/context/RelayKitProvider";
 import QueryClientProvider from "@/context/QueryClientProvider";
+import HeaderFooter from "@/components/header/header-footer";
 
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
@@ -61,6 +62,7 @@ export default async function RootLayout({
                                           /> */}
                               {children}
                             </div>
+                            <HeaderFooter />
                           </SlippageProvider>
                         </RelayKitProvider>
                       </TokenModalProvider>

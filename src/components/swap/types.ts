@@ -4,7 +4,7 @@ export type SwapWallet = {
   chainId: number;
 };
 
-
+export type PastedWallet = SwapWallet & { isPasted: true };
 
 export enum TradeType {
   EXACT_INPUT = "EXACT_INPUT",

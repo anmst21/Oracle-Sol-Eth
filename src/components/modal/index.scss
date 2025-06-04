@@ -12,13 +12,52 @@
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+    transition: all .2s ease-in-out;
 
+    .to-gap {
+        width: 100%;
+    }
+
+    &:hover {
+        border: 1px solid rgba(136, 150, 151, 0.15);
+        background: rgba(136, 150, 151, 0.10);
+        color: #D9F1E9;
+
+        .token-to-buy__token__icon,
+        span {
+            color: #D9F1E9;
+        }
+    }
+
+    &:active {
+        border: 1px solid rgba(174, 233, 0, 0.25);
+        background: rgba(174, 233, 0, 0.10);
+        color: #D9F1E9;
+
+        .token-to-buy__token__icon,
+        span {
+            color: #AEE900;
+        }
+    }
+
+
+    &--active {
+        border: 1px solid rgba(174, 233, 0, 0.25) !important;
+        background: rgba(174, 233, 0, 0.10) !important;
+        color: #AEE900 !important;
+
+        span,
+        svg {
+            color: #AEE900 !important;
+        }
+    }
 
     span {
         max-width: calc(100% - 28px);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        transition: all .2s ease-in-out;
     }
 
     &__input {
@@ -30,6 +69,20 @@
         padding: 6px 6px 6px 10px;
         background: rgba(15, 14, 27, 0.20);
         gap: 8px;
+        transition: all .2s ease-in-out;
+
+        &:hover {
+            border: 1px solid rgba(217, 241, 233, 0.15);
+            color: rgba(217, 241, 233, 1);
+            background: rgba(217, 241, 233, 0.10);
+        }
+
+        &:focus-within {
+            border: 1px solid #AEE900;
+            background: rgba(174, 233, 0, 0.10);
+            color: #AEE900;
+        }
+
 
         input {
             width: 100%;
@@ -38,7 +91,7 @@
 
             font-size: 14px;
             font-style: normal;
-            font-weight: 500;
+            font-weight: 400;
             line-height: normal;
         }
 
@@ -48,13 +101,20 @@
             height: 24px;
             align-items: center;
             justify-content: center;
+            color: #889697;
+            transition: all .2s ease-in-out;
+
+            &:hover {
+                color: #D9F1E9
+            }
+
+            &:active {
+                color: #AEE900;
+            }
         }
     }
 
 
-    &--active {
-        background: rgba(136, 150, 151, 0.2);
-    }
 
     &__header {
         padding: 0px 8px;
@@ -119,11 +179,8 @@
 }
 
 .modal {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+    position: relative;
     gap: 4px;
-    transform: translate(-50%, -50%);
 
     background-color: black;
     flex-direction: column;
@@ -148,6 +205,9 @@
         right: 0;
         top: 0;
         bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
 
@@ -226,6 +286,53 @@
     height: 44px;
     align-items: center;
     padding-left: 10px;
+    transition: all .2s ease-in-out;
+
+    &:hover {
+        border: 1px solid rgba(136, 150, 151, 0.15);
+        background: rgba(136, 150, 151, 0.10);
+
+        h3,
+        .name,
+        .token-to-buy__token__icon,
+        h4 {
+            color: #D9F1E9;
+        }
+
+        .native-coin__balance {
+            span {
+                color: #D9F1E9;
+            }
+        }
+
+    }
+
+    &:active {
+        border: 1px solid rgba(174, 233, 0, 0.25);
+        background: rgba(174, 233, 0, 0.10);
+
+
+        h3,
+        .name,
+        .token-to-buy__token__icon,
+        h4 {
+            color: #AEE900;
+        }
+
+        .native-coin__balance {
+            span {
+                color: #AEE900;
+            }
+        }
+    }
+
+    .token-to-buy__token__icon {
+        transition: all .2s ease-in-out;
+    }
+
+    .coin-ticker {
+        color: rgba(136, 150, 151, 0.80) !important;
+    }
 
     .user-placeholder {
         background-color: white;
@@ -237,12 +344,14 @@
         margin-left: auto;
         align-items: flex-end;
 
+
         h4 {
             font-size: 16px;
             font-style: normal;
             font-weight: 600;
             line-height: normal;
             color: rgba(217, 241, 233, 0.80);
+            transition: all .2s ease-in-out;
         }
 
         span {
@@ -252,6 +361,7 @@
             line-height: normal;
             font-family: var(--font-handjet);
             color: rgba(217, 241, 233, 0.80);
+            transition: all .2s ease-in-out;
         }
     }
 
@@ -275,6 +385,7 @@
 
         .name {
             color: rgba(217, 241, 233, 0.80);
+            transition: all .2s ease-in-out;
         }
 
         h3 {
@@ -283,6 +394,7 @@
             font-style: normal;
             font-weight: 600;
             line-height: normal;
+            transition: all .2s ease-in-out;
         }
     }
 }
@@ -325,17 +437,17 @@
         &__header {
             height: 34px;
             border-radius: 6px;
-            background: rgba(136, 150, 151, 0.05);
+            background: #AEE900;
             display: flex;
             padding: 0px 8px;
             align-items: center;
 
 
-            color: #889697;
+            color: black;
             font-family: var(--font-handjet);
             font-size: 16px;
             font-style: normal;
-            font-weight: 300;
+            font-weight: 400;
             line-height: normal;
         }
 
@@ -365,6 +477,47 @@
     align-items: center;
     gap: 2px;
     height: 34px;
+    transition: all .2s ease-in-out;
+
+
+
+
+    span {
+        transition: all .2s ease-in-out;
+
+        max-width: 10ch;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+
+    &:hover {
+        border: 1px solid rgba(136, 150, 151, 0.15);
+        background: rgba(136, 150, 151, 0.10);
+
+
+
+        .token-to-buy__token__icon,
+        span {
+            color: #D9F1E9;
+        }
+
+
+    }
+
+    &:active {
+        border: 1px solid rgba(174, 233, 0, 0.25);
+        background: rgba(174, 233, 0, 0.10);
+
+
+
+        .token-to-buy__token__icon,
+        span {
+            color: #AEE900;
+        }
+
+    }
 
 
     .user-placeholder {
@@ -374,12 +527,14 @@
     span {
         position: relative;
         left: -7px;
+        color: rgba(217, 241, 233, 0.8);
     }
 
     .token-to-buy__token__icon {
         height: 24px;
         align-items: center;
         color: #889697;
+        transition: all .2s ease-in-out;
     }
 
     color: #D9F1E9;
@@ -395,4 +550,28 @@
     flex-direction: column;
     gap: 4px;
     flex: 1;
+}
+
+
+.featured-skeleton {
+    gap: 5px;
+    padding: 0 5px;
+}
+
+
+.native-coin-skeleton {
+    gap: 4px;
+    padding: 5px;
+
+    .native-coin__meta {
+        gap: 4px;
+    }
+
+    .coin-ticker {
+        margin-left: 4px;
+    }
+
+    .native-coin__balance {
+        gap: 4px;
+    }
 }

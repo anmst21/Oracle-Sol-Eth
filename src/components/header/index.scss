@@ -4,7 +4,21 @@
     max-width: 1460px;
     padding: 16px 20px 0px 20px;
     align-items: center;
+    position: relative;
 
+    &:before {
+        position: absolute;
+        top: calc(100% + 8px);
+        content: "";
+        left: 41.5px;
+        right: 41.5px;
+        height: 150px;
+
+        border: #889697 solid 1px;
+        border-top: none;
+        border-bottom: none;
+        pointer-events: none;
+    }
 
     &__wallet {
         display: flex;
@@ -72,6 +86,22 @@
     align-items: center;
     padding: 4px 6px 4px 0px;
     gap: 2px;
+    transition: color .2s ease-in-out;
+    position: relative;
+
+
+
+    &:hover {
+        color: #D9F1E9;
+    }
+
+    &:active {
+        color: #AEE900;
+    }
+
+    &--active {
+        color: #AEE900 !important;
+    }
 }
 
 
@@ -87,4 +117,35 @@
 
 
     margin: 0 4px;
+}
+
+
+
+.header-footer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    max-width: 1460px;
+    padding: 0px 20px 16px 20px;
+    gap: 4px;
+
+    svg {
+        rotate: 180deg;
+    }
+
+
+    &:before {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        content: "";
+        left: 41.5px;
+        right: 41.5px;
+        height: 150px;
+
+        border: #889697 solid 1px;
+        border-top: none;
+        border-bottom: none;
+        pointer-events: none;
+    }
 }

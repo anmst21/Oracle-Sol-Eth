@@ -3,6 +3,8 @@ import { HexChain, InputCross } from "../icons";
 import classNames from "classnames";
 import { RelayChain } from "@/types/relay-query-chain-type";
 import { getIconUri } from "@/helpers/get-icon-uri";
+import SkeletonLoaderWrapper from "../skeleton";
+import ChainSkeleton from "./chain-skeleton";
 type Props = {
   activeChainId: number;
   setActiveChainId: (value: number) => void;
@@ -11,6 +13,7 @@ type Props = {
   baseChain: RelayChain | undefined;
   solanaChain: RelayChain | undefined;
   ethereumChain: RelayChain | undefined;
+  isLoadingChains: boolean;
 };
 
 const ModalChains = ({
@@ -21,6 +24,7 @@ const ModalChains = ({
   baseChain,
   solanaChain,
   ethereumChain,
+  isLoadingChains,
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -66,6 +70,7 @@ const ModalChains = ({
       <div className="chain-sidebar__contianer">
         <label className="chain-sidebar__input">
           <input
+            disabled={isLoadingChains}
             type="text"
             placeholder="Enter name or ID"
             value={searchTerm}
@@ -92,41 +97,64 @@ const ModalChains = ({
             onClick={() => setActiveChainId(0)}
           >
             <div className="all-chains-icon">
-              {allChainIds.map((id, i) => (
-                <HexChain
-                  key={id}
-                  strokeWidth={2}
-                  width={12}
-                  uri={getIconUri(id)}
-                  className={`all-chains-icon__${i + 1}`}
-                />
-              ))}
+              <SkeletonLoaderWrapper
+                radius={2}
+                height={24}
+                width={24}
+                isLoading={false}
+                flex
+              >
+                {allChainIds.map((id, i) => (
+                  <HexChain
+                    key={id}
+                    strokeWidth={2}
+                    width={12}
+                    uri={getIconUri(id)}
+                    className={`all-chains-icon__${i + 1}`}
+                  />
+                ))}
+              </SkeletonLoaderWrapper>
             </div>
-            <span>All Chains</span>
+            <SkeletonLoaderWrapper
+              radius={2}
+              height={24}
+              width={"auto"}
+              isLoading={false}
+              flex
+            >
+              <span>All Chains</span>
+            </SkeletonLoaderWrapper>
           </button>
         </div>
 
         {/* Featured */}
-        {displayedFeatured.length > 0 && (
-          <div className="chain-sidebar__contianer">
-            <div className="chain-sidebar__header">Featured Chains</div>
-            {displayedFeatured.map((chain) => {
-              if (!chain.id) return;
-              return (
-                <button
-                  key={chain.id}
-                  className={classNames("chain-sidebar", {
-                    "chain-sidebar--active": activeChainId === chain.id,
-                  })}
-                  onClick={() => setActiveChainId(chain?.id || 0)}
-                >
-                  <HexChain uri={getIconUri(chain.id)} />
-                  <span>{chain.displayName}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
+
+        <div className="chain-sidebar__contianer">
+          <div className="chain-sidebar__header">Featured Chains</div>
+          {displayedFeatured.length > 0 && !isLoadingChains
+            ? displayedFeatured.map((chain) => {
+                if (!chain.id) return;
+                return (
+                  <button
+                    disabled={isLoadingChains}
+                    key={chain.id}
+                    className={classNames("chain-sidebar", {
+                      "chain-sidebar--active": activeChainId === chain.id,
+                    })}
+                    onClick={() => setActiveChainId(chain?.id || 0)}
+                  >
+                    <HexChain uri={getIconUri(chain.id)} />
+                    <span>{chain.displayName}</span>
+                  </button>
+                );
+              })
+            : Array.from({ length: 7 }, (_, idx) => (
+                <ChainSkeleton key={idx} />
+              ))}
+          {/* {Array.from({ length: 7 }, (_, idx) => (
+            <ChainSkeleton key={idx} />
+          ))} */}
+        </div>
 
         {/* Other */}
         {displayedOther.length > 0 && (

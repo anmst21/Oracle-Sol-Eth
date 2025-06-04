@@ -9,7 +9,7 @@ import WalletItem from "./wallet-item";
 import { PensilSmall, PrivyLogo } from "../icons";
 import React, { useCallback } from "react";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
-import { SwapWallet } from "../swap/types";
+import { PastedWallet, SwapWallet } from "../swap/types";
 
 export default function Wallets({
   swapWindow,
@@ -33,6 +33,8 @@ export default function Wallets({
     setActiveWallet,
     readyEth,
     readySol,
+
+    pastedWallets,
     //  isAddressModalOpen,
     setIsAddressModalOpen,
   } = useActiveWallet();
@@ -40,26 +42,59 @@ export default function Wallets({
   const userChain = user?.wallet?.chainType;
 
   const selectCallback = useCallback(
-    (wallet: ConnectedWallet | ConnectedSolanaWallet) => {
-      if (!isBuy) {
-        setActiveWallet(wallet);
-      }
-
-      if (callback && !isBuy) callback();
-      if (callback && isBuy)
+    (wallet: ConnectedWallet | ConnectedSolanaWallet | PastedWallet) => {
+      if ("isPasted" in wallet && wallet.isPasted && callback) {
         callback({
           type: wallet.type,
           address: wallet.address,
-          chainId:
-            wallet.type === "ethereum"
-              ? Number(wallet.chainId.split(":")[1])
-              : 792703809,
+          chainId: wallet.chainId,
         });
+      } else {
+        if (!isBuy) {
+          setActiveWallet(wallet as ConnectedWallet | ConnectedSolanaWallet);
+        }
+
+        if (callback && !isBuy) callback();
+        if (callback && isBuy)
+          callback({
+            type: wallet.type,
+            address: wallet.address,
+            chainId:
+              wallet.type === "ethereum"
+                ? Number((wallet as ConnectedWallet).chainId.split(":")[1])
+                : 792703809,
+          });
+      }
     },
     [setActiveWallet, callback, isBuy]
   );
 
   // define each section once
+  const PastedSection = isBuy && pastedWallets && pastedWallets.length > 0 && (
+    <>
+      {pastedWallets.map((w, i) => (
+        <WalletItem
+          key={i}
+          name={undefined}
+          id={w.chainId === 792703809 ? "792703809" : `:${w.chainId}`}
+          // icon={getIconUri(w.chainId)}
+          chainId={w.chainId === 792703809 ? "792703809" : `:${w.chainId}`}
+          address={w.address}
+          userWalletAdderess={user?.wallet?.address}
+          isLinked
+          loginOrLink={undefined}
+          unlink={undefined}
+          logout={undefined}
+          selectCallback={() => selectCallback(w)}
+          activeWalletAddress={
+            activeAddress ? activeAddress : activeWallet?.address
+          }
+          isMini
+          isPasted
+        />
+      ))}
+    </>
+  );
   const EthSection = readyEth && authenticated && ethLinked.length > 0 && (
     <>
       {ethLinked.map((w, i) => (
@@ -125,11 +160,13 @@ export default function Wallets({
             <>
               {SolSection}
               {EthSection}
+              {PastedSection}
             </>
           ) : (
             <>
               {EthSection}
               {SolSection}
+              {PastedSection}
             </>
           )}
 

@@ -9,6 +9,8 @@ import {
 } from "@privy-io/react-auth";
 import { isValidSolanaAddress } from "@/helpers/is-valid-solana-address";
 import { isAddress as isValidEthereumAddress } from "viem";
+import { PastedWallet } from "../swap/types";
+import { motion } from "motion/react";
 const AddressModal = () => {
   const {
     ethLinked,
@@ -20,24 +22,32 @@ const AddressModal = () => {
     //  isAddressModalOpen,
     setActiveBuyWallet,
     setIsAddressModalOpen,
+    setPastedWallets,
+    pastedWallets,
   } = useActiveWallet();
 
   const [manualAddress, setManualAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  console.warn("Address Modal Error", error);
+  console.log("Address Modal Error", error);
 
   const { authenticated, user, logout } = usePrivy();
 
   const setWallet = useCallback(
-    (wallet: ConnectedWallet | ConnectedSolanaWallet | null) => {
-      if (wallet)
+    (wallet: ConnectedWallet | ConnectedSolanaWallet | PastedWallet | null) => {
+      if (wallet && "isPasted" in wallet && wallet.isPasted) {
+        setActiveBuyWallet({
+          type: wallet.type,
+          address: wallet.address,
+          chainId: wallet.chainId,
+        });
+      } else if (wallet)
         setActiveBuyWallet({
           address: wallet?.address,
           type: wallet.type,
           chainId:
             wallet.type === "ethereum"
-              ? Number(wallet.chainId.split(":")[1])
+              ? Number((wallet as ConnectedWallet).chainId.split(":")[1])
               : 792703809,
         });
     },
@@ -46,26 +56,90 @@ const AddressModal = () => {
 
   const handleEthAddress = useCallback(
     (address: string) => {
-      setActiveBuyWallet({
+      const newActiveItem: PastedWallet = {
         address,
         type: "ethereum",
         chainId: 1,
-      });
+        isPasted: true,
+      };
+
+      setActiveBuyWallet(newActiveItem);
+
+      const existingConnected = ethLinked.find(
+        (wallet) => wallet.address === address
+      );
+      const existingPasted = pastedWallets.find(
+        (wallet) => wallet.address === address
+      );
+
+      if (!existingConnected && !existingPasted) {
+        setPastedWallets([...pastedWallets, newActiveItem]);
+      }
+
       setIsAddressModalOpen(false);
     },
-    [setActiveBuyWallet, setIsAddressModalOpen]
+    [
+      setActiveBuyWallet,
+      setIsAddressModalOpen,
+      setPastedWallets,
+      ethLinked,
+      pastedWallets,
+    ]
   );
 
   const handleSolAddress = useCallback(
     (address: string) => {
-      setActiveBuyWallet({
+      const newActiveItem: PastedWallet = {
         address,
         type: "solana",
         chainId: 792703809,
-      });
+        isPasted: true,
+      };
+      setActiveBuyWallet(newActiveItem);
+      const existingConnected = solLinked.find(
+        (wallet) => wallet.address === address
+      );
+      const existingPasted = pastedWallets.find(
+        (wallet) => wallet.address === address
+      );
+
+      if (!existingConnected && !existingPasted) {
+        setPastedWallets([...pastedWallets, newActiveItem]);
+      }
+
       setIsAddressModalOpen(false);
     },
-    [setActiveBuyWallet, setIsAddressModalOpen]
+    [
+      setActiveBuyWallet,
+      setIsAddressModalOpen,
+      pastedWallets,
+      setPastedWallets,
+      solLinked,
+    ]
+  );
+
+  const PastedSection = pastedWallets && pastedWallets.length > 0 && (
+    <>
+      {pastedWallets.map((w, i) => (
+        <WalletItem
+          key={i}
+          name={undefined}
+          id={w.chainId === 792703809 ? "792703809" : `:${w.chainId}`}
+          // icon={getIconUri(w.chainId)}
+          chainId={w.chainId === 792703809 ? "792703809" : `:${w.chainId}`}
+          address={w.address}
+          userWalletAdderess={user?.wallet?.address}
+          isLinked
+          loginOrLink={undefined}
+          unlink={undefined}
+          logout={undefined}
+          selectCallback={() => setWallet(w)}
+          activeWalletAddress={activeBuyWallet?.address}
+          isMini
+          isPasted
+        />
+      ))}
+    </>
   );
 
   const EthSection = readyEth && authenticated && ethLinked.length > 0 && (
@@ -135,7 +209,11 @@ const AddressModal = () => {
 
   return (
     <div onClick={closeModal} className="address-modal__wrapper">
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()}
         className="address-modal__container"
       >
@@ -167,11 +245,13 @@ const AddressModal = () => {
                 <>
                   {SolSection}
                   {EthSection}
+                  {PastedSection}
                 </>
               ) : (
                 <>
                   {EthSection}
                   {SolSection}
+                  {PastedSection}
                 </>
               )}
             </div>
@@ -181,7 +261,7 @@ const AddressModal = () => {
             <span>Save</span>
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

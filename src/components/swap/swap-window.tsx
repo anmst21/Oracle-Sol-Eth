@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  ArrowSmall,
-  HexChain,
-  InputCoin,
-  SwapArrow,
-  UserQuestion,
-} from "../icons";
+import { HexChain, InputCoin, SwapArrow, UserQuestion } from "../icons";
 import { truncateAddress } from "@/helpers/truncate-address";
 import { useTokenModal } from "@/context/TokenModalProvider";
 import { UnifiedToken } from "@/types/coin-types";
@@ -25,6 +19,8 @@ import classNames from "classnames";
 import SkeletonLoaderWrapper from "../skeleton";
 import { AnimatePresence, motion } from "motion/react";
 import { slidingTextAnimation } from "./animation";
+import WalletButton from "../universals/wallet-button";
+import TokenButton from "../universals/token-button";
 
 const containerVariants = {
   enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" } },
@@ -166,6 +162,18 @@ const SwapWindow = ({
 
   const { ready } = usePrivy();
 
+  const isWalletError =
+    (token?.chainId === solanaChain.id && activeWallet?.type !== "solana") ||
+    (token?.chainId !== solanaChain.id &&
+      activeWallet?.type !== "ethereum" &&
+      token !== null &&
+      activeWallet !== null);
+
+  const isOpenCallback = useCallback(
+    (value: boolean) => setIsOpenAddressModal(value),
+    [setIsOpenAddressModal]
+  );
+
   return (
     <div className="swap-window">
       <div className="swap-window__input">
@@ -220,17 +228,11 @@ const SwapWindow = ({
         </div>
       </div>
       <div className="swap-window__token">
-        <div
-          onClick={() => setIsOpenAddressModal(true)}
-          onMouseLeave={() => setIsOpenAddressModal(false)}
+        {/* <div
+          onClick={() => isOpenCallback(true)}
+          onMouseLeave={() => isOpenCallback(false)}
           className={classNames("swap-window__token__wallet", {
-            "swap-window__token__wallet--error":
-              (token?.chainId === solanaChain.id &&
-                activeWallet?.type !== "solana") ||
-              (token?.chainId !== solanaChain.id &&
-                activeWallet?.type !== "ethereum" &&
-                token !== null &&
-                activeWallet !== null),
+            "swap-window__token__wallet--error": isWalletError,
           })}
         >
           <SkeletonLoaderWrapper
@@ -275,7 +277,13 @@ const SwapWindow = ({
             })}
           >
             <ArrowSmall />
-          </div>
+          </div> */}
+        <WalletButton
+          isWalletError={isWalletError}
+          isLoading={!ready || isSwitching}
+          activeWallet={activeWallet}
+          setIsOpenCallback={isOpenCallback}
+        >
           <AnimatePresence mode="wait">
             {isOpenAddressModal && (
               <motion.div
@@ -296,14 +304,22 @@ const SwapWindow = ({
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </WalletButton>
 
-        <button onClick={openTokenModal} className="token-to-buy__token">
+        {/* </div> */}
+        <TokenButton
+          openModalCallback={openTokenModal}
+          mode={mode}
+          token={token}
+          tokenBalance={tokenBalance}
+        />
+        {/* <button onClick={openTokenModal} className="token-to-buy__token">
           <div className="token-to-buy__token__icon">
             {!token ? (
               <HexChain width={32} question />
             ) : (
               <HexChain
+                key={token.name}
                 width={32}
                 uri={token.chainId ? getIconUri(token.chainId) : undefined}
               />
@@ -319,7 +335,6 @@ const SwapWindow = ({
                   width={30}
                   height={30}
                   alt={`${mode} token input`}
-                  key={token.name}
                 />
               ) : (
                 <UserQuestion />
@@ -339,7 +354,7 @@ const SwapWindow = ({
           <div className="token-to-buy__token__arrow">
             <SwapArrow />
           </div>
-        </button>
+        </button> */}
         <AnimatePresence mode="wait">
           {Number(tokenBalance) !== 0 ||
           (token && mode === "buy" && inputValue.length > 0) ? (

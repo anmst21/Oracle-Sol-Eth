@@ -131,7 +131,6 @@ export async function getTokenAccountsWithMetadata({
       };
     })
   );
-
   const generalized = enriched.map((t) => ({
     source: "sol" as const,
     chainId: 792703809,
@@ -142,6 +141,7 @@ export async function getTokenAccountsWithMetadata({
     priceUsd: t.priceUsd ?? undefined,
     balance: t.amount,
     name: t.metadata.name,
+    decimals: 9,
   }));
   console.log("fetched tokens + metadata + prices", enriched);
   return generalized;

@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { SwapIcon, SwapBuy, HeaderFeed } from "../icons";
 import classNames from "classnames";
+import { motion } from "motion/react";
 
 const navigationItem = [
   { title: "Swap", slug: "/swap", icon: <SwapIcon /> },
@@ -15,7 +16,7 @@ const Navigation = () => {
   const pathname = usePathname();
   const router = useRouter();
   return (
-    <div className="header-navigation">
+    <motion.div className="header-navigation">
       {navigationItem.map((item) => (
         <button
           onClick={() => router.push(item.slug)}
@@ -26,9 +27,16 @@ const Navigation = () => {
         >
           {item.icon}
           <span>{item.title}</span>
+
+          {pathname === item.slug ? (
+            <motion.div
+              layoutId="underline-header"
+              className="underline-header"
+            />
+          ) : null}
         </button>
       ))}
-    </div>
+    </motion.div>
   );
 };
 

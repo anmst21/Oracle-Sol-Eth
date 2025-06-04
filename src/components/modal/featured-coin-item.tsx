@@ -8,7 +8,7 @@ type Props = {
   coinSrc: string | undefined;
   coinSymbol: string | undefined;
   token: RelayToken;
-
+  isLoading: boolean;
   setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
   setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
   modalMode: ModalMode;
@@ -22,6 +22,7 @@ const FeaturedCoinItem = ({
   setSellToken,
   modalMode,
   token,
+  isLoading,
 }: Props) => {
   const setActiveToken = useCallback(() => {
     if (modalMode === "buy") {

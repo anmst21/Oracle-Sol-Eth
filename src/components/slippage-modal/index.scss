@@ -98,19 +98,6 @@
         width: 100%;
 
 
-        .underline {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            top: 0;
-            z-index: -1;
-            border: 1px solid rgba(174, 233, 0, 0.25) !important;
-
-            background: rgba(174, 233, 0, 0.10);
-            color: #AEE900;
-            border-radius: 4px;
-        }
 
 
         button {
@@ -259,4 +246,29 @@
             bottom: calc(100% - 20px);
         }
     }
+}
+
+
+.underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: -1;
+    border: 1px solid rgba(174, 233, 0, 0.25) !important;
+
+    background: rgba(174, 233, 0, 0.10);
+    color: #AEE900;
+    border-radius: 4px;
+}
+
+.underline-header {
+    position: absolute;
+    right: 4px;
+    left: 25px;
+    bottom: 0;
+    height: 1px;
+    background: #AEE900;
+    border-radius: 4px;
 }

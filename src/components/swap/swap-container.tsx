@@ -8,7 +8,12 @@ import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { getEthToken, solanaToken } from "@/helpers/solana-token";
 import { solanaChain } from "@/helpers/solanaChain";
 import SwapMeta from "./swap-meta";
-import { Execute, getClient, RelayChain } from "@reservoir0x/relay-sdk";
+import {
+  Execute,
+  getClient,
+  ProgressData,
+  RelayChain,
+} from "@reservoir0x/relay-sdk";
 import { TradeType } from "./types";
 import {
   convertViemChainToRelayChain,
@@ -23,6 +28,9 @@ import BuyBtn from "./buy-btn";
 import { usePrivy } from "@privy-io/react-auth";
 import { SendTransactionError } from "@solana/web3.js";
 import { connection } from "../connects";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import Confirmation from "../confirmation";
+import { AnimatePresence } from "motion/react";
 
 // createClient({
 //   baseApiUrl: MAINNET_RELAY_API,
@@ -202,6 +210,7 @@ const SwapContainer = () => {
   // }, [buyToken, setActiveBuyWallet]);
 
   const [quote, setQuote] = useState<Execute | null>(null);
+  const [progress, setProgress] = useState<ProgressData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
@@ -377,12 +386,19 @@ const SwapContainer = () => {
         chainId: sellToken.chainId as number,
         toChainId: buyToken.chainId as number,
         currency: sellToken.address,
+
         toCurrency: buyToken.address,
         amount: amountWei.toString(),
         wallet: adaptedWallet,
         recipient: activeBuyWallet.address,
         tradeType,
         options: {
+          appFees: [
+            {
+              fee: "100",
+              recipient: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
+            },
+          ],
           slippageTolerance: isCustomSlippage
             ? Math.round(slippageValue * 100).toString()
             : undefined,
@@ -470,32 +486,25 @@ const SwapContainer = () => {
       const chainId = await adaptedWallet.getChainId();
       if (chainId !== sellToken?.chainId)
         adaptedWallet.switchChain(sellToken?.chainId);
-
-      await getClient().actions.execute({
-        quote,
-        wallet: adaptedWallet,
-        onProgress: ({
-          steps,
-          fees,
-          breakdown,
-          currentStep,
-          currentStepItem,
-          txHashes,
-          details,
-        }) => {
-          console.log({
-            steps,
-            fees,
-            breakdown,
-            currentStep,
-            currentStepItem,
-            txHashes,
-            details,
-          });
-        },
-      });
+      try {
+        await getClient().actions.execute({
+          quote,
+          wallet: adaptedWallet,
+          onProgress: (progress) => setProgress(progress),
+        });
+      } catch (err: any) {
+        setProgress(null);
+      }
     }
   }, [adaptedWallet, quote, sellToken?.chainId]);
+
+  console.log("progress", progress, quote, adaptedWallet);
+
+  ////// url deeplinking logic
+
+  const clearProgressState = useCallback(() => {
+    setProgress(null);
+  }, []);
 
   return (
     <>
@@ -518,6 +527,8 @@ const SwapContainer = () => {
           isLoadingQuote={isLoading}
         />
         <button onClick={handleTokenSwitch} className="swap-container__switch">
+          <SwapSwitch />
+          <span>Switch</span>
           <SwapSwitch />
         </button>
         <SwapWindow
@@ -559,6 +570,16 @@ const SwapContainer = () => {
         isAdaptedWallet={adaptedWallet !== null}
       />
       <SwapMeta isLoading={isLoading} quote={quote} />
+      <AnimatePresence mode="wait">
+        {progress && (
+          <Confirmation
+            clearProgressState={clearProgressState}
+            progress={progress}
+            buyTokenLogo={buyToken?.logo}
+            sellTokenLogo={sellToken?.logo}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };

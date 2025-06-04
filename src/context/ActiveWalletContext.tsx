@@ -18,11 +18,12 @@ import {
 import AddressModal from "@/components/wallets/address-modal";
 import { createWalletClient, custom } from "viem";
 import { adaptSolanaWallet } from "@reservoir0x/relay-solana-wallet-adapter";
-import { SwapWallet } from "@/components/swap/types";
+import { PastedWallet, SwapWallet } from "@/components/swap/types";
 import { extractChain } from "viem";
 import * as viemChains from "viem/chains";
 import { AdaptedWallet, adaptViemWallet } from "@reservoir0x/relay-sdk";
 import { connection } from "@/helpers/solana-connection";
+import { AnimatePresence } from "motion/react";
 
 const chain = (id: number) =>
   extractChain({
@@ -44,6 +45,8 @@ interface ActiveWalletContextValue {
   activeBuyWallet: SwapWallet | null;
   setIsAddressModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isAddressModalOpen: boolean;
+  pastedWallets: PastedWallet[];
+  setPastedWallets: React.Dispatch<React.SetStateAction<PastedWallet[]>>;
 }
 
 const ActiveWalletContext = createContext<ActiveWalletContextValue | undefined>(
@@ -62,6 +65,8 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
   const [activeBuyWallet, setActiveBuyWallet] = useState<SwapWallet | null>(
     null
   );
+
+  const [pastedWallets, setPastedWallets] = useState<PastedWallet[]>([]);
 
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
@@ -202,10 +207,14 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
         setIsAddressModalOpen,
         isAddressModalOpen,
         adaptedWallet,
+        pastedWallets,
+        setPastedWallets,
       }}
     >
       {children}
-      {isAddressModalOpen && <AddressModal />}
+      <AnimatePresence mode="wait">
+        {isAddressModalOpen && <AddressModal />}
+      </AnimatePresence>
     </ActiveWalletContext.Provider>
   );
 }

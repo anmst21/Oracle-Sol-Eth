@@ -98,13 +98,27 @@ const ModalCoinItem = ({
       {userBalance ? (
         <div className="native-coin__balance">
           {priceUsd && <h4>${(userBalance * priceUsd).toFixed(2)}</h4>}
-          <span>{userBalance.toFixed(6)}</span>
+          <span>
+            {userBalance.toFixed(6)}
+            <span className="coin-ticker">
+              {" "}
+              {chainId === 792703809 ? "SOL" : "ETH"}
+            </span>
+          </span>
         </div>
       ) : (
         priceUsd && (
           <div className="native-coin__balance">
             <h4>${priceUsd.toFixed(6)}</h4>
-            {priceNative && <span>{priceNative.toFixed(6)}</span>}
+            {priceNative && (
+              <span>
+                {priceNative.toFixed(6)}
+                <span className="coin-ticker">
+                  {" "}
+                  {chainId === 792703809 ? "SOL" : "ETH"}
+                </span>
+              </span>
+            )}
           </div>
         )
       )}
