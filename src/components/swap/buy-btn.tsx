@@ -132,7 +132,7 @@ const BuyBtn = ({
     animate: { y: 0, opacity: 1 },
     exit: { y: -20, opacity: 0 },
     transition: { duration: 0.3 },
-    style: { display: "flex" },
+    style: { display: "flex", gap: 10 },
   } as const;
 
   return (
@@ -150,6 +150,12 @@ const BuyBtn = ({
       <AnimatePresence mode="popLayout">
         <motion.div key={label + "-icon-left"} {...animatedProps}>
           {icon}
+          {(label.toLocaleLowerCase().includes("funds") ||
+            label.toLocaleLowerCase().includes("execute")) &&
+            icon}
+          {(label.toLocaleLowerCase().includes("funds") ||
+            label.toLocaleLowerCase().includes("execute")) &&
+            icon}
         </motion.div>
       </AnimatePresence>
       <AnimatePresence mode="popLayout">
@@ -160,6 +166,12 @@ const BuyBtn = ({
 
       <AnimatePresence mode="popLayout">
         <motion.div key={label + "-icon-right"} {...animatedProps}>
+          {(label.toLocaleLowerCase().includes("funds") ||
+            label.toLocaleLowerCase().includes("execute")) &&
+            icon}
+          {(label.toLocaleLowerCase().includes("funds") ||
+            label.toLocaleLowerCase().includes("execute")) &&
+            icon}
           {icon}
         </motion.div>
       </AnimatePresence>
