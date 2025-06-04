@@ -506,6 +506,15 @@ const SwapContainer = () => {
     setProgress(null);
   }, []);
 
+  const sellTokenBalance = useMemo(
+    () => getTokenBalance(sellToken?.address, sellToken?.chainId),
+    [sellToken, getTokenBalance]
+  );
+  const buyTokenBalance = useMemo(
+    () => getTokenBalance(buyToken?.address, buyToken?.chainId),
+    [buyToken, getTokenBalance]
+  );
+
   return (
     <>
       <div className="swap-container">
@@ -518,7 +527,7 @@ const SwapContainer = () => {
           setActiveWallet={setActiveWallet}
           setActiveBuyWallet={setActiveBuyWallet}
           activeWallet={activeWallet}
-          tokenBalance={getTokenBalance(sellToken?.address, sellToken?.chainId)}
+          tokenBalance={sellTokenBalance}
           tradeType={tradeType}
           setTradeType={setTradeType}
           fetchQuote={fetchQuote}
@@ -539,7 +548,7 @@ const SwapContainer = () => {
           setActiveWallet={setActiveBuyWallet}
           setActiveBuyWallet={setActiveBuyWallet}
           activeWallet={activeBuyWallet}
-          tokenBalance={getTokenBalance(buyToken?.address, buyToken?.chainId)}
+          tokenBalance={buyTokenBalance}
           tradeType={tradeType}
           setTradeType={setTradeType}
           fetchQuote={fetchQuote}
@@ -550,11 +559,8 @@ const SwapContainer = () => {
       </div>
       <BuyBtn
         isInsuficientBalance={
-          quote !== null &&
-          quote?.details?.currencyIn?.amount !== undefined &&
-          quote?.details?.userBalance !== undefined &&
-          Number(quote?.details?.currencyIn?.amount) >=
-            Number(quote?.details?.userBalance)
+          Number(sellTokenBalance) <=
+          Number(quote?.details?.currencyIn?.amountFormatted)
         }
         isNoInputData={
           (buyInputValue.length === 0 &&

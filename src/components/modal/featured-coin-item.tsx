@@ -25,29 +25,22 @@ const FeaturedCoinItem = ({
   isLoading,
 }: Props) => {
   const setActiveToken = useCallback(() => {
+    const tokenData = {
+      source: "eth" as const,
+      chainId: token.chainId,
+      address: token.address || "", // ditto
+      symbol: coinSymbol || "",
+      logo: coinSrc,
+      priceUsd: undefined,
+      balance: undefined,
+      name: token.name || "",
+    };
+
     if (modalMode === "buy") {
-      setBuyToken({
-        source: "eth" as const,
-        chainId: token.chainId,
-        address: token.address || "", // ditto
-        symbol: coinSymbol || "",
-        logo: coinSrc,
-        priceUsd: undefined,
-        balance: undefined,
-        name: token.name || "",
-      });
+      setBuyToken(tokenData);
     }
     if (modalMode === "sell") {
-      setSellToken({
-        source: "eth" as const,
-        chainId: token.chainId,
-        address: token.address || "", // ditto
-        symbol: coinSymbol || "",
-        logo: coinSrc,
-        priceUsd: undefined,
-        balance: undefined,
-        name: token.name || "",
-      });
+      setSellToken(tokenData);
     }
   }, [setBuyToken, setSellToken, token, modalMode, coinSrc, coinSymbol]);
   return (

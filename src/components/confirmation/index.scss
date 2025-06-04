@@ -427,6 +427,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
+
+
+            transition: all .2s ease-in-out;
+            color: #889697;
+
+            &:hover {
+                color: #D9F1E9
+            }
+
+            &:active {
+                color: #AEE900;
+            }
         }
 
 

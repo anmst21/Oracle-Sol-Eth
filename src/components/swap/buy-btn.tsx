@@ -1,6 +1,39 @@
 import { usePrivy } from "@privy-io/react-auth";
 import { Execute } from "@reservoir0x/relay-sdk";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {
+  ButtonEth,
+  ButtonFunds,
+  ButtonPrivy,
+  ButtonToken,
+  ButtonSend,
+  ButtonValue,
+  ButtonWallet,
+  ButtonSwap,
+  ButtonLoad,
+  InputCross,
+} from "@/components/icons";
+import classNames from "classnames";
+import Vizor from "../vizor";
+import animationData from "../icons/loader-animation.json";
+import Lottie from "lottie-react";
+import { AnimatePresence, motion } from "motion/react";
+
+const LoaderIcon = () => {
+  return (
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{
+        repeat: Infinity,
+        duration: 2,
+        ease: "linear",
+      }}
+      style={{ display: "flex" }} // ensure it wraps the button properly
+    >
+      <ButtonLoad />
+    </motion.div>
+  );
+};
 
 type Props = {
   isNoInputData: boolean;
@@ -28,53 +61,108 @@ const BuyBtn = ({
   const { authenticated, ready, login } = usePrivy();
   //   const disableLogin = !ready || (ready && authenticated);
 
-  let label: string = "Loading";
+  const [isLoading, setIsLoading] = useState(isLoadingQuote);
+
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    if (isLoadingQuote) {
+      setIsLoading(true);
+    } else {
+      t = setTimeout(() => setIsLoading(false), 500);
+    }
+    return () => clearTimeout(t);
+  }, [isLoadingQuote]);
+
+  let label: string = "Fetching Quote";
   let disabled: boolean = true;
   let handleClick: (() => void) | undefined = undefined;
+  let icon = <LoaderIcon />;
 
-  if (!ready || isLoadingQuote) {
+  if (!ready || isLoading) {
     // 1. still initializing the SDK
-    label = "Loading…";
+    label = "Fetching Quote";
     disabled = true;
+    icon = <LoaderIcon />;
   } else if (!authenticated) {
     // 2. SDK ready but user not logged in
     label = "Login with Wallet";
     disabled = false;
     handleClick = login;
-  } else if (error && !quote && !isLoadingQuote) {
-    label = error.includes("Invalid address")
-      ? "Invalid address for chain"
-      : error.includes("'send'")
-      ? "Switch buy wallet to send"
-      : error;
+    icon = <ButtonPrivy />;
+  } else if (error && !quote && !isLoading) {
+    // label = error.includes("Invalid address")
+    //   ? "Invalid address for chain"
+    //   : error.includes("'send'")
+    //   ? "Switch buy wallet to send"
+    //   : error;
+
+    label = "Error";
     disabled = true;
-  }
-  //    else if (!isLoadingQuote && isInsuficientBalance) {
-  //     label = "Insuficient Balance";
-  //     disabled = true;
-  //   }
-  else if (isNoInputData) {
+    icon = <InputCross />;
+  } else if (!isLoading && isInsuficientBalance) {
+    label = "Funds (Runnable)";
+    disabled = false;
+    icon = <ButtonFunds />;
+    handleClick = onBuy;
+  } else if (isNoInputData) {
     // 3. logged in but missing input
-    label = "Enter input value";
+    label = "Enter Value";
     disabled = true;
+    icon = <ButtonValue />;
   } else if (isNoTokenData) {
     // 4. missing token selection
     label = "Select tokens";
     disabled = true;
+    icon = <ButtonToken />;
   } else if (isNoWalletData) {
     // 5. missing which wallet to use for buy
     label = "Select wallet";
     disabled = true;
-  } else if (quote && !isLoadingQuote && isAdaptedWallet) {
+    icon = <ButtonWallet />;
+  } else if (quote && !isLoading && isAdaptedWallet) {
     // 7. everything’s set, you can buy
     label = "Execute";
     disabled = false;
     handleClick = onBuy;
+    icon = <ButtonSwap />;
   }
 
+  const animatedProps = {
+    initial: { y: 20, opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: -20, opacity: 0 },
+    transition: { duration: 0.3 },
+    style: { display: "flex" },
+  } as const;
+
   return (
-    <button onClick={handleClick} disabled={disabled} className="buy-btn">
-      <span>{label}</span>
+    <button
+      onClick={handleClick}
+      disabled={disabled}
+      className={classNames("buy-btn", {
+        "buy-btn--disabled": isLoading || disabled,
+        "buy-btn--connect": ready && !authenticated,
+        "buy-btn--error": error,
+        "buy-btn--active": quote && !isLoading && isAdaptedWallet,
+        "buy-btn--semi": !isLoading && isInsuficientBalance,
+      })}
+    >
+      <AnimatePresence mode="popLayout">
+        <motion.div key={label + "-icon-left"} {...animatedProps}>
+          {icon}
+        </motion.div>
+      </AnimatePresence>
+      <AnimatePresence mode="popLayout">
+        <motion.span key={label} {...animatedProps}>
+          {label}
+        </motion.span>
+      </AnimatePresence>
+
+      <AnimatePresence mode="popLayout">
+        <motion.div key={label + "-icon-right"} {...animatedProps}>
+          {icon}
+        </motion.div>
+      </AnimatePresence>
     </button>
   );
 };

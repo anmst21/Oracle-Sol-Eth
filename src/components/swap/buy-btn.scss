@@ -2,17 +2,55 @@
     display: flex;
     border: 1px solid rgba(174, 233, 0, 0.40);
     background: rgba(174, 233, 0, 0.10);
-    height: 44px;
+    height: 48px;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     border-radius: 12px;
     color: rgba(174, 233, 0, 0.80);
+    padding: 0 16px;
+
+
+    transition: all .3s ease-in-out;
+
+    overflow: hidden;
+
+    &--semi {
+        border: 1px solid rgba(174, 233, 0, 0.80) !important;
+        background: rgba(174, 233, 0, 0.15) !important;
+        color: #AEE900 !important;
+    }
+
+
+    &--active {
+        border: 1px solid rgba(174, 233, 0, 0.80);
+        background: #AEE900;
+        color: black
+    }
+
+
+    &--error {
+        border: 1px solid rgba(241, 61, 32, 0.40) !important;
+        background: rgba(241, 61, 32, 0.10) !important;
+        color: rgba(241, 61, 32, 0.80) !important;
+    }
+
+    &--connect {
+        border: 1px solid rgba(217, 241, 233, 0.40);
+        background: rgba(217, 241, 233, 0.10);
+        color: #D9F1E9;
+    }
+
+    &--disabled {
+        border: 1px solid rgba(136, 150, 151, 0.40);
+        background: rgba(136, 150, 151, 0.10);
+        color: #889697;
+    }
 
     span {
-        color: rgba(174, 233, 0, 0.80);
-        font-size: 18px;
+
+        font-size: 16px;
         font-style: normal;
-        font-weight: 6 00;
+        font-weight: 700;
         line-height: 20px;
     }
 }

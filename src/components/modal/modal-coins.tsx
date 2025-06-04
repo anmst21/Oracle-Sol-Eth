@@ -1,17 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ModalCoinItem from "./modal-coin-item";
 import { isAddress, zeroAddress } from "viem";
 import { InputCross, SearchGlass } from "../icons";
 import { RelayToken, UnifiedToken } from "@/types/coin-types";
 import { queryTokenList, useRelayChains } from "@reservoir0x/relay-kit-hooks";
 import { useDebounce } from "@/hooks/useDebounce";
-import { getSolBalance, SolBalanceResponse } from "@/actions/get-sol-balance";
-import { getTokenAccountsWithMetadata as getUserEthTokens } from "@/actions/get-user-owned-ethereum-tokens";
-import { getTokenAccountsWithMetadata as getUserSolTokens } from "@/actions/get-user-owned-solana-tokens";
+import { SolBalanceResponse } from "@/actions/get-sol-balance";
+
 import { RelayChain } from "@/types/relay-query-chain-type";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { ModalMode } from "@/types/modal-mode";
-import { useActiveWallet } from "@/context/ActiveWalletContext";
 import NativeCoinSkeleton from "./native-coin-skeleton";
 
 type Props = {
@@ -63,12 +61,12 @@ const ModalCoins = ({
   isLoadingGeckoCoins,
   loadGeckoCoinsForChain,
   userEthTokens,
-  setUserEthTokens,
+  //  setUserEthTokens,
   nativeSolBalance,
-  setNativeSolBalance,
+  //  setNativeSolBalance,
   userSolanaTokens,
-  setUserSolanaTokens,
-}: Props) => {
+}: //  setUserSolanaTokens,
+Props) => {
   const [searchTerm, setSearchTerm] = useState(""); // raw input
   const [searchTokens, setSearchTokens] = useState<RelayToken[]>([]); // fetched results
   const [loadingSearchList, setLoadingSearchList] = useState(false);

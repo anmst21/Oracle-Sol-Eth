@@ -73,7 +73,6 @@ export async function getTokenAccountsWithMetadata({
   }
 
   const data = (await res.json()) as { balances: ChainBalance[] };
-  console.log("zzzzzzz", data);
   const formatted = data.balances.map((t) => ({
     source: "eth" as const,
     chainId: t.chain_id,
