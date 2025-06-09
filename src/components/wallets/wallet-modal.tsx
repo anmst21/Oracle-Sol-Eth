@@ -6,7 +6,7 @@ import {
   ConnectedWallet,
 } from "@privy-io/react-auth";
 import WalletItem from "./wallet-item";
-import { PensilSmall, PrivyLogo } from "../icons";
+import { LogOutDoor, PensilSmall, PrivyLogo } from "../icons";
 import React, { useCallback } from "react";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { PastedWallet, SwapWallet } from "../swap/types";
@@ -179,8 +179,8 @@ export default function Wallets({
                 onClick={openAddressModal}
                 className="wallet-item__connect"
               >
-                <span>Paste Address</span>
                 <PensilSmall />
+                <span>Paste Address</span>
               </button>
             )}
             {authenticated ? (
@@ -189,8 +189,8 @@ export default function Wallets({
                 onClick={() => (linkCallback && linkCallback(), linkWallet())}
                 className="wallet-item__connect"
               >
-                <span>Link a new wallet</span>
                 <PrivyLogo />
+                <span>Link a new wallet</span>
               </button>
             ) : (
               <button
@@ -198,8 +198,19 @@ export default function Wallets({
                 onClick={() => login()}
                 className="wallet-item__connect"
               >
-                <span>Login</span>
                 <PrivyLogo />
+                <span>Login</span>
+              </button>
+            )}
+
+            {authenticated && !swapWindow && (
+              <button
+                disabled={!authenticated}
+                onClick={() => logout()}
+                className="wallet-item__connect"
+              >
+                <LogOutDoor />
+                <span>Log Out</span>
               </button>
             )}
           </div>

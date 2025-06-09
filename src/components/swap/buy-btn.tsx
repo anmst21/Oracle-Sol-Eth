@@ -2,21 +2,19 @@ import { usePrivy } from "@privy-io/react-auth";
 import { Execute } from "@reservoir0x/relay-sdk";
 import React, { useEffect, useState } from "react";
 import {
-  ButtonEth,
   ButtonFunds,
   ButtonPrivy,
   ButtonToken,
-  ButtonSend,
+  BtnPolygons,
   ButtonValue,
   ButtonWallet,
   ButtonSwap,
   ButtonLoad,
   InputCross,
+  ButtonSend,
 } from "@/components/icons";
 import classNames from "classnames";
-import Vizor from "../vizor";
-import animationData from "../icons/loader-animation.json";
-import Lottie from "lottie-react";
+
 import { AnimatePresence, motion } from "motion/react";
 
 const LoaderIcon = () => {
@@ -90,15 +88,20 @@ const BuyBtn = ({
     handleClick = login;
     icon = <ButtonPrivy />;
   } else if (error && !quote && !isLoading) {
-    // label = error.includes("Invalid address")
-    //   ? "Invalid address for chain"
-    //   : error.includes("'send'")
-    //   ? "Switch buy wallet to send"
-    //   : error;
+    label = error.includes("Invalid address")
+      ? "Invalid address for chain"
+      : error.includes("'send'")
+      ? "Switch buy wallet to send"
+      : error;
 
-    label = "Error";
     disabled = true;
-    icon = <InputCross />;
+    if (error.includes("'send'")) {
+      icon = <ButtonSend />;
+      label = "Change Address";
+    } else {
+      icon = <InputCross />;
+      label = "Error";
+    }
   } else if (!isLoading && isInsuficientBalance) {
     label = "Funds (Runnable)";
     disabled = false;
@@ -140,15 +143,22 @@ const BuyBtn = ({
       onClick={handleClick}
       disabled={disabled}
       className={classNames("buy-btn", {
-        "buy-btn--disabled": isLoading || disabled,
+        "buy-btn--disabled": isLoading || disabled || error?.includes("'send'"),
         "buy-btn--connect": ready && !authenticated,
-        "buy-btn--error": error,
-        "buy-btn--active": quote && !isLoading && isAdaptedWallet,
-        "buy-btn--semi": !isLoading && isInsuficientBalance,
+        "buy-btn--error": error && !error.includes("'send'"),
+        "buy-btn--active":
+          quote && !isLoading && isAdaptedWallet && authenticated,
+        "buy-btn--semi": !isLoading && isInsuficientBalance && authenticated,
       })}
     >
+      <BtnPolygons />
+
       <AnimatePresence mode="popLayout">
-        <motion.div key={label + "-icon-left"} {...animatedProps}>
+        <motion.div
+          className="buy-btn__svg"
+          key={label + "-icon-left"}
+          {...animatedProps}
+        >
           {icon}
           {(label.toLocaleLowerCase().includes("funds") ||
             label.toLocaleLowerCase().includes("execute")) &&
@@ -165,7 +175,11 @@ const BuyBtn = ({
       </AnimatePresence>
 
       <AnimatePresence mode="popLayout">
-        <motion.div key={label + "-icon-right"} {...animatedProps}>
+        <motion.div
+          className="buy-btn__svg"
+          key={label + "-icon-right"}
+          {...animatedProps}
+        >
           {(label.toLocaleLowerCase().includes("funds") ||
             label.toLocaleLowerCase().includes("execute")) &&
             icon}

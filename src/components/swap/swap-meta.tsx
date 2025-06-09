@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import classNames from "classnames";
 import { formatUnits } from "viem";
 import Link from "next/link";
+import ClockInfo from "../icons/ClockInfo";
 
 const relayDocUri = "https://docs.relay.link/what-is-relay";
 
@@ -229,6 +230,7 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
                           isLoading={isLoading}
                         >
                           <>
+                            {item.key === "estimation" && <ClockInfo />}
                             {item.key === "cost" && <SlippageGas />}
                             {item.key === "slippage" && (
                               <div

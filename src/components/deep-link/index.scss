@@ -1,0 +1,60 @@
+.deep-link {
+    padding: 12px;
+    gap: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(136, 150, 151, 0.05);
+    display: flex;
+
+
+
+    &__params {
+        border-radius: 6px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        padding: 0px 8px;
+        background: rgba(217, 241, 233, 0.05);
+        display: flex;
+        height: 32px;
+        align-items: center;
+        flex: 1;
+
+
+    }
+
+
+    &__param {}
+
+
+    &__header {
+        border-radius: 6px;
+        border: 1px solid #889697;
+        background: rgba(136, 150, 151, 0.05);
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #889697;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        text-transform: uppercase;
+        height: fit-content;
+        font-family: var(--font-handjet);
+    }
+
+
+    button {
+        border-radius: 6px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+
+        background: rgba(217, 241, 233, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2;
+        padding: 0px 9px 0px 4px;
+        height: 32px;
+        color: #D9F1E9;
+    }
+}

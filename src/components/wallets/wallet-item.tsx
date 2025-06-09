@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { HexChain, DiskMini, SwapCopy, Wallet, WalletStar } from "../icons";
 import Image from "next/image";
 import { truncateAddress } from "@/helpers/truncate-address";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import classNames from "classnames";
+import { handleCopy } from "@/helpers/handle-copy";
 
 type Props = {
   chainId: string;
@@ -40,16 +41,6 @@ const WalletItem = ({
 }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleCopy = useCallback((value: string) => {
-    navigator.clipboard
-      .writeText(value)
-      .then(() => {
-        console.log("Copied to clipboard:", value);
-      })
-      .catch((err) => {
-        console.error("Failed to copy!", err);
-      });
-  }, []);
   return (
     <div
       className={classNames("wallet-item", {

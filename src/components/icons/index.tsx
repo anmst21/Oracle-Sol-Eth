@@ -47,10 +47,17 @@ import ButtonValue from "./ButtonValue";
 import ButtonWallet from "./ButtonWallet";
 import ButtonSwap from "./ButtonSwap";
 import ButtonLoad from "./ButtonLoad";
+import LogOutDoor from "./LogOutDoor";
+import BtnPolygons from "./BtnPolygons";
+import TxSwap from "./TxSwap";
+import ClockInfo from "./ClockInfo";
 
 export {
+  TxSwap,
+  BtnPolygons,
   ButtonEth,
   ButtonLoad,
+  LogOutDoor,
   ButtonFunds,
   ButtonPrivy,
   ButtonToken,

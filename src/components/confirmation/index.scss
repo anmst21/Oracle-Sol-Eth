@@ -312,8 +312,18 @@
 
 
         &__cta {
-            background: #AEE900;
-            color: #000;
+
+            &--hover {
+                background-color: #AEE900;
+                color: black;
+            }
+
+            span {
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 18px;
+            }
         }
 
         button {
@@ -326,10 +336,7 @@
             border-radius: 6px;
 
 
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 500;
-            line-height: 18px;
+
         }
     }
 
@@ -350,6 +357,15 @@
         background: rgba(136, 150, 151, 0.05);
         padding: 4px;
         gap: 4px;
+        flex-direction: column;
+
+        &__items,
+        &__wallets {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            pointer-events: none;
+        }
 
     }
 
@@ -558,4 +574,18 @@
     height: 76px;
     border: #AEE900 4px solid;
     border-radius: 1000px;
+}
+
+
+.confirm-btn-hover,
+.tx-block__item__link {
+    transition: opacity .2s ease-in-out;
+
+    &:hover {
+        opacity: .8;
+    }
+
+    &:active {
+        opacity: .6;
+    }
 }

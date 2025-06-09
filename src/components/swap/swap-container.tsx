@@ -31,6 +31,8 @@ import { connection } from "../connects";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Confirmation from "../confirmation";
 import { AnimatePresence } from "motion/react";
+import DeepLink from "../deep-link";
+import DynamicNotification from "../dynamic-notification";
 
 // createClient({
 //   baseApiUrl: MAINNET_RELAY_API,
@@ -576,9 +578,27 @@ const SwapContainer = () => {
         isAdaptedWallet={adaptedWallet !== null}
       />
       <SwapMeta isLoading={isLoading} quote={quote} />
+      {/* <DeepLink /> */}
+      <DynamicNotification
+        progress={progress}
+        isInsuficientBalance={
+          Number(sellTokenBalance) <=
+          Number(quote?.details?.currencyIn?.amountFormatted)
+        }
+        fromTokenMeta={{
+          address: sellToken?.address,
+          chainId: sellToken?.chainId,
+          ticker: sellToken?.name,
+        }}
+        error={error}
+      />
       <AnimatePresence mode="wait">
         {progress && (
           <Confirmation
+            isInsuficientBalance={
+              Number(sellTokenBalance) <=
+              Number(quote?.details?.currencyIn?.amountFormatted)
+            }
             clearProgressState={clearProgressState}
             progress={progress}
             buyTokenLogo={buyToken?.logo}

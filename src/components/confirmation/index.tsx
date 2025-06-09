@@ -1,6 +1,12 @@
 import { ProgressData } from "@reservoir0x/relay-sdk";
 import React, { useEffect, useMemo, useState } from "react";
-import { CheckLg, InputCross, SwapZap, DashedCircle } from "../icons";
+import {
+  CheckLg,
+  InputCross,
+  SwapZap,
+  DashedCircle,
+  BtnPolygons,
+} from "../icons";
 import TokenItem from "./token-item";
 import StepItem from "./step-item";
 import { useRelayChains } from "@reservoir0x/relay-kit-hooks";
@@ -15,15 +21,18 @@ import { AnimatePresence, motion } from "motion/react";
 import classNames from "classnames";
 import { iconProps } from "./animation";
 import { slidingTextAnimation } from "../swap/animation";
+import WalletItem from "./wallet-item";
 
 type Props = {
   progress: ProgressData;
   buyTokenLogo: string | undefined;
   sellTokenLogo: string | undefined;
   clearProgressState: () => void;
+  isInsuficientBalance: boolean;
 };
 
 function Confirmation({
+  isInsuficientBalance,
   progress,
   buyTokenLogo,
   sellTokenLogo,
@@ -120,6 +129,10 @@ function Confirmation({
   }, [groupedByChain]);
 
   const { push } = useRouter();
+
+  const buyHref =
+    "/buy" +
+    `?buyTokenChain=${details?.currencyIn?.currency?.chainId}&buyTokenAddress=${details?.currencyIn?.currency?.address}`;
 
   return (
     <div onClick={clearProgressState} className="confirmation__container">
@@ -254,26 +267,39 @@ function Confirmation({
             </div>
           </div>
           <div className="confirmation__tokens">
-            {details?.currencyIn && (
-              <TokenItem
-                tokenName={details.currencyIn.currency?.name}
-                ticker={details.currencyIn.currency?.symbol}
-                tokenUri={sellTokenLogo}
-                chainId={details.currencyIn.currency?.chainId}
-                amount={details?.currencyIn?.amountFormatted}
-                type="from"
+            <div className="confirmation__tokens__items">
+              {details?.currencyIn && (
+                <TokenItem
+                  tokenName={details.currencyIn.currency?.name}
+                  ticker={details.currencyIn.currency?.symbol}
+                  tokenUri={sellTokenLogo}
+                  chainId={details.currencyIn.currency?.chainId}
+                  amount={details?.currencyIn?.amountFormatted}
+                  type="from"
+                />
+              )}
+              {details?.currencyOut && (
+                <TokenItem
+                  tokenName={details.currencyOut.currency?.name}
+                  ticker={details.currencyOut.currency?.symbol}
+                  tokenUri={buyTokenLogo}
+                  chainId={details.currencyOut.currency?.chainId}
+                  amount={details?.currencyOut?.amountFormatted}
+                  type="to"
+                />
+              )}
+            </div>
+            <div className="confirmation__tokens__wallets">
+              <WalletItem
+                chainId={details?.currencyIn?.currency?.chainId}
+                address={details?.sender}
               />
-            )}
-            {details?.currencyOut && (
-              <TokenItem
-                tokenName={details.currencyOut.currency?.name}
-                ticker={details.currencyOut.currency?.symbol}
-                tokenUri={buyTokenLogo}
-                chainId={details.currencyOut.currency?.chainId}
-                amount={details?.currencyOut?.amountFormatted}
-                type="to"
+
+              <WalletItem
+                chainId={details?.currencyOut?.currency?.chainId}
+                address={details?.recipient}
               />
-            )}
+            </div>
           </div>
 
           <motion.div
@@ -374,21 +400,32 @@ function Confirmation({
                     <button
                       disabled={!relayTxHash}
                       onClick={() => push("/transaction/" + relayTxHash)}
-                      className="confirmation__buttons__details"
+                      className="confirmation__buttons__details confirm-btn-hover"
                     >
                       View Details
                     </button>
                     <button
                       onClick={clearProgressState}
-                      className="confirmation__buttons__cta"
+                      className="confirmation__buttons__cta confirm-btn-hover confirmation__buttons__cta--hover"
                     >
-                      Done
+                      <span>Done</span>
                     </button>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
+          {isInsuficientBalance && (
+            <div className="confirmation__buttons">
+              <button
+                onClick={() => push(buyHref)}
+                className="buy-btn buy-btn--active confirmation__buttons__cta"
+              >
+                <span>Buy More {details?.currencyIn?.currency?.symbol}</span>
+                <BtnPolygons />
+              </button>
+            </div>
+          )}
         </div>
       </motion.div>
     </div>
