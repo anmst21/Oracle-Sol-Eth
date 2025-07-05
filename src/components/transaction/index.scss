@@ -190,7 +190,8 @@
 
 .transaction-header,
 .transaction-info,
-.transaction-route {
+.transaction-route,
+.transaction-time {
     // max-width: 540px;
     width: 100%;
     border-radius: 12px;
@@ -203,6 +204,10 @@
 }
 
 .transaction-header {
+    .to-gap {
+        width: 100%;
+        gap: 4px;
+    }
 
     &__main {
         display: flex;
@@ -307,15 +312,26 @@
     }
 }
 
-.transaction-route {
-    width: calc(50% - 4px);
-}
 
 
 
 
 .transaction-info {
     position: relative;
+
+
+
+
+
+    .to-gap {
+        gap: 4px;
+        display: flex;
+    }
+
+
+
+
+
 
     .user-placeholder {
         width: 20px;
@@ -329,6 +345,7 @@
         width: 30px;
         padding: 0;
         justify-content: center;
+        //  pointer-events: none;
     }
 
     &__item {
@@ -365,6 +382,7 @@
 
         .tx-copy {
             color: #889697;
+            pointer-events: all;
         }
 
         .tx-copy,
@@ -422,14 +440,29 @@
             height: 18px;
             margin-left: 4px;
             border-radius: 4px;
-            background: rgba(174, 233, 0, 0.10);
             text-transform: capitalize;
-            color: #AEE900;
-
             font-size: 12px;
             font-style: normal;
             font-weight: 400;
             line-height: normal;
+
+            &--normal {
+
+                color: #889697;
+                background: rgba(136, 150, 151, 0.05);
+            }
+
+            &--success {
+
+                color: #AEE900;
+                background: rgba(174, 233, 0, 0.05);
+            }
+
+            &--error {
+
+                color: #F13D20;
+                background: rgba(241, 61, 32, 0.05);
+            }
         }
 
         svg {
@@ -463,5 +496,33 @@
         z-index: 100;
         top: 50%;
         transform: translateY(-50%);
+    }
+}
+
+.tx-events {
+    pointer-events: none;
+}
+
+.transaction-time {
+
+
+    div {
+        font-size: 14px;
+    }
+
+    span {
+        font-size: 14px;
+    }
+}
+
+.transaction-time,
+.transaction-route {
+    .to-gap {
+        gap: 4px;
+        display: flex;
+    }
+
+    span {
+        white-space: nowrap;
     }
 }

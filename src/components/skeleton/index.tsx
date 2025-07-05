@@ -1,8 +1,10 @@
+"use client";
+
 import React, { useEffect, useState, CSSProperties } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
-  isLoading: boolean;
+  isLoading?: boolean;
   width?: number | string;
   height?: number | string;
   radius?: number;

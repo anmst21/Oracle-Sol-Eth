@@ -1,0 +1,245 @@
+.history-item {
+    border-radius: 8px;
+    background: rgba(136, 150, 151, 0.05);
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    gap: 4px;
+
+
+    .transaction-info__header__status,
+    &__transaction {
+        height: 24px;
+        font-size: 16px;
+
+    }
+
+    &__transaction {
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        display: flex;
+        align-items: center;
+        padding: 0px 4px 0px 8px;
+        border-radius: 4px;
+        background: rgba(217, 241, 233, 0.10);
+        color: #D9F1E9;
+
+        font-style: normal;
+        font-weight: 400;
+        line-height: 16px;
+
+    }
+
+    &__header {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        padding: 6px 4px 6px 8px;
+        gap: 4px;
+
+        &__swap {
+            border-radius: 6px;
+            border: 1px solid rgba(174, 233, 0, 0.80);
+            background: rgba(174, 233, 0, 0.15);
+            width: 36px;
+            height: 36px;
+            align-items: center;
+            justify-content: center;
+            color: #AEE900;
+            display: flex;
+
+            svg {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        &__tx {
+            border-radius: 6px;
+            background: rgba(136, 150, 151, 0.05);
+            padding: 6px 4px 6px 8px;
+            display: flex;
+            flex: 1;
+            align-items: center;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+.history-transactions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: scroll;
+
+
+    &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+
+    scrollbar-width: none;
+
+    -ms-overflow-style: none;
+}
+
+
+
+
+
+
+
+
+
+.history-sort {
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+
+    &__network {
+        flex: 1;
+    }
+
+    &__network,
+    &__address,
+    &__title {
+        border-radius: 4px;
+        background: rgba(136, 150, 151, 0.05);
+        display: flex;
+        align-items: center;
+    }
+
+    &__network,
+    &__address {
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        backdrop-filter: blur(75px);
+        padding: 2px;
+        gap: 2px;
+
+    }
+
+    &__title {
+        flex: 1;
+        padding: 6px 8px;
+        display: flex;
+
+        span {
+            color: #889697;
+            font-family: var(--font-handjet);
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 300;
+            line-height: 20px;
+        }
+
+    }
+
+    &__icon {
+        width: 28px;
+        justify-content: center;
+
+
+        img {
+            border-radius: 1000px;
+
+            border-radius: 100px;
+            border: 1px solid #889697;
+        }
+    }
+
+    &__icon,
+    &__value {
+        display: flex;
+        align-items: center;
+        height: 28px;
+        border-radius: 4px;
+        background: rgba(136, 150, 151, 0.05);
+
+    }
+
+    &__value {
+        color: #889697;
+        font-size: 16px;
+        padding: 4px 8px;
+        font-style: normal;
+        font-weight: 400;
+        flex: 1;
+        line-height: 20px;
+    }
+
+    &__reset {
+        border-radius: 6px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        background: rgba(217, 241, 233, 0.05);
+        height: 32px;
+        width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.history-modal {
+    border-radius: 12px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(136, 150, 151, 0.05);
+    backdrop-filter: blur(30px);
+    width: 1000px;
+    height: 500px;
+    padding: 12px;
+
+    &__wrapper {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+}
+
+
+.history-component {
+    max-height: 500px;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(136, 150, 151, 0.05);
+    backdrop-filter: blur(30px);
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+}

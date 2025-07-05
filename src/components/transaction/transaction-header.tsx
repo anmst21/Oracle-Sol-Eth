@@ -3,6 +3,7 @@ import { HexChain, UserQuestion } from "../icons";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import Image from "next/image";
 import GreenDot from "../green-dot";
+import SkeletonLoaderWrapper from "../skeleton";
 
 type Props = {
   amountFormatted: string | undefined;
@@ -11,6 +12,7 @@ type Props = {
   chainId: number | undefined;
   chainName: string | undefined;
   type: "from" | "to";
+  isLoading?: boolean;
 };
 
 const TransactionHeader = ({
@@ -20,6 +22,7 @@ const TransactionHeader = ({
   ticker,
   uri,
   amountFormatted,
+  isLoading,
 }: Props) => {
   const amount = amountFormatted ? Number(amountFormatted) : 0;
 
@@ -27,44 +30,63 @@ const TransactionHeader = ({
 
   const [int, dec] = amt.toString().split(".");
 
+  // const isLoadingTo = isLoading && type === "to";
+
   return (
     <div className="transaction-header">
       <div className="transaction-header__top">
-        <div className="transaction-header__top__chain">
-          <div className="transaction-header__top__chain__hex">
-            <HexChain width={24} uri={getIconUri(chainId || 1)} />
+        <SkeletonLoaderWrapper
+          radius={6}
+          height={34}
+          width={"auto"}
+          isLoading={isLoading}
+          flex
+        >
+          <div className="transaction-header__top__chain">
+            <div className="transaction-header__top__chain__hex">
+              <HexChain width={24} uri={getIconUri(chainId || 1)} />
+            </div>
+            <span>{chainName}</span>
           </div>
-          <span>{chainName}</span>
-        </div>
-        <div className="transaction-header__whitespace" />
+          <div className="transaction-header__whitespace" />
+        </SkeletonLoaderWrapper>
         <div className="transaction-header__top__type">
           <span>{type.toUpperCase()}</span>
         </div>
       </div>
+
       <div className="transaction-header__main">
-        <div className="transaction-header__main__image">
-          <div className="user-placeholder">
-            {uri ? (
-              <Image
-                src={uri}
-                width={24}
-                height={24}
-                alt={`${ticker} token input`}
-              />
-            ) : (
-              <UserQuestion />
-            )}
+        <SkeletonLoaderWrapper
+          radius={6}
+          height={34}
+          width={"auto"}
+          isLoading={isLoading}
+          flex
+        >
+          <div className="transaction-header__main__image">
+            <div className="user-placeholder">
+              {uri ? (
+                <Image
+                  src={uri}
+                  width={24}
+                  height={24}
+                  alt={`${ticker} token input`}
+                />
+              ) : (
+                <UserQuestion />
+              )}
+            </div>
           </div>
-        </div>
-        <div className="transaction-header__main__value">
-          <span>
-            <GreenDot int={int} dec={dec} />
-          </span>
-        </div>
-        <div className="transaction-header__main__name">
-          <span>{ticker}</span>
-        </div>
-        <div className="transaction-header__whitespace" />
+          <div className="transaction-header__main__value">
+            <span>
+              <GreenDot int={int} dec={dec} />
+            </span>
+          </div>
+          <div className="transaction-header__main__name">
+            <span>{ticker}</span>
+          </div>
+          <div className="transaction-header__whitespace" />
+        </SkeletonLoaderWrapper>
       </div>
     </div>
   );

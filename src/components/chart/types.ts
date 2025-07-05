@@ -7,3 +7,8 @@ export type GeckoChain = {
     coingecko_asset_platform_id: string | null;
   };
 };
+
+export enum ChartType {
+  line = "line",
+  candel = "candel",
+}

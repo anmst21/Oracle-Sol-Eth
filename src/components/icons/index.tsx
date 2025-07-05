@@ -51,8 +51,23 @@ import LogOutDoor from "./LogOutDoor";
 import BtnPolygons from "./BtnPolygons";
 import TxSwap from "./TxSwap";
 import ClockInfo from "./ClockInfo";
+import HistorySortDisable from "./HistorySortDisable";
+import HistorySortEnable from "./HistorySortEnable";
+import HistoryCalendar from "./HistoryCalendar";
+import HistoryFrom from "./HistoryFrom";
+import HistoryTo from "./HistoryTo";
+import HistoryRecipient from "./HistoryRecipient";
+import HistorySender from "./HistorySender";
 
 export {
+  HistoryCalendar,
+  HistoryFrom,
+  HistoryTo,
+  HistoryRecipient,
+  HistorySender,
+  HistorySortDisable,
+  HistorySortEnable,
+  ClockInfo,
   TxSwap,
   BtnPolygons,
   ButtonEth,

@@ -1,10 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { HexChain, InputCoin, SwapArrow, UserQuestion } from "../icons";
-import { truncateAddress } from "@/helpers/truncate-address";
+import { InputCoin } from "../icons";
 import { useTokenModal } from "@/context/TokenModalProvider";
 import { UnifiedToken } from "@/types/coin-types";
-import Image from "next/image";
-import { getIconUri } from "@/helpers/get-icon-uri";
 import GreenDot from "../green-dot";
 import { SwapWallet, TradeType } from "./types";
 import WalletModal from "../wallets/wallet-modal";
@@ -15,10 +12,8 @@ import {
 } from "@privy-io/react-auth";
 import { useDebounce } from "@/hooks/useDebounce";
 import { solanaChain } from "@/helpers/solanaChain";
-import classNames from "classnames";
 import SkeletonLoaderWrapper from "../skeleton";
 import { AnimatePresence, motion } from "motion/react";
-import { slidingTextAnimation } from "./animation";
 import WalletButton from "../universals/wallet-button";
 import TokenButton from "../universals/token-button";
 

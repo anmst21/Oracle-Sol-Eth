@@ -1,0 +1,92 @@
+{
+    "id": "base_0xd9edc75a3a797ec92ca370f19051babebfb2edee",
+    "type": "pool",
+    "attributes": {
+        "base_token_price_usd": "1.01994152277688",
+        "base_token_price_native_currency": "0.000407985144678808",
+        "quote_token_price_usd": "2499.97",
+        "quote_token_price_native_currency": "1.0",
+        "base_token_price_quote_token": "0.0004079851447",
+        "quote_token_price_base_token": "2451.06963585",
+        "address": "0xd9edc75a3a797ec92ca370f19051babebfb2edee",
+        "name": "KTA / WETH",
+        "pool_created_at": "2025-03-05T18:32:49Z",
+        "fdv_usd": "1019941448.20121",
+        "market_cap_usd": "412472949.348568",
+        "price_change_percentage": {
+            "m5": "-0.57",
+            "m15": "3.13",
+            "m30": "2.05",
+            "h1": "2.71",
+            "h6": "5.6",
+            "h24": "-17.79"
+        },
+        "transactions": {
+            "m5": {
+                "buys": 5,
+                "sells": 7,
+                "buyers": 5,
+                "sellers": 7
+            },
+            "m15": {
+                "buys": 27,
+                "sells": 21,
+                "buyers": 21,
+                "sellers": 19
+            },
+            "m30": {
+                "buys": 52,
+                "sells": 41,
+                "buyers": 33,
+                "sellers": 27
+            },
+            "h1": {
+                "buys": 132,
+                "sells": 58,
+                "buyers": 81,
+                "sellers": 36
+            },
+            "h6": {
+                "buys": 1390,
+                "sells": 877,
+                "buyers": 583,
+                "sellers": 361
+            },
+            "h24": {
+                "buys": 6107,
+                "sells": 3557,
+                "buyers": 1967,
+                "sellers": 1114
+            }
+        },
+        "volume_usd": {
+            "m5": "6634.6272948425",
+            "m15": "282750.100513335",
+            "m30": "321652.151386258",
+            "h1": "401142.234422074",
+            "h6": "6675473.18515403",
+            "h24": "30945391.3619609"
+        },
+        "reserve_in_usd": "15828392.0516"
+    },
+    "relationships": {
+        "base_token": {
+            "data": {
+                "id": "base_0xc0634090f2fe6c6d75e61be2b949464abb498973",
+                "type": "token"
+            }
+        },
+        "quote_token": {
+            "data": {
+                "id": "base_0x4200000000000000000000000000000000000006",
+                "type": "token"
+            }
+        },
+        "dex": {
+            "data": {
+                "id": "aerodrome-base",
+                "type": "dex"
+            }
+        }
+    }
+}

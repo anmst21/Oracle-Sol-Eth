@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { HeaderCross } from "../icons";
 import classNames from "classnames";
 import { formatUnits } from "viem";
+import TransactionTime from "./transaction-time";
 
 const Transaction = async ({
   transaction,
@@ -59,6 +60,11 @@ const Transaction = async ({
     fromChainData?.currency?.decimals
   );
 
+  const isLoading =
+    transaction.status === "pending" ||
+    transaction.status === "waiting" ||
+    transaction.status === "delayed";
+
   return (
     <div className="transaction">
       <div className="transaction__header">
@@ -72,10 +78,7 @@ const Transaction = async ({
         <div
           className={classNames("transaction__status", {
             "transaction__status--success": transaction.status === "success",
-            "transaction__status--normal":
-              transaction.status === "pending" ||
-              transaction.status === "waiting" ||
-              transaction.status === "delayed",
+            "transaction__status--normal": isLoading,
             "transaction__status--error":
               transaction.status === "refund" ||
               transaction.status === "failure",
@@ -111,9 +114,36 @@ const Transaction = async ({
             chainName={fromChainData?.displayName}
             currencyAddress={currencyIn?.currency?.address}
           />
+          <TransactionRoute
+            isLoading={isLoading}
+            hideFill={
+              currencyIn?.currency?.chainId === currencyOut?.currency?.chainId
+            }
+            depositChainName={fromChainData?.displayName}
+            depositCurrencyTicker={fromChainData?.currency?.symbol}
+            depositGasValue={
+              inTx?.fee && fromChainData?.currency?.decimals
+                ? formatUnits(
+                    BigInt(inTx?.fee),
+                    fromChainData?.currency?.decimals
+                  )
+                : "0.0"
+            }
+            fillChainName={toChainData?.displayName}
+            fillCurrencyTicker={toChainData?.currency?.symbol}
+            fillGasValue={
+              transaction.data?.fees?.gas && fromChainData?.currency?.decimals
+                ? formatUnits(
+                    BigInt(transaction.data?.fees?.gas),
+                    fromChainData?.currency?.decimals
+                  )
+                : "0.0"
+            }
+          />
         </div>
         <div className="transaction__main">
           <TransactionHeader
+            isLoading={isLoading}
             amountFormatted={currencyOut?.amountFormatted}
             ticker={currencyOut?.currency?.symbol}
             uri={currencyOut?.currency?.metadata?.logoURI}
@@ -135,49 +165,30 @@ const Transaction = async ({
             chainName={toChainData?.displayName}
             currencyAddress={currencyOut?.currency?.address}
           />
+          <TransactionTime
+            isLoading={isLoading}
+            relayFeeValue={
+              transaction.data?.fees?.fixed &&
+              transaction.data?.feeCurrencyObject?.decimals
+                ? formatUnits(
+                    BigInt(transaction.data?.fees?.fixed),
+                    transaction.data?.feeCurrencyObject?.decimals
+                  )
+                : "0.0"
+            }
+            appFeeValue={
+              totalAppFees && transaction.data?.feeCurrencyObject?.decimals
+                ? formatUnits(
+                    BigInt(totalAppFees),
+                    transaction.data?.feeCurrencyObject?.decimals
+                  )
+                : "0.0"
+            }
+            appFeeTicker={transaction.data?.feeCurrencyObject?.symbol}
+            timeEstimate={transaction.data?.timeEstimate}
+          />
         </div>
       </div>
-      <TransactionRoute
-        hideFill={
-          currencyIn?.currency?.chainId === currencyOut?.currency?.chainId
-        }
-        depositChainName={fromChainData?.displayName}
-        depositCurrencyTicker={fromChainData?.currency?.symbol}
-        depositGasValue={
-          inTx?.fee && fromChainData?.currency?.decimals
-            ? formatUnits(BigInt(inTx?.fee), fromChainData?.currency?.decimals)
-            : "0.0"
-        }
-        fillChainName={toChainData?.displayName}
-        fillCurrencyTicker={toChainData?.currency?.symbol}
-        fillGasValue={
-          transaction.data?.fees?.gas && fromChainData?.currency?.decimals
-            ? formatUnits(
-                BigInt(transaction.data?.fees?.gas),
-                fromChainData?.currency?.decimals
-              )
-            : "0.0"
-        }
-        relayFeeValue={
-          transaction.data?.fees?.fixed &&
-          transaction.data?.feeCurrencyObject?.decimals
-            ? formatUnits(
-                BigInt(transaction.data?.fees?.fixed),
-                transaction.data?.feeCurrencyObject?.decimals
-              )
-            : "0.0"
-        }
-        appFeeValue={
-          totalAppFees && transaction.data?.feeCurrencyObject?.decimals
-            ? formatUnits(
-                BigInt(totalAppFees),
-                transaction.data?.feeCurrencyObject?.decimals
-              )
-            : "0.0"
-        }
-        appFeeTicker={transaction.data?.feeCurrencyObject?.symbol}
-        timeEstimate={transaction.data?.timeEstimate}
-      />
     </div>
   );
 };

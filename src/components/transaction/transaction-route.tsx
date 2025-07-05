@@ -2,7 +2,7 @@ import React from "react";
 import { relayLogoUri } from "@/helpers/relay-logo-uri";
 import Image from "next/image";
 import GreenDot from "../green-dot";
-import ClockInfo from "../icons/ClockInfo";
+import SkeletonLoaderWrapper from "../skeleton";
 
 type Props = {
   depositChainName: string | undefined;
@@ -11,11 +11,8 @@ type Props = {
   fillChainName: string | undefined;
   fillGasValue: string | undefined;
   fillCurrencyTicker: string | undefined;
-  relayFeeValue: string | undefined;
-  appFeeValue: string | undefined;
+  isLoading: boolean;
   hideFill: boolean;
-  appFeeTicker: string | undefined;
-  timeEstimate?: number | undefined;
 };
 
 const TransactionRoute = ({
@@ -25,16 +22,11 @@ const TransactionRoute = ({
   fillChainName,
   fillCurrencyTicker,
   fillGasValue,
-  appFeeValue,
-  relayFeeValue,
+  isLoading,
   hideFill,
-  appFeeTicker,
-  timeEstimate,
 }: Props) => {
   const [intDeposit, decDeposit] = String(depositGasValue).split(".");
   const [intFill, decFill] = String(fillGasValue).split(".");
-  const [intRelay, decRelay] = String(relayFeeValue).split(".");
-  const [intApp, decApp] = String(appFeeValue).split(".");
 
   return (
     <div className="transaction-route">
@@ -65,54 +57,31 @@ const TransactionRoute = ({
           {depositCurrencyTicker}
         </div>
       </div>
+
       {!hideFill && (
         <div className="transaction-route__route">
           <div className="transaction-route__key">
             <span>Fill Gas</span>
-            <div className="transaction-route__key__chain">{fillChainName}</div>
+            {fillChainName && (
+              <div className="transaction-route__key__chain">
+                {fillChainName}
+              </div>
+            )}
           </div>
-          <div className="transaction-route__value__name">
-            <GreenDot int={intFill} dec={decFill} />
-          </div>
-          <div className="transaction-route__value__name transaction-route__value__name--green">
-            {fillCurrencyTicker}
-          </div>
-        </div>
-      )}
-      <div className="transaction-route__route">
-        <div className="transaction-route__key">
-          <span>Relay Fee</span>
-        </div>
-        <div className="transaction-route__value__name">
-          <GreenDot int={intRelay} dec={decRelay} />
-        </div>
-        <div className="transaction-route__value__name transaction-route__value__name--green">
-          {appFeeTicker}
-        </div>
-      </div>
-      <div className="transaction-route__route">
-        <div className="transaction-route__key">
-          <span>App Fee</span>
-        </div>
-        <div className="transaction-route__value__name">
-          <GreenDot int={intApp} dec={decApp} />
-        </div>
-        <div className="transaction-route__value__name transaction-route__value__name--green">
-          {appFeeTicker}
-        </div>
-      </div>
-      {timeEstimate && (
-        <div className="transaction-route__route">
-          <div className="transaction-route__key">
-            <span>Time</span>
-          </div>
-          <div className="transaction-route__route__relay">
-            <ClockInfo />
-          </div>
-          <div className="transaction-route__value__name">~{timeEstimate}</div>
-          <div className="transaction-route__value__name transaction-route__value__name--green">
-            Sec
-          </div>
+          <SkeletonLoaderWrapper
+            radius={6}
+            height={30}
+            width={"auto"}
+            isLoading={isLoading}
+            flex={isLoading}
+          >
+            <div className="transaction-route__value__name">
+              <GreenDot int={intFill} dec={decFill} />
+            </div>
+            <div className="transaction-route__value__name transaction-route__value__name--green">
+              {fillCurrencyTicker}
+            </div>
+          </SkeletonLoaderWrapper>
         </div>
       )}
     </div>
