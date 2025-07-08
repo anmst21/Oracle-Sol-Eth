@@ -12,7 +12,7 @@ export enum Theme {
   monochrome = "monochrome",
 }
 
-function Icon({ address }: { address: string }) {
+function Icon({ address, width = 20 }: { address: string; width?: number }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -55,8 +55,8 @@ function Icon({ address }: { address: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
+      width={width}
+      height={width}
       fill="none"
       viewBox="0 0 24 24"
       style={{

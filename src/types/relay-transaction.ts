@@ -269,3 +269,23 @@ export type RelayTransaction = {
   createdAt?: string;
   updatedAt?: string;
 };
+
+export type CurrencyIn = {
+  currency?: {
+    chainId?: number;
+    address?: string;
+    symbol?: string;
+    name?: string;
+    decimals?: number;
+    metadata?: {
+      logoURI?: string;
+      verified?: boolean;
+      isNative?: boolean;
+    };
+  };
+  amount?: string;
+  amountFormatted?: string;
+  amountUsd?: string;
+  amountUsdCurrent?: string;
+  minimumAmount?: string;
+};

@@ -1,3 +1,12 @@
+.history-item-skeleton {
+    .history-item__header__swap {
+        pointer-events: none;
+    }
+}
+
+
+
+
 .history-item {
     border-radius: 8px;
     background: rgba(136, 150, 151, 0.05);
@@ -5,6 +14,77 @@
     flex-direction: column;
     padding: 4px;
     gap: 4px;
+
+
+    a {
+
+
+        &:hover {
+            span {
+                text-decoration: underline;
+                color: #D9F1E9
+            }
+        }
+    }
+
+    img {
+        border-radius: 100px;
+        border: 1px solid #889697;
+        background-color: #889697;
+    }
+
+    .white {
+        color: #D9F1E9;
+    }
+
+    &__time {
+        display: flex;
+        gap: 4px;
+        flex: 1;
+
+        &__icon {
+            border-radius: 6px;
+            background: rgba(136, 150, 151, 0.05);
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+
+    &__section {
+
+        display: flex;
+        gap: 4px;
+
+
+        color: #889697;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 16px;
+    }
+
+    &__key,
+    &__value {
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        gap: 2px;
+        display: flex;
+        padding: 4px 8px 4px 6px;
+        flex: 1;
+        align-items: center;
+        height: 24px;
+    }
+
+    &__value {
+        justify-content: flex-end;
+        padding: 4px 8px;
+    }
+
+
 
 
     .transaction-info__header__status,
@@ -37,7 +117,7 @@
         display: flex;
         flex: 1;
         align-items: center;
-        padding: 6px 4px 6px 8px;
+
         gap: 4px;
 
         &__swap {
@@ -50,6 +130,12 @@
             justify-content: center;
             color: #AEE900;
             display: flex;
+            transition: all .2s ease-in-out;
+
+            &:hover {
+                background: #AEE900;
+                color: #000;
+            }
 
             svg {
                 width: 30px;
@@ -58,6 +144,7 @@
         }
 
         &__tx {
+            height: 36px;
             border-radius: 6px;
             background: rgba(136, 150, 151, 0.05);
             padding: 6px 4px 6px 8px;
@@ -232,6 +319,7 @@
 
 .history-component {
     max-height: 500px;
+    min-height: 500px;
     overflow: hidden;
     border-radius: 12px;
     border: 1px solid rgba(136, 150, 151, 0.20);

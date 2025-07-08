@@ -1,7 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { HexChain, HistorySortEnable, HistorySortDisable } from "../icons";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
+import { HexChain, HistorySortEnable } from "../icons";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import Image from "next/image";
 import { queryRequests, useRelayChains } from "@reservoir0x/relay-kit-hooks";
@@ -9,41 +15,97 @@ import { RelayTransaction } from "@/types/relay-transaction";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { truncateAddress } from "@/helpers/truncate-address";
 import HistoryItem from "./history-item";
+import { useScroll } from "framer-motion";
+import HistoryItemSkeleton from "./history-item-skeleton";
 
 const History = () => {
-  const [transactions, setTransactions] = useState<RelayTransaction[]>([]);
-  const [continuation, setContinuation] = useState<string | undefined>(
-    undefined
-  );
+  const containerRef = useRef<HTMLDivElement>(null); // ②
 
-  const { chains, isLoading } = useRelayChains();
-
+  const { chains, isLoading: isLoadingChains } = useRelayChains();
   const { activeWallet } = useActiveWallet();
-
   const chainId =
     activeWallet?.type === "ethereum"
       ? Number(activeWallet.chainId.split(":")[1])
       : 792703809;
 
-  const chainItem = chains?.find((chain) => chain.id === chainId);
+  const [transactions, setTransactions] = useState<RelayTransaction[]>([]);
+  const [continuation, setContinuation] = useState<string>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  console.log({ transactions, continuation, activeWallet });
+  // Combined fetch fn
+  const fetchRequests = useCallback(
+    async (opts: { append: boolean; continuation?: string }) => {
+      if (!activeWallet?.address) return;
+      const { append, continuation: cont } = opts;
 
+      if (append) {
+        setIsLoadingMore(true);
+      } else {
+        setIsLoading(true);
+      }
+
+      setError(null);
+
+      try {
+        const res = await queryRequests("https://api.relay.link", {
+          user: activeWallet.address,
+          chainId: String(chainId),
+          limit: "20",
+          ...(cont ? { continuation: cont } : {}),
+        });
+        setTransactions((prev) =>
+          append
+            ? [...prev, ...(res.requests as RelayTransaction[])]
+            : (res.requests as RelayTransaction[])
+        );
+        setContinuation(res.continuation);
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error(err);
+          setError(err.message || "Failed to fetch transactions");
+        }
+      } finally {
+        if (append) {
+          setIsLoadingMore(false);
+        } else {
+          setIsLoading(false);
+        }
+      }
+    },
+    [activeWallet?.address, chainId]
+  );
+
+  // initial load
   useEffect(() => {
-    const getRequests = async () => {
-      const res = await queryRequests("https://api.relay.link", {
-        user: activeWallet?.address,
-        chainId: String(chainId),
-      });
-
-      setTransactions(res.requests as RelayTransaction[]);
-      setContinuation(res.continuation);
-    };
-
-    if (activeWallet?.address && chainId) {
-      getRequests();
+    if (activeWallet?.address) {
+      fetchRequests({ append: false });
     }
-  }, [activeWallet?.address, chainId]);
+  }, [activeWallet?.address, fetchRequests]);
+
+  // Framer Motion scroll observer
+  const { scrollYProgress } = useScroll({
+    container: containerRef, // ③
+  });
+
+  // fire loadMore once scrolled past 90%
+  useEffect(() => {
+    return scrollYProgress.onChange((progress) => {
+      if (progress > 0.9 && continuation && !isLoadingMore) {
+        fetchRequests({ append: true, continuation });
+      }
+    });
+  }, [scrollYProgress, continuation, isLoadingMore, fetchRequests]);
+
+  const chainItem = useMemo(
+    () => chains?.find((chain) => chain.id === chainId),
+    [chains, chainId]
+  );
+
+  const skeletonArray = Array.from({ length: 3 }).map((_, i) => (
+    <HistoryItemSkeleton key={`more-${i}`} />
+  ));
 
   return (
     <div className="history-component">
@@ -55,8 +117,8 @@ const History = () => {
           <div className="history-sort__icon">
             <HexChain
               width={20}
-              uri={!isLoading ? getIconUri(1) : undefined}
-              question={isLoading}
+              uri={!isLoadingChains ? getIconUri(1) : undefined}
+              question={isLoadingChains}
             />
           </div>
           <div className="history-sort__value">
@@ -86,33 +148,53 @@ const History = () => {
           <HistorySortEnable />
         </button>
       </div>
-      <div className="history-transactions">
-        {transactions.map((tx, i) => {
-          return <HistoryItem status={tx.status} txAdderss={tx.id} key={i} />;
-        })}
+
+      <div
+        ref={containerRef} // ④
+        className="history-transactions"
+        style={{ maxHeight: "600px", overflowY: "auto" }}
+      >
+        {isLoading ? (
+          skeletonArray
+        ) : error ? (
+          <div className="error">
+            <p>{error}</p>
+            <button onClick={() => fetchRequests({ append: false })}>
+              Retry
+            </button>
+          </div>
+        ) : transactions.length === 0 ? (
+          <p>No transactions yet.</p>
+        ) : (
+          transactions.map((tx, i) => {
+            const currencyIn = tx.data?.metadata?.currencyIn;
+            const currencyOut = tx.data?.metadata?.currencyOut;
+            const fromChainData = chains?.find(
+              (c) => c.id === currencyIn?.currency?.chainId
+            );
+            const toChainData = chains?.find(
+              (c) => c.id === currencyOut?.currency?.chainId
+            );
+            return (
+              <HistoryItem
+                key={i}
+                fromChainData={fromChainData}
+                toChainData={toChainData}
+                status={tx.status}
+                txAdderss={tx.id}
+                timestamp={tx.createdAt}
+                currencyIn={currencyIn}
+                currencyOut={currencyOut}
+                sender={tx.user}
+                recipient={tx.recipient}
+              />
+            );
+          })
+        )}
+        {isLoadingMore && skeletonArray}
       </div>
     </div>
   );
 };
 
 export default History;
-
-//  query?: {
-//                     limit?: string;
-//                     continuation?: string;
-//                     user?: string;
-//                     hash?: string;
-//                     originChainId?: string;
-//                     destinationChainId?: string;
-//                     privateChainsToInclude?: string;
-//                     id?: string;
-//                     startTimestamp?: number;
-//                     endTimestamp?: number;
-//                     startBlock?: number;
-//                     endBlock?: number;
-//                     /** @description Get all requests for a single chain in either direction. Setting originChainId and/or destinationChainId will override this parameter. */
-//                     chainId?: string;
-//                     referrer?: string;
-//                     sortBy?: "createdAt" | "updatedAt";
-//                     sortDirection?: "asc" | "desc";
-//                 };
