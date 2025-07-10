@@ -58,8 +58,10 @@ import HistoryFrom from "./HistoryFrom";
 import HistoryTo from "./HistoryTo";
 import HistoryRecipient from "./HistoryRecipient";
 import HistorySender from "./HistorySender";
+import HistoryWarning from "./HistoryWarning";
 
 export {
+  HistoryWarning,
   HistoryCalendar,
   HistoryFrom,
   HistoryTo,

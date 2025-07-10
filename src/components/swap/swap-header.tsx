@@ -9,6 +9,7 @@ import SlippageModal from "../slippage-modal";
 import { AnimatePresence } from "motion/react";
 import { useChart } from "@/context/ChartProvider";
 import { useHistory } from "@/context/HistoryProvider";
+import { useActiveWallet } from "@/context/ActiveWalletContext";
 
 const buttons = [
   { name: "Swap", icon: <SwapIcon />, href: "/swap" },
@@ -34,9 +35,15 @@ const SwapHeader = () => {
     [setIsOpenHistory]
   );
 
+  const { activeWallet } = useActiveWallet();
+
+  const buttonsLogin = activeWallet
+    ? buttons
+    : buttons.filter((b) => b.href !== "/history");
+
   return (
     <div className="swap-header">
-      {buttons.map((button, i) => (
+      {buttonsLogin.map((button, i) => (
         <Link
           className={classNames("swap-header__item", {
             "swap-header__item--active": pathname === button.href,

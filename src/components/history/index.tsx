@@ -17,6 +17,8 @@ import { truncateAddress } from "@/helpers/truncate-address";
 import HistoryItem from "./history-item";
 import { useScroll } from "framer-motion";
 import HistoryItemSkeleton from "./history-item-skeleton";
+import HistoryItemWarning from "./history-item-warning";
+import { useRouter } from "next/navigation";
 
 const History = () => {
   const containerRef = useRef<HTMLDivElement>(null); // ②
@@ -49,6 +51,12 @@ const History = () => {
       setError(null);
 
       try {
+        console.log({
+          user: activeWallet.address,
+          chainId: String(chainId),
+          limit: "20",
+          ...(cont ? { continuation: cont } : {}),
+        });
         const res = await queryRequests("https://api.relay.link", {
           user: activeWallet.address,
           chainId: String(chainId),
@@ -107,6 +115,8 @@ const History = () => {
     <HistoryItemSkeleton key={`more-${i}`} />
   ));
 
+  const { push } = useRouter();
+
   return (
     <div className="history-component">
       <div className="history-sort">
@@ -154,15 +164,16 @@ const History = () => {
         className="history-transactions"
         style={{ maxHeight: "600px", overflowY: "auto" }}
       >
+        {!isLoading && !error && transactions.length === 0 && (
+          <HistoryItemWarning callback={() => push("/swap")} />
+        )}
         {isLoading ? (
           skeletonArray
         ) : error ? (
-          <div className="error">
-            <p>{error}</p>
-            <button onClick={() => fetchRequests({ append: false })}>
-              Retry
-            </button>
-          </div>
+          <HistoryItemWarning
+            error={error}
+            callback={() => fetchRequests({ append: false })}
+          />
         ) : transactions.length === 0 ? (
           <p>No transactions yet.</p>
         ) : (

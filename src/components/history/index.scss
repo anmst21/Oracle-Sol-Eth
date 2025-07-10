@@ -6,14 +6,73 @@
 
 
 
+.history-item-warning--error {
 
-.history-item {
+    .history-item__cta {
+        border: 1px solid rgba(241, 61, 32, 0.40);
+        color: rgba(241, 61, 32, 0.80);
+        background: rgba(241, 61, 32, 0.10);
+
+        &:hover {
+            border: 1px solid rgba(241, 61, 32, 0.60);
+            background: rgba(241, 61, 32, 0.15);
+            color: rgba(241, 61, 32, 0.80)
+        }
+
+        &:active {
+            color: rgba(241, 61, 32);
+            border-color: rgba(241, 61, 32);
+            background: rgba(241, 61, 32, 0.15);
+        }
+    }
+
+    .history-item__key__header {
+        span {
+            color: #F13D20;
+        }
+
+    }
+}
+
+
+.history-item,
+.history-item-warning {
     border-radius: 8px;
     background: rgba(136, 150, 151, 0.05);
     display: flex;
     flex-direction: column;
     padding: 4px;
     gap: 4px;
+
+
+    &__cta {
+        border-radius: 6px;
+        border: 1px solid rgba(217, 241, 233, 0.40);
+        background: rgba(217, 241, 233, 0.10);
+        padding: 0px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+        transition: all .2s ease-in-out;
+        flex: 0 0 50%;
+
+
+        &:hover {
+            border-color: #D9F1E9;
+            color: #D9F1E9;
+        }
+
+        &:active {
+            background-color: rgba(174, 233, 0, 0.15);
+
+            border-color: rgba(174, 233, 0, 0.80);
+            color: rgba(174, 233, 0, 0.80);
+        }
+    }
 
 
     a {
@@ -67,6 +126,18 @@
         line-height: 16px;
     }
 
+    &__key__header {
+        justify-content: center;
+
+        span {
+            font-size: 14px;
+            font-style: normal;
+            color: #D9F1E9;
+            font-weight: 600;
+        }
+    }
+
+
     &__key,
     &__value {
         border-radius: 6px;
@@ -77,6 +148,13 @@
         flex: 1;
         align-items: center;
         height: 24px;
+    }
+
+
+    &__text {
+        height: 60px;
+        justify-content: center;
+        text-align: center;
     }
 
     &__value {
