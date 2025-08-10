@@ -38,15 +38,13 @@ type Props = {
     React.SetStateAction<UnifiedToken[] | null>
   >;
 
-  setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
-  setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  onSelect: (t: UnifiedToken) => void;
   modalMode: ModalMode;
 };
 
 const ModalCoins = ({
   chainFeaturedTokens,
-  setBuyToken,
-  setSellToken,
+  onSelect,
   modalMode,
   activeChainId,
   baseChain,
@@ -279,8 +277,7 @@ Props) => {
                     chainSrc={chain?.icon?.squaredLight}
                     coinSrc={t.logo}
                     coinName={t.name}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={t.chainId}
                   />
@@ -312,8 +309,7 @@ Props) => {
                     chainSrc={getIconUri(1)}
                     coinSrc={token.logo}
                     coinName={"Ether"}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={1}
                   />
@@ -341,8 +337,7 @@ Props) => {
                     chainSrc={getIconUri(792703809)}
                     coinSrc={getIconUri(792703809)}
                     coinName="Solana"
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={792703809}
                   />
@@ -375,8 +370,7 @@ Props) => {
                     }
                     coinSrc={token.logo}
                     coinName={token.name}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={token.chainId}
                   />
@@ -405,8 +399,7 @@ Props) => {
                     chainSrc={getIconUri(792703809)}
                     coinSrc={token.logo}
                     coinName={token.name}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={792703809}
                   />
@@ -433,8 +426,7 @@ Props) => {
                     coinSrc={token.logo}
                     coinName={token.name}
                     chainId={activeChainId}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                   />
                 );
@@ -464,8 +456,7 @@ Props) => {
                     }
                     coinSrc={token.logo}
                     coinName={token.name}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={token.chainId}
                   />
@@ -498,8 +489,7 @@ Props) => {
                     }
                     coinSrc={token.logo}
                     coinName={token.name}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={token.chainId}
                   />
@@ -533,8 +523,7 @@ Props) => {
                     }
                     coinSrc={token.logo}
                     coinName={token.name}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={token.chainId}
                   />

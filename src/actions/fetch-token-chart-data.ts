@@ -1,60 +1,48 @@
 "use server";
 
-import {
-  ChartSortType,
-  geckoTerminalBaseUri,
-} from "@/helpers/gecko-terminal-dex-data";
+import { TIMEFRAMES } from "@/helpers/chart-options";
+import { geckoTerminalBaseUri } from "@/helpers/gecko-terminal-dex-data";
 import { OHLCVResponse } from "@/types/chart-data";
 
 export const getTokenHistoricalData = async (
   poolAddress: string,
   chainName: string,
-  type: ChartSortType
+  range: keyof typeof TIMEFRAMES
 ) => {
-  const timeframe = () => {
-    switch (type) {
-      case ChartSortType.Hour:
-        return "minute?aggregate=1";
-      case ChartSortType.Day:
-        return "minute?aggregate=5";
-      case ChartSortType.Week:
-        return "minute?aggregate=15";
-      case ChartSortType.Month:
-        return "hour?aggregate=1";
-    }
-  };
+  const { timeframe, aggregate, limit } = TIMEFRAMES[range];
 
-  const limit = () => {
-    switch (type) {
-      case ChartSortType.Hour:
-        return 60;
-      case ChartSortType.Day:
-        return 192;
-      case ChartSortType.Week:
-        return 672;
-      case ChartSortType.Month:
-        return 744;
-    }
-  };
+  // ensure no trailing slash
+  const base = geckoTerminalBaseUri.replace(/\/$/, "");
 
-  try {
-    const baseUrl = `${geckoTerminalBaseUri}/networks/${chainName}/pools/${poolAddress}/ohlcv/${timeframe()}`;
-    const url = new URL(baseUrl);
-    // Mirror the original axios params (aggregate always set to 1)
-    url.searchParams.set("aggregate", "1");
-    url.searchParams.set("limit", limit().toString());
-    url.searchParams.set("currency", "usd");
+  // put back the `/networks` prefix
+  const endpoint = [
+    base,
+    "networks",
+    chainName,
+    "pools",
+    poolAddress,
+    "ohlcv",
+    timeframe,
+  ].join("/");
 
-    const res = await fetch(url.toString());
-    if (!res.ok) {
-      console.error("Error fetching historical data: HTTP " + res.status);
-      return null;
-    }
-
-    const json: OHLCVResponse = await res.json();
-    return json.data;
-  } catch (err) {
-    console.error("Error fetching historical data:", err);
-    return null;
+  const params = new URLSearchParams();
+  params.set("aggregate", aggregate.toString());
+  if (limit != null) {
+    params.set("limit", limit.toString());
   }
+
+  const url = `${endpoint}?${params.toString()}`;
+  console.log("fetching OHLCV →", url);
+
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) {
+    const body = await res.text();
+    console.error("OHLCV fetch error:", body);
+    throw new Error(`Failed to fetch OHLCV: ${res.status}`);
+  }
+
+  const result: OHLCVResponse = await res.json();
+  console.log("resres", result);
+
+  return result.data.attributes.ohlcv_list;
 };

@@ -11,6 +11,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  useRef,
 } from "react";
 import { useCommunityCoins } from "./FarcasterCommunityTokensProvider";
 import { useSolanaCoins } from "./DexScreenerTrendingSolataTokensProvider";
@@ -44,6 +45,12 @@ interface TokenModalContextValue {
   setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
   isLoadingNativeSolBalance: boolean;
   isLoadingUserEthTokens: boolean;
+
+  openTokenModal: (opts: {
+    mode: ModalMode;
+    onSelect: (t: UnifiedToken) => void; // optional override
+  }) => void;
+  selectToken: (t: UnifiedToken) => void;
 }
 
 const TokenModalContext = createContext<TokenModalContextValue | undefined>(
@@ -58,6 +65,28 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
   children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const selectionHandlerRef = useRef<((t: UnifiedToken) => void) | null>(null);
+
+  const openTokenModal = useCallback(
+    ({
+      mode,
+      onSelect,
+    }: {
+      mode: ModalMode;
+      onSelect: (t: UnifiedToken) => void;
+    }) => {
+      setModalMode(mode);
+      selectionHandlerRef.current = onSelect;
+      setIsOpen(true);
+    },
+    []
+  );
+
+  const selectToken = useCallback((t: UnifiedToken) => {
+    if (selectionHandlerRef.current) selectionHandlerRef.current(t);
+    setIsOpen(false); // auto-close after pick
+  }, []);
 
   const [userEthTokens, setUserEthTokens] = useState<UnifiedToken[] | null>(
     null
@@ -296,6 +325,8 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
         setSellToken,
         isLoadingNativeSolBalance,
         isLoadingUserEthTokens,
+        openTokenModal,
+        selectToken,
       }}
     >
       {children}
@@ -329,8 +360,8 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
             userSolanaTokens={userSolanaTokens}
             setUserSolanaTokens={setUserSolanaTokens}
             modalMode={modalMode}
-            setSellToken={setSellToken}
-            setBuyToken={setBuyToken}
+            // setSellToken={setSellToken}
+            // setBuyToken={setBuyToken}
           />
         )}
       </AnimatePresence>

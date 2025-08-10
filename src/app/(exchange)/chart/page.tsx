@@ -1,6 +1,5 @@
 import Chart from "@/components/chart";
-
-import { ChartProvider } from "@/context/ChartProvider";
+import ChartHeader from "@/components/chart/header";
 
 export default async function Page() {
   return (

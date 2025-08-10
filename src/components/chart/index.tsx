@@ -1,6 +1,13 @@
 "use client";
 
+import { useChart } from "@/context/ChartProvider";
 import { ChartSortType } from "@/helpers/gecko-terminal-dex-data";
+import classNames from "classnames";
+import { motion } from "motion/react";
+import { ChartType } from "./types";
+import ChartHeader from "./header";
+import ChartComponent from "./chart";
+import ChartBottom from "./bottom";
 
 const Chart = () => {
   const entries = Object.entries(ChartSortType) as Array<
@@ -12,8 +19,26 @@ const Chart = () => {
     value: ChartSortType;
   }> = entries.map(([key, value]) => ({ key, value }));
 
+  const {
+    tokenPools,
+    isLoadingPools,
+    isErrorPools,
+    chartData,
+    isLoadingChart,
+    isErrorChart,
+    sortType,
+    setSortType,
+    chartType,
+    setChartType,
+    isOpenPools,
+    setIsOpenPools,
+  } = useChart();
+
   return (
-    <div className="chart-component">
+    <div className="chart-container">
+      <ChartHeader />
+      <ChartComponent />
+      <ChartBottom />
       {/* <div className="chart-component__header"></div>
       <div className="chart-component__buttons">
         <motion.div className="chart-component__buttons__sort">

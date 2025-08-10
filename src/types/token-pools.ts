@@ -47,6 +47,8 @@ export interface PoolAttributes {
   quote_token_price_base_token: string;
   pool_created_at: string; // ISO timestamp
   reserve_in_usd: string;
+  token_price_usd: string;
+
   fdv_usd: string;
   market_cap_usd: string;
   price_change_percentage: PriceChangePercentage;

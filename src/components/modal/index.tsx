@@ -11,6 +11,7 @@ import { SolBalanceResponse } from "@/actions/get-sol-balance";
 import { ModalMode } from "@/types/modal-mode";
 import { motion } from "motion/react";
 import FeaturedSkeleton from "./featured-skeleton";
+import { useTokenModal } from "@/context/TokenModalProvider";
 
 interface ModalProps {
   loadChains: () => Promise<void>;
@@ -45,14 +46,14 @@ interface ModalProps {
   setUserSolanaTokens: React.Dispatch<
     React.SetStateAction<UnifiedToken[] | null>
   >;
-  setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
-  setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  // setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  // setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
   modalMode: ModalMode;
 }
 
 const Modal: React.FC<ModalProps> = ({
-  setBuyToken,
-  setSellToken,
+  // setBuyToken,
+  // setSellToken,
   modalMode,
   chains,
   chainsError,
@@ -119,6 +120,8 @@ const Modal: React.FC<ModalProps> = ({
     }));
   }, [activeChainId, chains]);
 
+  const { selectToken } = useTokenModal();
+
   return (
     <div onClick={closeModal} className="modal__wrapper">
       <motion.div
@@ -157,8 +160,7 @@ const Modal: React.FC<ModalProps> = ({
                     }
                     coinSrc={token.metadata?.logoURI}
                     token={token}
-                    setBuyToken={setBuyToken}
-                    setSellToken={setSellToken}
+                    onSelect={selectToken}
                     modalMode={modalMode}
                     isLoading={isLoadingSuggested}
                   />
@@ -201,8 +203,7 @@ const Modal: React.FC<ModalProps> = ({
             userSolanaTokens={userSolanaTokens}
             setUserSolanaTokens={setUserSolanaTokens}
             chainFeaturedTokens={chainFeaturedTokens}
-            setBuyToken={setBuyToken}
-            setSellToken={setSellToken}
+            onSelect={selectToken}
             modalMode={modalMode}
           />
         </div>

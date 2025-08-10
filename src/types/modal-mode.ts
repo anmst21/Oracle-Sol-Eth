@@ -1,1 +1,1 @@
-export type ModalMode = "buy" | "sell" | "onramp" | null;
+export type ModalMode = "buy" | "sell" | "onramp" | "chart" | null;

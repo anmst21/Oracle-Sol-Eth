@@ -315,6 +315,7 @@ const SwapContainer = () => {
       createClient({
         baseApiUrl: MAINNET_RELAY_API,
         source: "YOUR.SOURCE",
+
         chains: chains as RelayChain[],
       }),
     [chains]
@@ -536,6 +537,7 @@ const SwapContainer = () => {
           isSwitching={isSwitching}
           tokenPrice={quote?.details?.currencyIn?.amountUsd}
           isLoadingQuote={isLoading}
+          setToken={setSellToken}
         />
         <button onClick={handleTokenSwitch} className="swap-container__switch">
           <SwapSwitch />
@@ -557,6 +559,7 @@ const SwapContainer = () => {
           isSwitching={isSwitching}
           tokenPrice={quote?.details?.currencyOut?.amountUsd}
           isLoadingQuote={isLoading}
+          setToken={setBuyToken}
         />
       </div>
       <BuyBtn

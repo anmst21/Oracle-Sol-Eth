@@ -51,6 +51,7 @@ type Props = {
   isSwitching: boolean;
   tokenPrice: string | undefined;
   isLoadingQuote: boolean;
+  setToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
 };
 
 const presetOptions = [
@@ -79,14 +80,15 @@ const SwapWindow = ({
   isSwitching,
   setActiveBuyWallet,
   isLoadingQuote,
+  setToken,
 }: Props) => {
-  const { setIsOpen, setModalMode } = useTokenModal();
+  const { openTokenModal } = useTokenModal();
 
   const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
-  const openTokenModal = useCallback(() => {
-    setIsOpen(true);
-    setModalMode(mode);
-  }, [setIsOpen, setModalMode, mode]);
+  // const openTokenModal = useCallback(() => {
+  //   setIsOpen(true);
+  //   setModalMode(mode);
+  // }, [setIsOpen, setModalMode, mode]);
 
   const callback = useCallback(
     (wallet: SwapWallet | null | undefined) => {
@@ -304,6 +306,7 @@ const SwapWindow = ({
         {/* </div> */}
         <TokenButton
           openModalCallback={openTokenModal}
+          setToken={setToken}
           mode={mode}
           token={token}
           tokenBalance={tokenBalance}

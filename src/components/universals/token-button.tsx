@@ -7,12 +7,17 @@ import { slidingTextAnimation } from "../swap/animation";
 import { truncateAddress } from "@/helpers/truncate-address";
 import Image from "next/image";
 import { UnifiedToken } from "@/types/coin-types";
+import { ModalMode } from "@/types/modal-mode";
 
 type Props = {
-  openModalCallback: () => void;
+  openModalCallback: (opts: {
+    mode: ModalMode;
+    onSelect: (t: UnifiedToken) => void;
+  }) => void;
   token: UnifiedToken | null;
   mode: "buy" | "sell";
   tokenBalance: string;
+  setToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
 };
 
 const TokenButton = ({
@@ -20,9 +25,13 @@ const TokenButton = ({
   token,
   mode,
   tokenBalance,
+  setToken,
 }: Props) => {
   return (
-    <button onClick={openModalCallback} className="token-to-buy__token">
+    <button
+      onClick={() => openModalCallback({ mode: "buy", onSelect: setToken })}
+      className="token-to-buy__token"
+    >
       <div className="token-to-buy__token__icon">
         {!token ? (
           <HexChain width={32} question />

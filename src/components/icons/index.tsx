@@ -59,8 +59,26 @@ import HistoryTo from "./HistoryTo";
 import HistoryRecipient from "./HistoryRecipient";
 import HistorySender from "./HistorySender";
 import HistoryWarning from "./HistoryWarning";
+import LinkIconChart from "./LinkIconChart";
+import ExplorerChart from "./ExplorerChart";
+import TxChart from "./TxChart";
+import ArrowChart from "./ArrowChart";
+import PaginationArrow from "./PaginationArrow";
+import ModalChevDown from "./ModalChevDown";
+import ChartLine from "./ChartLine";
+import ChartCandle from "./ChartCandle";
+import ArrowChartControls from "./ArrowChartControls";
 
 export {
+  ArrowChartControls,
+  ChartLine,
+  ChartCandle,
+  ModalChevDown,
+  ArrowChart,
+  PaginationArrow,
+  ExplorerChart,
+  TxChart,
+  LinkIconChart,
   HistoryWarning,
   HistoryCalendar,
   HistoryFrom,

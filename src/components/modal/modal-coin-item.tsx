@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import Image from "next/image";
 import { truncateAddress } from "@/helpers/truncate-address";
 import { HexChain } from "../icons";
@@ -14,10 +14,11 @@ type Props = {
   priceNative?: number | null;
   userBalance?: number | undefined;
   coinName?: string;
-  setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
-  setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  // setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  // setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
   modalMode: ModalMode;
   chainId: number | undefined;
+  onSelect: (t: UnifiedToken) => void;
 };
 
 const ModalCoinItem = ({
@@ -29,50 +30,63 @@ const ModalCoinItem = ({
   coinName,
   chainSrc,
   priceNative,
-  setBuyToken,
-  setSellToken,
-  modalMode,
+  onSelect,
   chainId,
 }: Props) => {
-  const setActiveToken = useCallback(() => {
-    if (modalMode === "buy") {
-      setBuyToken({
-        source: "eth" as const,
-        chainId: chainId,
-        address: coinAddress, // ditto
-        symbol: coinSymbol || "",
-        logo: coinSrc,
-        priceUsd: priceUsd || undefined,
-        balance: userBalance || undefined,
-        name: coinName || "",
-      });
-    }
-    if (modalMode === "sell") {
-      setSellToken({
-        source: "eth" as const,
-        chainId: chainId,
-        address: coinAddress, // ditto
-        symbol: coinSymbol || "",
-        logo: coinSrc,
-        priceUsd: priceUsd || undefined,
-        balance: userBalance || undefined,
-        name: coinName || "",
-      });
-    }
-  }, [
-    setBuyToken,
-    setSellToken,
-    coinName,
-    coinSymbol,
-    coinSrc,
-    userBalance,
-    priceUsd,
-    chainId,
-    modalMode,
-    coinAddress,
-  ]);
+  // const setActiveToken = useCallback(() => {
+  //   if (modalMode === "buy") {
+  //     setBuyToken({
+  //       source: "eth" as const,
+  //       chainId: chainId,
+  //       address: coinAddress, // ditto
+  //       symbol: coinSymbol || "",
+  //       logo: coinSrc,
+  //       priceUsd: priceUsd || undefined,
+  //       balance: userBalance || undefined,
+  //       name: coinName || "",
+  //     });
+  //   }
+  //   if (modalMode === "sell") {
+  //     setSellToken({
+  //       source: "eth" as const,
+  //       chainId: chainId,
+  //       address: coinAddress, // ditto
+  //       symbol: coinSymbol || "",
+  //       logo: coinSrc,
+  //       priceUsd: priceUsd || undefined,
+  //       balance: userBalance || undefined,
+  //       name: coinName || "",
+  //     });
+  //   }
+  // }, [
+  //   setBuyToken,
+  //   setSellToken,
+  //   coinName,
+  //   coinSymbol,
+  //   coinSrc,
+  //   userBalance,
+  //   priceUsd,
+  //   chainId,
+  //   modalMode,
+  //   coinAddress,
+  // ]);
+
+  const token = useMemo<UnifiedToken>(
+    () => ({
+      source: chainId === 792703809 ? "sol" : "eth",
+      chainId,
+      address: coinAddress,
+      symbol: coinSymbol ?? "",
+      logo: coinSrc,
+      priceUsd: priceUsd ?? undefined,
+      balance: userBalance ?? undefined,
+      name: coinName ?? "",
+    }),
+    [chainId, coinAddress, coinSymbol, coinSrc, priceUsd, userBalance, coinName]
+  );
+
   return (
-    <button onClick={setActiveToken} className="native-coin">
+    <button onClick={() => onSelect(token)} className="native-coin">
       <div className="token-to-buy__token__icon">
         {chainSrc && <HexChain width={32} uri={chainSrc} />}
         <div className="user-placeholder">
