@@ -1,3 +1,217 @@
+.chart-info-modal {
+    display: flex;
+    border-radius: 8px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(136, 150, 151, 0.05);
+    backdrop-filter: blur(15px);
+    padding: 4px;
+    min-width: 200px;
+    gap: 4px;
+    flex-direction: column;
+
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 0;
+
+
+    &__right {
+        display: flex;
+        height: 24px;
+        flex: 1;
+        padding: 0px 8px;
+        align-items: center;
+        gap: 4px;
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        justify-content: flex-end;
+    }
+
+    &--date {
+        left: auto;
+        right: 0;
+    }
+
+
+    &__date,
+    &__time {
+        .chart-info-modal__percent {
+            span {
+                margin-right: 4px;
+            }
+        }
+    }
+
+    &__top {
+        .chart-info-modal__value {
+            background: rgba(174, 233, 0, 0.10);
+        }
+
+
+        .chart-info-modal__header,
+        .chart-info-modal__value {
+            color: #AEE900;
+        }
+    }
+
+    &__bot {
+        .chart-info-modal__value {
+            background: rgba(241, 61, 32, 0.10);
+
+
+        }
+
+
+        .chart-info-modal__header,
+        .chart-info-modal__value {
+            color: #F13D20;
+        }
+    }
+
+
+    &__percent {
+        color: #889697;
+
+        span {
+            color: #D9F1E9;
+        }
+    }
+
+
+    &__value {
+        margin-left: auto;
+        padding: 0 8px;
+        height: 16px;
+        border-radius: 4px;
+    }
+
+    &__header {
+        color: #D9F1E9;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        background: rgba(136, 150, 151, 0.05);
+        padding: 0 8px;
+        border-radius: 6px;
+    }
+
+
+    &__date,
+    &__time {
+        justify-content: space-between;
+    }
+
+    &__top,
+    &__bot,
+    &__date,
+    &__time {
+        gap: 4px;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 16px;
+        //    padding: 4px 8px;
+        display: flex;
+    }
+}
+
+
+.chart-bottom {
+    gap: 1px;
+    align-items: center;
+    gap: 4px;
+
+    &__box {
+        display: flex;
+        flex: 1;
+        height: 60px;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+
+        border-radius: 8px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        background: rgba(136, 150, 151, 0.05);
+
+
+        &__status {
+            display: flex;
+            width: 100%;
+            background-color: #F13D20;
+            border-radius: 1px;
+            overflow: hidden;
+            height: 3px;
+
+
+            .wrapper,
+            .to-gap {
+                width: 100%;
+            }
+
+            transition: background .2s ease-out;
+
+
+            &--nobg {
+                background-color: transparent;
+            }
+
+            &--active {
+                background-color: #AEE900;
+                height: 3px;
+
+
+
+
+
+            }
+        }
+
+        &__top,
+        &__bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 8px;
+            width: 100%;
+        }
+
+        &__top {
+            height: 24px;
+            border-bottom: 1px solid rgba(136, 150, 151, 0.10);
+
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 500;
+            color: rgba(217, 241, 233, 0.60);
+            text-transform: uppercase;
+
+        }
+
+        &__bottom {
+            color: #D9F1E9;
+            flex: 1;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            flex-direction: column;
+            gap: 4px;
+            justify-content: flex-start;
+            padding-top: 4px;
+            cursor: pointer;
+
+            span span span {
+                color: rgba(217, 241, 233, 0.60);
+                margin-left: 2px;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
 .chart-header,
 .chart-bottom,
 .chart-component {
@@ -5,6 +219,7 @@
     border: 1px solid rgba(136, 150, 151, 0.20);
     background: rgba(136, 150, 151, 0.05);
     padding: 12px;
+    display: flex;
 }
 
 .chart-header {
@@ -13,9 +228,15 @@
     background: rgba(136, 150, 151, 0.05);
 
     gap: 4px;
-    display: flex;
+
     flex-direction: column;
 
+    .token-to-buy__token__text h4 {
+
+        max-width: none;
+
+
+    }
 
     @mixin button-style {
         border-radius: 6px;
@@ -45,6 +266,43 @@
             justify-content: space-between;
             align-items: center;
             padding: 4px 8px 4px 14px;
+            color: rgba(217, 241, 233, 0.60);
+            transition: all .2s ease-in;
+
+            &:hover {
+                text-decoration: underline;
+                border: 1px solid rgba(217, 241, 233, 0.15);
+                background: rgba(217, 241, 233, 0.1);
+                color: #D9F1E9;
+
+                span span {
+
+                    color: #D9F1E9;
+                }
+            }
+
+            &:active {
+                background-color: rgba(174, 233, 0, 0.1);
+                border-color: rgba(174, 233, 0, 0.15);
+                color: #AEE900;
+
+                span {
+                    color: #AEE900;
+                }
+
+                span span {
+                    color: #AEE900;
+                }
+            }
+
+            span {
+                color: #D9F1E9;
+            }
+
+            span span {
+                transition: all .2s ease-in;
+                color: rgba(217, 241, 233, 0.60);
+            }
         }
     }
 
@@ -55,6 +313,9 @@
         min-width: 0;
 
         &__price {
+            .wrapper {
+                margin: 0px 8px;
+            }
 
             flex-direction: column;
             gap: 4px;
@@ -189,6 +450,27 @@
         line-height: normal;
 
         &__button {
+
+
+            &--loading {
+                opacity: .7;
+                pointer-events: none;
+            }
+
+            &:hover {
+                border: 1px solid rgba(217, 241, 233, 0.15);
+                background: rgba(217, 241, 233, 0.1);
+            }
+
+            &:active {
+                background-color: rgba(174, 233, 0, 0.1);
+                border-color: rgba(174, 233, 0, 0.15);
+                color: #AEE900;
+            }
+
+
+
+            transition: all .2s ease-in;
             @include button-style;
 
             &:nth-of-type(1) {
@@ -202,11 +484,14 @@
 
         &__space {
             flex: 1;
+            border: 1px solid rgba(136, 150, 151, 0.1);
+            background: rgba(136, 150, 151, 0.05);
+            height: 29px;
+            border-radius: 6px;
         }
     }
 
-    &__top__name,
-    &__bottom__space {
+    &__top__name {
         border-radius: 6px;
         border: 1px solid rgba(136, 150, 151, 0.10);
         display: flex;
@@ -256,11 +541,13 @@
 
 
 .chart-component {
-
+    overflow: hidden;
     gap: 12px;
     display: flex;
     width: 100%;
     flex-direction: column;
+
+
 
 
     &__controls {
@@ -268,6 +555,10 @@
         //gap: 4px;
         height: 36px;
         position: relative;
+
+        .wrapper {
+            margin-left: 20px;
+        }
 
         &__scroll {
             display: flex;
@@ -295,13 +586,15 @@
 
     &__button {
         min-width: 120px;
+
+        max-width: 120px;
         justify-content: space-between;
         margin: 0;
         padding-left: 8px;
         font-size: 14px;
         font-style: normal;
         font-weight: 500;
-
+        width: 120px !important;
 
 
 
@@ -325,7 +618,8 @@
 
         background: rgba(217, 241, 233, 0.05);
         height: 36px;
-        transition: all .2s ease-in;
+        transition: background .2s ease-in,
+        color .2s ease-in;
 
         &:last-child {
             span {
@@ -354,7 +648,9 @@
                 color: #AEE900;
 
                 span {
-                    color: rgba(174, 233, 0, 0.60);
+                    color: rgba(174, 233, 0, 1) !important;
+
+
                 }
             }
         }
@@ -363,6 +659,8 @@
 
         &--width {
             min-width: fit-content;
+
+
         }
     }
 
@@ -374,10 +672,29 @@
         height: 210px;
         border-radius: 8px;
         border: 1px solid rgba(136, 150, 151, 0.10);
-
+        z-index: 0;
         background: rgba(136, 150, 151, 0.05);
         position: relative;
         color: rgba(136, 150, 151, 1);
+        overflow: hidden;
+
+        .tv-lightweight-charts {
+            transition: opacity .2s ease-in-out;
+        }
+
+        &--loading {
+            .tv-lightweight-charts {
+                opacity: 0;
+            }
+        }
+
+        .wrapper {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
 
         &__button {
             width: 63px;
@@ -412,7 +729,7 @@
             position: absolute;
             left: 8px;
             top: 8px;
-            z-index: 0;
+            z-index: 5;
             border-radius: 8px;
             border: 1px solid rgba(136, 150, 151, 0.10);
 

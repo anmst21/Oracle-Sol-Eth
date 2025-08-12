@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   ArrowChart,
   HexChain,
@@ -24,34 +24,12 @@ import { AnimatePresence, motion } from "motion/react";
 import { slidingTextAnimation } from "../swap/animation";
 import { useTokenModal } from "@/context/TokenModalProvider";
 import { truncateAddress } from "@/helpers/truncate-address";
+import SkeletonLoaderWrapper from "../skeleton";
+import { getRandomInt } from "@/helpers/get-random-int";
+import { formatPriceValue } from "@/helpers/format-price-value";
+import StatsItem from "./stats-item";
 
-export function formatPriceValue(raw: number | string): string {
-  // 1) Parse raw input
-  const n =
-    typeof raw === "string" ? parseFloat(raw.replace(/[^0-9.-]+/g, "")) : raw;
-  if (isNaN(n)) return "$–";
-
-  const abs = Math.abs(n);
-  // 2) Decide fraction range
-  const [minFrac, maxFrac] = abs < 1 ? [2, 6] : [2, 2];
-
-  // 3) Use toLocaleString for rounding/formatting
-  let s = n.toLocaleString("en-US", {
-    minimumFractionDigits: minFrac,
-    maximumFractionDigits: maxFrac,
-  });
-
-  // 4) If <1, strip any trailing zeros beyond the last significant digit
-  if (abs < 1) {
-    s = s.replace(/(\.\d*?[1-9])0+$/, "$1");
-  }
-
-  return `${s}`;
-}
-
-type Props = {};
-
-const ChartHeader = (props: Props) => {
+const ChartHeader = () => {
   const {
     tokenPools,
     isLoadingPools,
@@ -69,7 +47,7 @@ const ChartHeader = (props: Props) => {
     //  tokenMeta,
     activePool,
     relayChain,
-    isOpenTrades,
+    // isOpenTrades,
     setIsOpenTrades,
     activeToken,
     setActiveToken,
@@ -101,30 +79,6 @@ const ChartHeader = (props: Props) => {
     Number(activePool?.attributes.reserve_in_usd) || 0.0
   );
 
-  const StatsItem = ({
-    header,
-    value,
-  }: {
-    header: string;
-    value: string[];
-  }) => {
-    const [int, dec] = (Number(value[0]).toFixed(1) || "0.0").split(".");
-    return (
-      <div className="stats-item">
-        <div className="stats-item__key">{header}</div>
-        <div className="stats-item__value">
-          <span>
-            $
-            <span className="stats-item__value__white">
-              <GreenDot int={int} dec={dec} />
-            </span>
-            {value[1].toUpperCase()}
-          </span>
-        </div>
-      </div>
-    );
-  };
-
   const [intPrice, decPrice] = (
     activePool?.attributes.token_price_usd
       ? formatPriceValue(activePool?.attributes.token_price_usd)
@@ -138,34 +92,15 @@ const ChartHeader = (props: Props) => {
 
   const { openTokenModal } = useTokenModal();
 
-  console.log("relayChain", relayChain);
+  const poolName = formatPairName(activePool?.attributes.name || "").split("/");
+
+  const randomIntOne = useMemo(() => `${getRandomInt(35, 55)}%`, []);
+  const randomIntTwo = useMemo(() => `${getRandomInt(45, 75)}%`, []);
+  // const randomIntTwo = useMemo(() => `${getRandomInt(45, 75)}%`, []);
+
   return (
     <div className="chart-header">
       <div className="chart-header__top">
-        {/* <div className="chart-header__top__token">
-          <div className="token-to-buy__token__icon">
-            {tokenMeta?.chainId ? (
-              <HexChain width={25} uri={getIconUri(tokenMeta.chainId)} />
-            ) : (
-              <HexChain width={25} question />
-            )}
-            <div className="user-placeholder user-placeholder--md">
-              {tokenMeta?.metadata?.logoURI ? (
-                <Image
-                  src={tokenMeta?.metadata?.logoURI}
-                  width={24}
-                  height={24}
-                  alt={`${tokenMeta?.symbol} coin`}
-                />
-              ) : (
-                <UserQuestion />
-              )}
-            </div>
-          </div>
-          <span>{tokenMeta?.symbol}</span>
-        </div>
-        <div className="chart-header__top__name">{tokenMeta?.name}</div> */}
-
         <button
           //  onClick={openModalCallback}
           className="token-to-buy__token"
@@ -218,6 +153,9 @@ const ChartHeader = (props: Props) => {
         </button>
         <Link
           target="_blank"
+          className={classNames({
+            "chart-header__bottom__button--loading": isLoadingPools,
+          })}
           href={
             geckoPoolsBase +
             "/" +
@@ -226,26 +164,52 @@ const ChartHeader = (props: Props) => {
             activeToken?.address
           }
         >
-          {activePool?.attributes.name && (
-            <span>{formatPairName(activePool?.attributes.name)}</span>
+          {!isLoadingPools && activePool?.attributes.name ? (
+            <span>
+              {poolName[0]}
+              <span>/{poolName[1]}</span>
+            </span>
+          ) : (
+            <SkeletonLoaderWrapper
+              radius={2}
+              height={21}
+              width={randomIntOne}
+              isLoading={true}
+            />
           )}
           <LinkIconChart />
         </Link>
       </div>
       <div className="chart-header__center">
         <div className="chart-header__center__price">
-          <div className="chart-header__center__price__value">
-            <span>
-              $
+          {isLoadingPools ? (
+            <SkeletonLoaderWrapper
+              radius={4}
+              height={36.5}
+              width={randomIntTwo}
+              isLoading={true}
+            />
+          ) : (
+            <div className="chart-header__center__price__value">
               <span>
-                <GreenDot int={intPrice} dec={decPrice} />
+                $
+                <span>
+                  <GreenDot int={intPrice} dec={decPrice} />
+                </span>
               </span>
-            </span>
-          </div>
-          {priceChangeDay && (
+            </div>
+          )}
+          {isLoadingPools ? (
+            <SkeletonLoaderWrapper
+              radius={4}
+              height={16}
+              width={60}
+              isLoading={true}
+            />
+          ) : priceChangeDay ? (
             <div
               className={classNames("chart-header__center__status", {
-                "chart-header__center__status--up": priceChangeDay > 0,
+                "chart-header__center__status--up": priceChangeDay >= 0,
                 "chart-header__center__status--down": priceChangeDay < 0,
               })}
             >
@@ -254,16 +218,33 @@ const ChartHeader = (props: Props) => {
                 <ArrowChart />
               </div>
             </div>
-          )}
+          ) : null}
         </div>
         <div className="chart-header__center__stats">
-          <StatsItem header="M/CAP" value={mCap} />
-          <StatsItem header="24H VOL" value={volDay} />
-          <StatsItem header="LIQUID." value={liquidity} />
+          <StatsItem
+            isLoadingPools={isLoadingPools}
+            header="M/CAP"
+            value={mCap}
+          />
+          <StatsItem
+            isLoadingPools={isLoadingPools}
+            header="24H VOL"
+            value={volDay}
+          />
+          <StatsItem
+            isLoadingPools={isLoadingPools}
+            header="LIQUID."
+            value={liquidity}
+          />
         </div>
       </div>
       <div className="chart-header__bottom">
-        <button onClick={openTrades} className="chart-header__bottom__button">
+        <button
+          onClick={openTrades}
+          className={classNames("chart-header__bottom__button", {
+            "chart-header__bottom__button--loading": isLoadingPools,
+          })}
+        >
           <TxChart />
           <span>Trades</span>
         </button>
@@ -272,7 +253,9 @@ const ChartHeader = (props: Props) => {
           <Link
             target="_blank"
             href={relayChain.explorerUrl + "/address/" + activeToken?.address}
-            className="chart-header__bottom__button"
+            className={classNames("chart-header__bottom__button", {
+              "chart-header__bottom__button--loading": isLoadingPools,
+            })}
           >
             <span>{relayChain.explorerName || "Explorer"}</span>
             <ExplorerChart />

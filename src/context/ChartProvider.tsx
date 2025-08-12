@@ -83,7 +83,7 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
     name: "Ether",
   });
   const [tokenPools, setTokenPools] = useState<PoolItem[] | null>(null);
-  const [isLoadingPools, setIsLoadingPools] = useState<boolean>(false);
+  const [isLoadingPools, setIsLoadingPools] = useState<boolean>(true);
   const [isErrorPools, setIsErrorPools] = useState<boolean>(false);
 
   const [activePool, setActivePool] = useState<PoolItem | null>(null);
