@@ -6,11 +6,11 @@ export type TFConfig = {
 
 export const TIMEFRAMES: Record<string, TFConfig> = {
   "5m": { timeframe: "minute", aggregate: 1, limit: 5 }, // 5×1m = 5m
-  "1h": { timeframe: "minute", aggregate: 5, limit: 12 }, // 12×5m = 60m
-  "6h": { timeframe: "minute", aggregate: 15, limit: 24 }, // 24×15m = 360m
-  "24h": { timeframe: "hour", aggregate: 1, limit: 24 }, // 24×1h
+  "1h": { timeframe: "minute", aggregate: 1, limit: 60 }, // 12×5m = 60m
+  "6h": { timeframe: "minute", aggregate: 5, limit: 72 }, // 24×15m = 360m
+  "24h": { timeframe: "minute", aggregate: 15, limit: 96 }, // 24×1h
   "7d": { timeframe: "hour", aggregate: 4, limit: 42 }, // 42×4h = 168h
-  "30d": { timeframe: "day", aggregate: 1, limit: 30 }, // 30×1d
+  "30d": { timeframe: "hour", aggregate: 4, limit: 180 }, // 30×1d
   max: { timeframe: "day", aggregate: 1 }, // up to 6 months (use default limit or max=1000)
 };
 

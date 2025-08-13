@@ -7,7 +7,6 @@ import { ChartType } from "./types";
 import { AnimatePresence, motion } from "motion/react";
 import { getRandomInt } from "@/helpers/get-random-int";
 import SkeletonLoaderWrapper from "../skeleton";
-type OhlcvTuple = [number, number, number, number, number, number]; // [ts, o, h, l, c, v]
 import {
   createChart,
   LineStyle,
@@ -16,6 +15,7 @@ import {
   CandlestickSeries,
   IChartApi,
   ISeriesApi,
+  ColorType,
 } from "lightweight-charts";
 import ChartError from "./chart-error";
 import { useTokenModal } from "@/context/TokenModalProvider";
@@ -149,7 +149,7 @@ const ChartComponent = () => {
       height,
       autoSize: true,
       layout: {
-        background: { type: "solid", color: "transparent" },
+        background: { type: ColorType.Solid, color: "transparent" },
         textColor: "rgba(136,150,151,0.9)",
       },
       grid: {
@@ -192,21 +192,21 @@ const ChartComponent = () => {
 
     if (chartType === ChartType.candel) {
       const s = chart.addSeries(CandlestickSeries, {
-        upColor: "#27AE60",
-        downColor: "#E74C3C",
-        wickUpColor: "#27AE60",
-        wickDownColor: "#E74C3C",
-        borderUpColor: "#27AE60",
-        borderDownColor: "#E74C3C",
+        upColor: "#AEE900",
+        downColor: "#F13D20",
+        wickUpColor: "#AEE900",
+        wickDownColor: "#F13D20",
+        borderUpColor: "#AEE900",
+        borderDownColor: "#F13D20",
       });
       seriesRef.current = s;
       if (candleData.length) s.setData(candleData);
     } else {
       const s = chart.addSeries(AreaSeries, {
         lineWidth: 2,
-        lineColor: "#58C7FF",
-        topColor: "rgba(88,199,255,0.25)",
-        bottomColor: "rgba(88,199,255,0.02)",
+        lineColor: "#00B0EB",
+        topColor: "rgba(0, 176, 235, 0.25)",
+        bottomColor: "rgba(0, 176, 235, 0.02)",
         priceLineVisible: false,
       });
       seriesRef.current = s;
