@@ -171,6 +171,7 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
 
         if (!pools || pools.length === 0) {
           setIsNoMorePools(true);
+          setIsErrorMorePools(true);
         } else {
           setIsNoMorePools(false);
           // functional update avoids stale-closure on tokenPools
