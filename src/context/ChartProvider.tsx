@@ -97,6 +97,11 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
   const [isNoMorePools, setIsNoMorePools] = useState(false);
   const [isErrorMorePools, setIsErrorMorePools] = useState(false);
 
+  useEffect(() => {
+    setIsNoMorePools(false);
+    setIsErrorMorePools(false);
+  }, [activeToken]);
+
   const [activePool, setActivePool] = useState<PoolItem | null>(null);
   console.log("activeToken", activeToken);
   const [chartData, setChartData] = useState<number[][] | null>(null);

@@ -43,6 +43,10 @@ const PoolsModal = ({ closeModal }: Props) => {
     setIsNoMorePools,
   } = useChart();
 
+  useEffect(() => {
+    setTotalPages(10);
+  }, [activeToken]);
+
   const tokenPools2D = useMemo(() => chunkArray(tokenPools, 20), [tokenPools]);
 
   const activePoolCallback = useCallback(
@@ -58,10 +62,13 @@ const PoolsModal = ({ closeModal }: Props) => {
     }
   }, [currentPage]);
 
-  // useEffect(() => {
-  //   if (isNoMorePools && tokenPools && tokenPools?.length > 0)
-  //     setTotalPages(tokenPools?.length / 20);
-  // }, [isNoMorePools, tokenPools]);
+  useEffect(() => {
+    if (isNoMorePools && tokenPools && tokenPools?.length > 0) {
+      const pageCount = Math.max(1, Math.ceil((tokenPools?.length ?? 0) / 20));
+
+      setTotalPages(pageCount);
+    }
+  }, [isNoMorePools, tokenPools]);
 
   const goBack = useCallback(() => {
     setIsErrorMorePools(false);
