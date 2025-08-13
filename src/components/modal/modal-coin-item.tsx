@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import { truncateAddress } from "@/helpers/truncate-address";
 import { HexChain } from "../icons";

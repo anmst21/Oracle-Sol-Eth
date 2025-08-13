@@ -275,6 +275,22 @@
 
     &__network {
         flex: 1;
+
+        .all-chains-icon {
+            scale: .85
+        }
+
+        .history-sort__value {
+            span {
+                max-width: 9ch;
+
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                min-width: 0;
+            }
+
+        }
     }
 
     &__network,
@@ -382,7 +398,82 @@
     overflow: hidden;
     position: relative;
 
+    .chain-sidebar__contianer {
+        height: 100%;
+    }
+
+    .address-modal__use {
+        color: #889697;
+        font-family: Handjet;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 300;
+        line-height: normal;
+        padding: 0 8px;
+    }
+
+    .modal__header__inner {
+        span {
+            color: #889697;
+        }
+    }
+
+    .modal-chains__scroll {
+        padding-bottom: 28px;
+    }
+
+
+    .address-modal__cta {
+        margin-top: auto;
+        transition: all .2s ease-in;
+
+        &:hover {
+            background: #AEE900;
+            color: #000;
+        }
+
+    }
+
+    .address-modal__input {
+        &:focus-within {
+            svg {
+                color: #AEE900
+            }
+        }
+    }
+
+    &__input {
+        border-radius: 8px;
+        background: rgba(136, 150, 151, 0.05);
+        display: flex;
+        padding: 4px;
+
+        .address-modal__input {
+            display: flex;
+            width: 100%;
+            height: 36px;
+            padding: 6px;
+            gap: 4px;
+
+            input {
+
+                color: rgba(217, 241, 233, 0.80);
+
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+            }
+        }
+    }
+
+    .modal-chains {
+        max-width: initial;
+    }
+
     &__inner {
+        overflow: hidden;
+        height: 100%;
         display: flex;
         flex-direction: column;
         gap: 4px;
@@ -411,6 +502,7 @@
 
         .chain-sidebar__input__abandon {
             margin-left: auto;
+
         }
     }
 

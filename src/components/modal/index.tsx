@@ -121,6 +121,7 @@ const Modal: React.FC<ModalProps> = ({
   }, [activeChainId, chains]);
 
   const { selectToken } = useTokenModal();
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <div onClick={closeModal} className="modal__wrapper">
@@ -172,6 +173,8 @@ const Modal: React.FC<ModalProps> = ({
         </div>
         <div className="modal__main">
           <ModalChains
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
             setActiveChainId={setActiveChainId}
             activeChainId={activeChainId}
             otherChains={otherChains}

@@ -376,3 +376,10 @@ export function useTokenModal(): TokenModalContextValue {
   }
   return context;
 }
+
+//  otherChains = { otherChains };
+//  featuredChains = { featuredChains };
+//  baseChain = { baseChain };
+//  solanaChain = { solanaChain };
+//  ethereumChain = { ethereumChain };
+//  isLoadingChains = { isLoadingChains };

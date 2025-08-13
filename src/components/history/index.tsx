@@ -20,24 +20,40 @@ import HistoryItemSkeleton from "./history-item-skeleton";
 import HistoryItemWarning from "./history-item-warning";
 import { useRouter } from "next/navigation";
 import { useHistory } from "@/context/HistoryProvider";
+import { solanaChain } from "@/helpers/solanaChain";
+import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
+import { AnimatePresence, motion } from "motion/react";
+import { slidingTextAnimation } from "../swap/animation";
 
 const History = () => {
   const containerRef = useRef<HTMLDivElement>(null); // ②
 
-  const { openModalPage } = useHistory();
+  const {
+    openModalPage,
+    activeChainId,
+    activeWallet: AW,
+    setActiveChainId,
+    setActiveWallet,
+  } = useHistory();
+  const activeWallet = AW as ConnectedWallet | ConnectedSolanaWallet | null;
 
   const { chains, isLoading: isLoadingChains } = useRelayChains();
-  const { activeWallet } = useActiveWallet();
-  const chainId =
-    activeWallet?.type === "ethereum"
-      ? Number(activeWallet.chainId.split(":")[1])
-      : 792703809;
+  const { activeWallet: globalActiveWallet } = useActiveWallet();
+  // const chainId =
+  //   activeWallet?.type === "ethereum"
+  //     ? Number(activeWallet.chainId)
+  //     : 792703809;
 
   const [transactions, setTransactions] = useState<RelayTransaction[]>([]);
   const [continuation, setContinuation] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const resetSettings = useCallback(() => {
+    setActiveWallet(globalActiveWallet);
+    setActiveChainId(0);
+  }, [setActiveWallet, setActiveChainId, globalActiveWallet]);
 
   // Combined fetch fn
   const fetchRequests = useCallback(
@@ -56,13 +72,13 @@ const History = () => {
       try {
         console.log({
           user: activeWallet.address,
-          chainId: String(chainId),
+          chainId: String(activeChainId),
           limit: "20",
           ...(cont ? { continuation: cont } : {}),
         });
         const res = await queryRequests("https://api.relay.link", {
           user: activeWallet.address,
-          chainId: String(chainId),
+          chainId: activeChainId === 0 ? undefined : String(activeChainId),
           limit: "20",
           ...(cont ? { continuation: cont } : {}),
         });
@@ -85,7 +101,7 @@ const History = () => {
         }
       }
     },
-    [activeWallet?.address, chainId]
+    [activeWallet?.address, activeChainId]
   );
 
   // initial load
@@ -110,8 +126,8 @@ const History = () => {
   }, [scrollYProgress, continuation, isLoadingMore, fetchRequests]);
 
   const chainItem = useMemo(
-    () => chains?.find((chain) => chain.id === chainId),
-    [chains, chainId]
+    () => chains?.find((chain) => chain.id === activeChainId),
+    [chains, activeChainId]
   );
 
   const skeletonArray = Array.from({ length: 3 }).map((_, i) => (
@@ -119,6 +135,30 @@ const History = () => {
   ));
 
   const { push } = useRouter();
+
+  const allChainIds = useMemo(
+    () => [solanaChain?.id, 8453, 1].filter(Boolean) as number[],
+    []
+  );
+
+  const ethChain = useMemo(() => {
+    return chains?.find((c) => c.id === 1);
+  }, [chains]);
+  const solChain = useMemo(() => {
+    return chains?.find((c) => c.id === solanaChain.id);
+  }, [chains]);
+
+  const btnFadeAnimation = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: { duration: 0.2 },
+  };
+
+  const sortDisable =
+    !activeWallet ||
+    (globalActiveWallet?.address === activeWallet?.address &&
+      activeChainId === 0);
 
   return (
     <div className="history-component">
@@ -130,15 +170,36 @@ const History = () => {
           onClick={() => openModalPage("network")}
           className="history-sort__network"
         >
-          <div className="history-sort__icon">
-            <HexChain
-              width={20}
-              uri={!isLoadingChains ? getIconUri(1) : undefined}
-              question={isLoadingChains}
-            />
+          <div key={activeChainId} className="history-sort__icon">
+            {activeChainId === 0 ? (
+              <div className="all-chains-icon">
+                {allChainIds.map((id, i) => (
+                  <HexChain
+                    key={id}
+                    strokeWidth={2}
+                    width={12}
+                    uri={getIconUri(id)}
+                    className={`all-chains-icon__${i + 1}`}
+                  />
+                ))}
+              </div>
+            ) : (
+              <HexChain
+                width={20}
+                uri={!isLoadingChains ? getIconUri(activeChainId) : undefined}
+                question={isLoadingChains}
+              />
+            )}
           </div>
           <div className="history-sort__value">
-            <span>{chainItem?.displayName}</span>
+            <AnimatePresence mode="popLayout">
+              <motion.span
+                {...slidingTextAnimation}
+                key={`chains-btn-${activeChainId}`}
+              >
+                {activeChainId === 0 ? "All" : chainItem?.displayName}
+              </motion.span>
+            </AnimatePresence>
           </div>
         </button>
         <button
@@ -146,25 +207,59 @@ const History = () => {
           className="history-sort__address"
         >
           <div className="history-sort__icon">
-            {activeWallet?.meta?.icon && (
+            {/* {activeWallet?.meta?.icon && (
               <Image
                 alt={activeWallet?.meta.id}
                 src={activeWallet?.meta.icon.replace(/^\n+/, "").trimEnd()}
                 width={20}
                 height={20}
               />
+            )} */}
+            {activeWallet?.type === "ethereum" && ethChain && (
+              <Image
+                alt={"Ethereum Wallet"}
+                src={getIconUri(ethChain.id)}
+                width={20}
+                height={20}
+              />
+            )}
+            {activeWallet?.type === "solana" && solChain && (
+              <Image
+                alt={"Solana Wallet"}
+                src={getIconUri(solChain.id)}
+                width={20}
+                height={20}
+              />
             )}
           </div>
           <div className="history-sort__value">
-            <span>
-              {activeWallet?.address
-                ? truncateAddress(activeWallet?.address)
-                : "x0XXXX...XXXX"}
-            </span>
+            <AnimatePresence mode="popLayout">
+              <motion.span
+                key={activeWallet?.address}
+                {...slidingTextAnimation}
+              >
+                {activeWallet?.address
+                  ? truncateAddress(activeWallet?.address)
+                  : "x0XX...XXXX"}
+              </motion.span>
+            </AnimatePresence>
           </div>
         </button>
-        <button className="history-sort__reset">
-          <HistorySortEnable />
+
+        <button
+          onClick={resetSettings}
+          disabled={sortDisable}
+          className="history-sort__reset"
+        >
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              style={{ display: "flex" }}
+              {...btnFadeAnimation}
+              key={`btn-sort-${sortDisable}`}
+            >
+              {sortDisable ? <HistorySortEnable /> : <HistorySortDisable />}
+            </motion.div>
+          </AnimatePresence>
         </button>
       </div>
 
@@ -183,9 +278,7 @@ const History = () => {
             error={error}
             callback={() => fetchRequests({ append: false })}
           />
-        ) : transactions.length === 0 ? (
-          <p>No transactions yet.</p>
-        ) : (
+        ) : transactions.length === 0 ? null : (
           transactions.map((tx, i) => {
             const currencyIn = tx.data?.metadata?.currencyIn;
             const currencyOut = tx.data?.metadata?.currencyOut;

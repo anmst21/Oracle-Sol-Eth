@@ -9,7 +9,11 @@ import React, {
   useState,
   ReactNode,
   useCallback,
+  useEffect,
 } from "react";
+import { useActiveWallet } from "./ActiveWalletContext";
+import { SwapWallet } from "@/components/swap/types";
+import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
 
 // Define the shape of the context
 interface HistoryContextType {
@@ -18,6 +22,14 @@ interface HistoryContextType {
   historyModalMode: HistorySortType;
   setHistoryModalMode: React.Dispatch<React.SetStateAction<HistorySortType>>;
   openModalPage: (mode: HistorySortType) => void;
+  activeWallet: ConnectedWallet | ConnectedSolanaWallet | SwapWallet | null;
+  setActiveWallet: React.Dispatch<
+    React.SetStateAction<
+      ConnectedWallet | ConnectedSolanaWallet | SwapWallet | null
+    >
+  >;
+  activeChainId: number;
+  setActiveChainId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // Create context with undefined default to enforce provider usage
@@ -35,6 +47,17 @@ export const HistoryProvider: React.FC<HistoryProviderProps> = ({
   const [historyModalMode, setHistoryModalMode] =
     useState<HistorySortType>("network");
 
+  const { activeWallet: defaultWallet } = useActiveWallet();
+  const [activeWallet, setActiveWallet] = useState<
+    SwapWallet | ConnectedWallet | ConnectedSolanaWallet | null
+  >(null);
+
+  useEffect(() => {
+    if (!activeWallet && defaultWallet) setActiveWallet(defaultWallet);
+  }, [activeWallet, defaultWallet]);
+
+  const [activeChainId, setActiveChainId] = useState(0);
+
   const openModalPage = useCallback(
     (mode: HistorySortType) => {
       setHistoryModalMode(mode);
@@ -50,6 +73,10 @@ export const HistoryProvider: React.FC<HistoryProviderProps> = ({
         historyModalMode,
         setHistoryModalMode,
         openModalPage,
+        activeWallet,
+        setActiveWallet,
+        activeChainId,
+        setActiveChainId,
       }}
     >
       {children}

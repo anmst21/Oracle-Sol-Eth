@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { HexChain, InputCross } from "../icons";
 import classNames from "classnames";
 import { RelayChain } from "@/types/relay-query-chain-type";
@@ -14,6 +14,9 @@ type Props = {
   solanaChain: RelayChain | undefined;
   ethereumChain: RelayChain | undefined;
   isLoadingChains: boolean;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  searchTerm: string;
+  disableSearch?: boolean;
 };
 
 const ModalChains = ({
@@ -25,9 +28,10 @@ const ModalChains = ({
   solanaChain,
   ethereumChain,
   isLoadingChains,
+  setSearchTerm,
+  searchTerm,
+  disableSearch,
 }: Props) => {
-  const [searchTerm, setSearchTerm] = useState("");
-
   // Combine your “all‐chain” icons
   const allChainIds = useMemo(
     () =>
@@ -67,26 +71,28 @@ const ModalChains = ({
   return (
     <div className="modal-chains">
       {/* Search input */}
-      <div className="chain-sidebar__contianer">
-        <label className="chain-sidebar__input">
-          <input
-            disabled={isLoadingChains}
-            type="text"
-            placeholder="Enter name or ID"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 border rounded"
-          />
-          {searchTerm.length > 0 && (
-            <button
-              onClick={() => setSearchTerm("")}
-              className="chain-sidebar__input__abandon"
-            >
-              <InputCross />
-            </button>
-          )}
-        </label>
-      </div>
+      {!disableSearch && (
+        <div className="chain-sidebar__contianer">
+          <label className="chain-sidebar__input">
+            <input
+              disabled={isLoadingChains}
+              type="text"
+              placeholder="Enter name or ID"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-2 border rounded"
+            />
+            {searchTerm.length > 0 && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="chain-sidebar__input__abandon"
+              >
+                <InputCross />
+              </button>
+            )}
+          </label>
+        </div>
+      )}
       <div className="modal-chains__scroll">
         {/* “All Chains” button */}
         <div className="chain-sidebar__contianer">

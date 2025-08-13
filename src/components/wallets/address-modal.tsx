@@ -1,37 +1,15 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { InputCross, PensilLarge, SaveDisk } from "../icons";
-import WalletItem from "./wallet-item";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
-import {
-  ConnectedSolanaWallet,
-  ConnectedWallet,
-  usePrivy,
-} from "@privy-io/react-auth";
-import { isValidSolanaAddress } from "@/helpers/is-valid-solana-address";
-import { isAddress as isValidEthereumAddress } from "viem";
+import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
+
 import { PastedWallet } from "../swap/types";
 import { motion } from "motion/react";
+import ConnectedWallets from "./connected-wallets";
+import { useAddressModal } from "@/hooks/useAdddressModal";
 const AddressModal = () => {
-  const {
-    ethLinked,
-    solLinked,
-
-    readyEth,
-    readySol,
-    activeBuyWallet,
-    //  isAddressModalOpen,
-    setActiveBuyWallet,
-    setIsAddressModalOpen,
-    setPastedWallets,
-    pastedWallets,
-  } = useActiveWallet();
-
-  const [manualAddress, setManualAddress] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  console.log("Address Modal Error", error);
-
-  const { authenticated, user, logout } = usePrivy();
+  const { setActiveBuyWallet, setIsAddressModalOpen, activeBuyWallet } =
+    useActiveWallet();
 
   const setWallet = useCallback(
     (wallet: ConnectedWallet | ConnectedSolanaWallet | PastedWallet | null) => {
@@ -54,158 +32,27 @@ const AddressModal = () => {
     [setActiveBuyWallet]
   );
 
-  const handleEthAddress = useCallback(
-    (address: string) => {
-      const newActiveItem: PastedWallet = {
-        address,
-        type: "ethereum",
-        chainId: 1,
-        isPasted: true,
-      };
+  // const handleSave = () => {
+  //   setError(null);
+  //   if (isValidEthereumAddress(manualAddress)) {
+  //     handleEthAddress(manualAddress);
+  //   } else if (isValidSolanaAddress(manualAddress)) {
+  //     handleSolAddress(manualAddress);
+  //   } else {
+  //     setError("Invalid ETH or SOL address");
+  //   }
 
-      setActiveBuyWallet(newActiveItem);
-
-      const existingConnected = ethLinked.find(
-        (wallet) => wallet.address === address
-      );
-      const existingPasted = pastedWallets.find(
-        (wallet) => wallet.address === address
-      );
-
-      if (!existingConnected && !existingPasted) {
-        setPastedWallets([...pastedWallets, newActiveItem]);
-      }
-
-      setIsAddressModalOpen(false);
-    },
-    [
-      setActiveBuyWallet,
-      setIsAddressModalOpen,
-      setPastedWallets,
-      ethLinked,
-      pastedWallets,
-    ]
-  );
-
-  const handleSolAddress = useCallback(
-    (address: string) => {
-      const newActiveItem: PastedWallet = {
-        address,
-        type: "solana",
-        chainId: 792703809,
-        isPasted: true,
-      };
-      setActiveBuyWallet(newActiveItem);
-      const existingConnected = solLinked.find(
-        (wallet) => wallet.address === address
-      );
-      const existingPasted = pastedWallets.find(
-        (wallet) => wallet.address === address
-      );
-
-      if (!existingConnected && !existingPasted) {
-        setPastedWallets([...pastedWallets, newActiveItem]);
-      }
-
-      setIsAddressModalOpen(false);
-    },
-    [
-      setActiveBuyWallet,
-      setIsAddressModalOpen,
-      pastedWallets,
-      setPastedWallets,
-      solLinked,
-    ]
-  );
-
-  const PastedSection = pastedWallets && pastedWallets.length > 0 && (
-    <>
-      {pastedWallets.map((w, i) => (
-        <WalletItem
-          key={i}
-          name={undefined}
-          id={w.chainId === 792703809 ? "792703809" : `:${w.chainId}`}
-          // icon={getIconUri(w.chainId)}
-          chainId={w.chainId === 792703809 ? "792703809" : `:${w.chainId}`}
-          address={w.address}
-          userWalletAdderess={user?.wallet?.address}
-          isLinked
-          loginOrLink={undefined}
-          unlink={undefined}
-          logout={undefined}
-          selectCallback={() => setWallet(w)}
-          activeWalletAddress={activeBuyWallet?.address}
-          isMini
-          isPasted
-        />
-      ))}
-    </>
-  );
-
-  const EthSection = readyEth && authenticated && ethLinked.length > 0 && (
-    <>
-      {ethLinked.map((w, i) => (
-        <WalletItem
-          key={i}
-          name={w.meta.name}
-          id={w.meta.id}
-          icon={w.meta.icon}
-          chainId={w.chainId}
-          address={w.address}
-          userWalletAdderess={user?.wallet?.address}
-          isLinked
-          loginOrLink={w.loginOrLink}
-          unlink={w.unlink}
-          logout={logout}
-          selectCallback={() => setWallet(w)}
-          activeWalletAddress={activeBuyWallet?.address}
-          isMini={true}
-        />
-      ))}
-    </>
-  );
-
-  const SolSection = readySol && authenticated && solLinked.length > 0 && (
-    <>
-      {solLinked.map((w, i) => (
-        <WalletItem
-          key={i}
-          name={w.meta.name}
-          id={w.meta.id}
-          icon={w.meta.icon}
-          chainId="792703809"
-          address={w.address}
-          userWalletAdderess={user?.wallet?.address}
-          isLinked
-          loginOrLink={w.loginOrLink}
-          unlink={w.unlink}
-          logout={logout}
-          selectCallback={() => setWallet(w)}
-          activeWalletAddress={activeBuyWallet?.address}
-          isMini={true}
-        />
-      ))}
-    </>
-  );
-
-  const userChain = user?.wallet?.chainType;
+  //   closeModal();
+  // };
 
   const closeModal = useCallback(() => {
     setIsAddressModalOpen(false);
   }, [setIsAddressModalOpen]);
 
-  const handleSave = () => {
-    setError(null);
-    if (isValidEthereumAddress(manualAddress)) {
-      handleEthAddress(manualAddress);
-    } else if (isValidSolanaAddress(manualAddress)) {
-      handleSolAddress(manualAddress);
-    } else {
-      setError("Invalid ETH or SOL address");
-    }
-
-    closeModal();
-  };
+  const { handleSave, manualAddress, setManualAddress } = useAddressModal({
+    closeModal,
+    setActiveWallet: setActiveBuyWallet,
+  });
 
   return (
     <div onClick={closeModal} className="address-modal__wrapper">
@@ -240,21 +87,10 @@ const AddressModal = () => {
             <div className="address-modal__use">
               <span>Use connected wallet</span>
             </div>
-            <div className="address-modal__wallets">
-              {userChain === "solana" ? (
-                <>
-                  {SolSection}
-                  {EthSection}
-                  {PastedSection}
-                </>
-              ) : (
-                <>
-                  {EthSection}
-                  {SolSection}
-                  {PastedSection}
-                </>
-              )}
-            </div>
+            <ConnectedWallets
+              activeAddress={activeBuyWallet?.address}
+              setWallet={setWallet}
+            />
           </div>
           <button onClick={handleSave} className="address-modal__cta">
             <SaveDisk />
