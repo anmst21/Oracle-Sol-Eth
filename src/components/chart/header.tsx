@@ -154,7 +154,8 @@ const ChartHeader = () => {
         <Link
           target="_blank"
           className={classNames({
-            "chart-header__bottom__button--loading": isLoadingPools,
+            "chart-header__bottom__button--loading":
+              isLoadingPools || isErrorPools,
           })}
           href={
             geckoPoolsBase +
@@ -164,7 +165,7 @@ const ChartHeader = () => {
             activeToken?.address
           }
         >
-          {!isLoadingPools && activePool?.attributes.name ? (
+          {!isLoadingPools && !isErrorPools && activePool?.attributes.name ? (
             <span>
               {poolName[0]}
               <span>/{poolName[1]}</span>
@@ -182,7 +183,7 @@ const ChartHeader = () => {
       </div>
       <div className="chart-header__center">
         <div className="chart-header__center__price">
-          {isLoadingPools ? (
+          {isLoadingPools || isErrorPools ? (
             <SkeletonLoaderWrapper
               radius={4}
               height={36.5}
@@ -199,7 +200,7 @@ const ChartHeader = () => {
               </span>
             </div>
           )}
-          {isLoadingPools ? (
+          {isLoadingPools || isErrorPools ? (
             <SkeletonLoaderWrapper
               radius={4}
               height={16}
@@ -222,17 +223,17 @@ const ChartHeader = () => {
         </div>
         <div className="chart-header__center__stats">
           <StatsItem
-            isLoadingPools={isLoadingPools}
+            isLoadingPools={isLoadingPools || isErrorPools}
             header="M/CAP"
             value={mCap}
           />
           <StatsItem
-            isLoadingPools={isLoadingPools}
+            isLoadingPools={isLoadingPools || isErrorPools}
             header="24H VOL"
             value={volDay}
           />
           <StatsItem
-            isLoadingPools={isLoadingPools}
+            isLoadingPools={isLoadingPools || isErrorPools}
             header="LIQUID."
             value={liquidity}
           />
@@ -242,7 +243,8 @@ const ChartHeader = () => {
         <button
           onClick={openTrades}
           className={classNames("chart-header__bottom__button", {
-            "chart-header__bottom__button--loading": isLoadingPools,
+            "chart-header__bottom__button--loading":
+              isLoadingPools || isErrorPools,
           })}
         >
           <TxChart />
@@ -254,7 +256,8 @@ const ChartHeader = () => {
             target="_blank"
             href={relayChain.explorerUrl + "/address/" + activeToken?.address}
             className={classNames("chart-header__bottom__button", {
-              "chart-header__bottom__button--loading": isLoadingPools,
+              "chart-header__bottom__button--loading":
+                isLoadingPools || isErrorPools,
             })}
           >
             <span>{relayChain.explorerName || "Explorer"}</span>

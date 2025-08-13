@@ -7,6 +7,7 @@ import React, {
   ReactNode,
   useEffect,
   useMemo,
+  useCallback,
 } from "react";
 import { getPoolsForToken } from "@/actions/fetch-pools-for-tokents";
 import { getTokenHistoricalData } from "@/actions/fetch-token-chart-data";
@@ -51,16 +52,22 @@ export interface ChartContextType {
   setIsOpenTrades: React.Dispatch<React.SetStateAction<boolean>>;
 
   requestChain: GeckoChain | undefined;
-
+  fetchPools: () => Promise<void>;
   activePool: PoolItem | null;
   setActivePool: React.Dispatch<React.SetStateAction<PoolItem | null>>;
 
   tokenMeta: RelayTokenMeta | null;
 
   relayChain: RelayChainFetch | undefined;
-
+  fetchChart: () => Promise<void>;
   activeToken: UnifiedToken | undefined;
   setActiveToken: React.Dispatch<React.SetStateAction<UnifiedToken>>;
+  setIsErrorMorePools: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoadingMorePools: boolean;
+  isErrorMorePools: boolean;
+  isNoMorePools: boolean;
+  fetchMorePoolsForToken: (page: number) => Promise<void>;
+  setIsNoMorePools: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ChartContext = createContext<ChartContextType | undefined>(undefined);
@@ -85,6 +92,10 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
   const [tokenPools, setTokenPools] = useState<PoolItem[] | null>(null);
   const [isLoadingPools, setIsLoadingPools] = useState<boolean>(true);
   const [isErrorPools, setIsErrorPools] = useState<boolean>(false);
+
+  const [isLoadingMorePools, setIsLoadingMorePools] = useState(false);
+  const [isNoMorePools, setIsNoMorePools] = useState(false);
+  const [isErrorMorePools, setIsErrorMorePools] = useState(false);
 
   const [activePool, setActivePool] = useState<PoolItem | null>(null);
   console.log("activeToken", activeToken);
@@ -113,47 +124,99 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
   }, [tokenPools]);
 
   // Fetch available pools for the token on mount or when chain changes
-  useEffect(() => {
+
+  const fetchPools = useCallback(async () => {
     if (!requestChain) return;
-    const fetchPools = async () => {
-      setIsErrorPools(false);
-      setIsLoadingPools(true);
-      try {
-        const pools = await getPoolsForToken(
-          activeToken.address,
-          requestChain.name
-        );
-        setTokenPools(pools);
-      } catch (err) {
-        console.error(err);
+    setIsErrorPools(false);
+    setIsLoadingPools(true);
+    try {
+      const pools = await getPoolsForToken(
+        activeToken.address,
+        requestChain.name
+      );
+
+      if (!pools) {
+        setActivePool(null);
         setIsErrorPools(true);
-      } finally {
-        setIsLoadingPools(false);
       }
-    };
+      setTokenPools(pools);
+    } catch (err) {
+      console.error(err);
+      setIsErrorPools(true);
+    } finally {
+      setIsLoadingPools(false);
+    }
+  }, [activeToken, requestChain]);
+  useEffect(() => {
+    if (!requestChain || !activeToken) return;
     fetchPools();
   }, [requestChain, activeToken]);
 
-  // Fetch chart data whenever pools, chain, or sort order changes
-  useEffect(() => {
-    if (!requestChain || !activePool) return;
-    const fetchChart = async () => {
-      setIsErrorChart(false);
-      setIsLoadingChart(true);
+  const fetchMorePoolsForToken = useCallback(
+    async (page: number) => {
+      if (!activeToken?.address || !requestChain?.name || isLoadingMorePools)
+        return;
+
       try {
-        const data = await getTokenHistoricalData(
-          activePool.attributes.address,
+        setIsLoadingMorePools(true);
+        setIsErrorMorePools(false);
+
+        const pools = await getPoolsForToken(
+          activeToken.address,
           requestChain.name,
-          sortType
+          page
         );
-        setChartData(data);
+
+        // test hook you had — keep if you still need it
+
+        if (!pools || pools.length === 0) {
+          setIsNoMorePools(true);
+        } else {
+          setIsNoMorePools(false);
+          // functional update avoids stale-closure on tokenPools
+          setTokenPools((prev) => (prev ? [...prev, ...pools] : [...pools]));
+        }
       } catch (err) {
         console.error(err);
-        setIsErrorChart(true);
+        setIsErrorMorePools(true);
       } finally {
-        setIsLoadingChart(false);
+        setIsLoadingMorePools(false);
       }
-    };
+    },
+    [
+      activeToken?.address, // the only pieces we actually read
+      requestChain?.name,
+      isLoadingMorePools, // guard against concurrent calls
+      setTokenPools,
+      setIsErrorMorePools,
+      setIsLoadingMorePools,
+      setIsNoMorePools,
+    ]
+  );
+  // Fetch chart data whenever pools, chain, or sort order changes
+
+  const fetchChart = useCallback(async () => {
+    if (!requestChain || !activePool) return;
+
+    setIsErrorChart(false);
+    setIsLoadingChart(true);
+    try {
+      const data = await getTokenHistoricalData(
+        activePool.attributes.address,
+        requestChain.name,
+        sortType
+      );
+      //  throw new Error("Testing error");
+      setChartData(data);
+    } catch (err) {
+      console.error(err);
+      setIsErrorChart(true);
+    } finally {
+      setIsLoadingChart(false);
+    }
+  }, [sortType, activePool, requestChain]);
+  useEffect(() => {
+    if (!requestChain || !activePool) return;
     fetchChart();
   }, [activePool, requestChain, sortType]);
 
@@ -195,6 +258,14 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
         setIsOpenTrades,
         activeToken,
         setActiveToken,
+        fetchPools,
+        isLoadingMorePools,
+        isErrorMorePools,
+        isNoMorePools,
+        fetchMorePoolsForToken,
+        fetchChart,
+        setIsErrorMorePools,
+        setIsNoMorePools,
       }}
     >
       {children}

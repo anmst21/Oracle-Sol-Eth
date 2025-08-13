@@ -12,3 +12,11 @@ export enum ChartType {
   line = "line",
   candel = "candel",
 }
+
+export type PaginationProps = {
+  disabled: boolean;
+  currentPage: number;
+  setPage: (value: number) => void;
+  totalPages: number;
+  disableRight?: boolean;
+};

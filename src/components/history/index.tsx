@@ -7,7 +7,7 @@ import React, {
   useRef,
   useMemo,
 } from "react";
-import { HexChain, HistorySortEnable } from "../icons";
+import { HexChain, HistorySortEnable, HistorySortDisable } from "../icons";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import Image from "next/image";
 import { queryRequests, useRelayChains } from "@reservoir0x/relay-kit-hooks";
@@ -19,9 +19,12 @@ import { useScroll } from "framer-motion";
 import HistoryItemSkeleton from "./history-item-skeleton";
 import HistoryItemWarning from "./history-item-warning";
 import { useRouter } from "next/navigation";
+import { useHistory } from "@/context/HistoryProvider";
 
 const History = () => {
   const containerRef = useRef<HTMLDivElement>(null); // ②
+
+  const { openModalPage } = useHistory();
 
   const { chains, isLoading: isLoadingChains } = useRelayChains();
   const { activeWallet } = useActiveWallet();
@@ -123,7 +126,10 @@ const History = () => {
         <div className="history-sort__title">
           <span>Sorted By:</span>
         </div>
-        <button className="history-sort__network">
+        <button
+          onClick={() => openModalPage("network")}
+          className="history-sort__network"
+        >
           <div className="history-sort__icon">
             <HexChain
               width={20}
@@ -135,7 +141,10 @@ const History = () => {
             <span>{chainItem?.displayName}</span>
           </div>
         </button>
-        <button className="history-sort__address">
+        <button
+          onClick={() => openModalPage("wallet")}
+          className="history-sort__address"
+        >
           <div className="history-sort__icon">
             {activeWallet?.meta?.icon && (
               <Image

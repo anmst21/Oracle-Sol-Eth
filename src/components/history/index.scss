@@ -375,11 +375,61 @@
 .history-modal {
     border-radius: 12px;
     border: 1px solid rgba(136, 150, 151, 0.20);
-    background: rgba(136, 150, 151, 0.05);
-    backdrop-filter: blur(30px);
-    width: 1000px;
+
+    width: 329px;
     height: 500px;
     padding: 12px;
+    overflow: hidden;
+    position: relative;
+
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 4px;
+        border-radius: 8px;
+        background: rgba(136, 150, 151, 0.05);
+    }
+
+
+    .slippage-modal__button {
+        border-radius: 6px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+
+        background: rgba(136, 150, 151, 0.05);
+    }
+
+    .slippage-modal__button--active {
+        color: #AEE900 !important
+    }
+
+    .modal__header__inner {
+        align-items: center;
+        gap: 4px;
+        justify-content: flex-start;
+        border-radius: 6px;
+
+        .chain-sidebar__input__abandon {
+            margin-left: auto;
+        }
+    }
+
+    .modal-info {
+        left: -40px;
+        top: 30px;
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: rgba(136, 150, 151, 0.05);
+        backdrop-filter: blur(30px);
+        z-index: -1;
+    }
 
     &__wrapper {
         position: fixed;

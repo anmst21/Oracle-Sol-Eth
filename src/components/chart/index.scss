@@ -677,6 +677,8 @@
         position: relative;
         color: rgba(136, 150, 151, 1);
         overflow: hidden;
+        align-items: center;
+        justify-content: center;
 
         .tv-lightweight-charts {
             transition: opacity .2s ease-in-out;
@@ -685,6 +687,14 @@
         &--loading {
             .tv-lightweight-charts {
                 opacity: 0;
+
+            }
+        }
+
+        &--error {
+            .tv-lightweight-charts {
+                display: none;
+
             }
         }
 

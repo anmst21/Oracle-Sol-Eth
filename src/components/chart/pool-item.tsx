@@ -1,4 +1,3 @@
-import { RelayTokenMeta } from "@/types/relay-token-meta";
 import React from "react";
 import { type PoolItem } from "@/types/token-pools";
 import Image from "next/image";
@@ -6,11 +5,12 @@ import { HexChain } from "../icons";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { splitCompact } from "@/helpers/compact-formatter";
 import { timeAgoShort } from "@/helpers/time-ago-short";
-import classNames from "classnames";
 import { truncateAddress } from "@/helpers/truncate-address";
 import Link from "next/link";
 import { geckoPoolsBase } from "@/helpers/gecko-pools-base";
 import { UnifiedToken } from "@/types/coin-types";
+import ChangePercentage from "./change-percentage";
+import classNames from "classnames";
 
 type Props = {
   // tokenMeta: RelayTokenMeta | null;
@@ -18,11 +18,18 @@ type Props = {
   index: number;
   chainName: string | undefined;
   callback: () => void;
-
+  isActive: boolean;
   activeToken: UnifiedToken | undefined;
 };
 
-const PoolItem = ({ activeToken, item, index, chainName, callback }: Props) => {
+const PoolItem = ({
+  activeToken,
+  item,
+  index,
+  chainName,
+  callback,
+  isActive,
+}: Props) => {
   const [fromTicker, _, toTicker] = item.attributes.name.split(" ");
 
   console.log({ fromTicker, toTicker, activeToken, item, _ });
@@ -48,32 +55,17 @@ const PoolItem = ({ activeToken, item, index, chainName, callback }: Props) => {
   const volume = splitCompact(Number(item.attributes.volume_usd.h24) || 0);
   const timeAgo = timeAgoShort(item.attributes.pool_created_at);
 
-  const ChangePercentage = ({ value }: { value: string }) => {
-    const numValue = Number(value);
-    return (
-      <td className="pool-item__change">
-        <div>
-          <span>
-            <span
-              className={classNames("change-percentage", {
-                "change-percentage--negative": numValue < 0,
-                "change-percentage--zero": numValue === 0,
-                "change-percentage--positive": numValue > 0,
-              })}
-            >
-              {numValue}
-            </span>
-            %
-          </span>
-        </div>
-      </td>
-    );
-  };
-
   const timeElapsed = [timeAgo.slice(0, -1), timeAgo.slice(-1)];
-
+  const priceUsd = Number(item.attributes.token_price_usd);
+  const tokenPriceUsd =
+    priceUsd > 1 ? priceUsd.toFixed(2) : priceUsd.toFixed(6);
   return (
-    <tr onClick={callback} className="trade-item pool-item">
+    <tr
+      onClick={callback}
+      className={classNames("trade-item pool-item", {
+        "pool-item--active": isActive,
+      })}
+    >
       <td className="trade-item__index">
         <div>
           <span>{index}</span>
@@ -126,7 +118,7 @@ const PoolItem = ({ activeToken, item, index, chainName, callback }: Props) => {
             </span>
           </div>
           <div className="pool-item__fdv__bottom">
-            <span>${Number(item.attributes.token_price_usd).toFixed(6)}</span>
+            <span>${tokenPriceUsd}</span>
           </div>
         </div>
       </td>

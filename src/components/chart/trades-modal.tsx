@@ -11,6 +11,7 @@ import { geckoTerminalBaseUri } from "@/helpers/gecko-terminal-dex-data";
 import TradeItem from "./trade-item";
 import ModalPagination from "./modal-pagination";
 import TradeItemSkeleton from "./trade-item-skeleton";
+import ChartError from "./chart-error";
 
 type Props = {
   closeModal: () => void;
@@ -90,6 +91,18 @@ const PoolsModal = ({ closeModal }: Props) => {
           </div>
         </div>
         <div className="modal-table">
+          {isErrorTrades && (
+            <ChartError
+              btnLeftCallback={() => getTrades()}
+              btnLeftHeader={"Reload Data"}
+              btnRightCallback={() => closeModal()}
+              btnRightHeader={"Close Window"}
+              mainHeader={"Unable to Load Trades"}
+              paragraph={
+                "We encountered an issue retrieving the latest trades data. This may be due to a temporary network problem or unavailable data from the source."
+              }
+            />
+          )}
           <table>
             <thead>
               <tr>

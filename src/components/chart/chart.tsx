@@ -4,7 +4,7 @@ import { useChart } from "@/context/ChartProvider";
 import { ChartSortOptions } from "@/helpers/chart-options";
 import classNames from "classnames";
 import { ChartType } from "./types";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { getRandomInt } from "@/helpers/get-random-int";
 import SkeletonLoaderWrapper from "../skeleton";
 type OhlcvTuple = [number, number, number, number, number, number]; // [ts, o, h, l, c, v]
@@ -17,6 +17,8 @@ import {
   IChartApi,
   ISeriesApi,
 } from "lightweight-charts";
+import ChartError from "./chart-error";
+import { useTokenModal } from "@/context/TokenModalProvider";
 
 const height = 210;
 
@@ -32,6 +34,10 @@ const ChartComponent = () => {
     chartType,
     setChartType,
     activePool,
+    setActiveToken,
+    fetchPools,
+    setIsOpenPools,
+    fetchChart,
   } = useChart();
 
   const randomIntOne = useMemo(() => getRandomInt(45, 70), []);
@@ -81,35 +87,53 @@ const ChartComponent = () => {
     [setSortType]
   );
 
-  const asc = useMemo<OhlcvTuple[] | null>(() => {
-    if (!chartData || chartData.length === 0) return null;
-    // Data appears newest->oldest; ensure oldest->newest
-    const cloned = [...chartData];
-    if (cloned.length >= 2 && cloned[0][0] > cloned[1][0]) cloned.reverse();
-    return cloned as OhlcvTuple[];
+  const normalized = useMemo(() => {
+    if (!chartData || chartData.length === 0) return [];
+
+    // 1) convert ms→s if needed, 2) sort asc, 3) dedupe equal timestamps (keep last)
+    const rows = chartData
+      .map(([t, o, h, l, c, v]) => {
+        const ts = t > 1e12 ? Math.floor(t / 1000) : t; // LWC expects seconds
+        return { t: ts, o, h, l, c, v };
+      })
+      .sort((a, b) => a.t - b.t);
+
+    const uniq: typeof rows = [];
+    let last = -Infinity;
+    for (const r of rows) {
+      if (r.t === last) {
+        // overwrite previous duplicate with the latest one
+        uniq[uniq.length - 1] = r;
+      } else if (r.t > last) {
+        uniq.push(r);
+        last = r.t;
+      }
+      // if r.t < last, we just skip (can't go backwards)
+    }
+
+    return uniq;
   }, [chartData]);
 
   const lineData = useMemo(
     () =>
-      asc?.map(([t, , , , c]) => ({
-        time: t as Time, // seconds since epoch (UTC)
+      normalized.map(({ t, c }) => ({
+        time: t as Time,
         value: c,
-      })) ?? [],
-    [asc]
+      })),
+    [normalized]
   );
 
   const candleData = useMemo(
     () =>
-      asc?.map(([t, o, h, l, c]) => ({
+      normalized.map(({ t, o, h, l, c }) => ({
         time: t as Time,
         open: o,
         high: h,
         low: l,
         close: c,
-      })) ?? [],
-    [asc]
+      })),
+    [normalized]
   );
-
   console.log({ lineData, candleData });
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -209,46 +233,88 @@ const ChartComponent = () => {
     }
   }, [candleData, lineData]);
 
+  const { openTokenModal } = useTokenModal();
+
+  const openPools = useCallback(() => {
+    setIsOpenPools(true);
+  }, [setIsOpenPools]);
+
   return (
     <div className="chart-component">
       <div
         ref={containerRef}
         className={classNames("chart-component__chart", {
-          "chart-component__chart--loading": isLoadingPools || isLoadingChart,
+          "chart-component__chart--loading":
+            isLoadingPools || isLoadingChart || isErrorPools,
+          "chart-component__chart--error": isErrorPools || isErrorChart,
         })}
       >
+        {isErrorChart && (
+          <ChartError
+            btnLeftCallback={() => fetchPools()}
+            btnLeftHeader={"Reload Data"}
+            btnRightCallback={() => openPools()}
+            btnRightHeader={"Select Pool"}
+            mainHeader={"Unable to Load Chart Data"}
+            paragraph={
+              "We encountered an issue retrieving the latest chart data. This may be due to a temporary network problem or unavailable data from the source."
+            }
+          />
+        )}
+        {isErrorPools && (
+          <ChartError
+            btnLeftCallback={() => fetchChart()}
+            btnLeftHeader={"Reload Data"}
+            btnRightCallback={() =>
+              openTokenModal({ mode: "chart", onSelect: setActiveToken })
+            }
+            btnRightHeader={"Select Token"}
+            mainHeader={"Unable to Load Pool Data"}
+            paragraph={
+              "We encountered an issue retrieving the latest pool information. This may be due to a temporary network problem or unavailable data from the source."
+            }
+          />
+        )}
         {(isLoadingPools || isLoadingChart) && (
           <SkeletonLoaderWrapper height={210} width={"100%"} isLoading={true} />
         )}
-
-        <motion.div className="chart-component__chart__type">
-          <button
-            key="line-button"
-            onClick={() => onTypeChange(ChartType.line)}
-            className={classNames("chart-component__chart__button", {
-              "chart-component__chart__button--active":
-                chartType === ChartType.line,
-            })}
-          >
-            <ChartLine />
-            {chartType === ChartType.line ? (
-              <motion.div layoutId="underline" className="underline" />
-            ) : null}
-          </button>
-          <button
-            key="candel-button"
-            onClick={() => onTypeChange(ChartType.candel)}
-            className={classNames("chart-component__chart__button", {
-              "chart-component__chart__button--active":
-                chartType === ChartType.candel,
-            })}
-          >
-            <ChartCandle />
-            {chartType === ChartType.candel ? (
-              <motion.div layoutId="underline" className="underline" />
-            ) : null}
-          </button>
-        </motion.div>
+        <AnimatePresence mode="wait">
+          {!isErrorPools && !isErrorChart && (
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              className="chart-component__chart__type"
+            >
+              <button
+                key="line-button"
+                onClick={() => onTypeChange(ChartType.line)}
+                className={classNames("chart-component__chart__button", {
+                  "chart-component__chart__button--active":
+                    chartType === ChartType.line,
+                })}
+              >
+                <ChartLine />
+                {chartType === ChartType.line ? (
+                  <motion.div layoutId="underline" className="underline" />
+                ) : null}
+              </button>
+              <button
+                key="candel-button"
+                onClick={() => onTypeChange(ChartType.candel)}
+                className={classNames("chart-component__chart__button", {
+                  "chart-component__chart__button--active":
+                    chartType === ChartType.candel,
+                })}
+              >
+                <ChartCandle />
+                {chartType === ChartType.candel ? (
+                  <motion.div layoutId="underline" className="underline" />
+                ) : null}
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       <div className="chart-component__controls">
         <div className="chart-component__controls__scroll">
@@ -261,7 +327,7 @@ const ChartComponent = () => {
 
             return (
               <button
-                disabled={isLoadingPools || isLoadingChart}
+                disabled={isLoadingPools || isLoadingChart || isErrorPools}
                 onClick={() => onSortChange(option.key)}
                 key={i}
                 className={classNames(
@@ -280,7 +346,7 @@ const ChartComponent = () => {
                   <span>{parts[1]}</span>
                 </span>
 
-                {isLoadingPools && option.random && (
+                {(isLoadingPools || isErrorPools) && option.random && (
                   <div className="chart-component__button__stats">
                     <SkeletonLoaderWrapper
                       radius={1}
@@ -290,7 +356,7 @@ const ChartComponent = () => {
                     />
                   </div>
                 )}
-                {!isLoadingPools && option.random && (
+                {!isLoadingPools && !isErrorPools && option.random && (
                   <div className="chart-component__button__stats">
                     <span>{change}%</span>
 
@@ -301,24 +367,6 @@ const ChartComponent = () => {
                     )}
                   </div>
                 )}
-                {/* {isLoadingPools ? (
-                  <SkeletonLoaderWrapper
-                    radius={1}
-                    height={18.5}
-                    width={randomIntOne}
-                    isLoading={true}
-                  />
-                ) : (
-                  <div className="chart-component__button__stats">
-                    <span>{change}%</span>
-
-                    {change !== 0 && (
-                      <div className="arrow-chart">
-                        <ArrowChart />
-                      </div>
-                    )}
-                  </div>
-                )} */}
               </button>
             );
           })}

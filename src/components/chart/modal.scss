@@ -6,7 +6,7 @@
     font-style: normal;
     font-weight: 400;
 
-    gap: 4px;
+    gap: 8px;
 
     &__header {
         color: #889697;
@@ -148,6 +148,14 @@
     position: relative;
     overflow: hidden;
 
+    .chart-error {
+        position: absolute;
+        left: 50%;
+        justify-content: center;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
     &::before {
         content: "";
         left: 0;
@@ -205,13 +213,22 @@
 
 .pool-item {
 
+    &--active {
+        background-color: rgba(174, 233, 0, 0.10) !important;
+    }
 
     &__created {
         position: relative;
         font-size: 16px;
         font-style: normal;
-        font-weight: 500;
+        font-weight: 400;
 
+        .wrapper {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) !important;
+        }
 
         div {
             display: flex;
@@ -233,8 +250,12 @@
     &__change {
         position: relative;
 
-
-
+        .wrapper {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) !important;
+        }
 
         div {
             display: flex;
@@ -245,7 +266,7 @@
             color: rgba(217, 241, 233, 0.60);
             font-size: 16px;
             font-style: normal;
-            font-weight: 500;
+            font-weight: 400;
 
             .change-percentage {
 
@@ -261,6 +282,11 @@
     }
 
     &__vol {
+        .wrapper {
+            right: 0;
+        }
+
+
         div {
             position: relative;
             right: 12px;
@@ -277,7 +303,7 @@
 
             color: rgba(217, 241, 233, 0.60);
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 400;
             line-height: 16px;
 
             span span {
@@ -310,7 +336,7 @@
         &__header {
             color: rgba(217, 241, 233, 0.60);
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 400;
             line-height: 16px;
 
             span span {
@@ -394,4 +420,168 @@
             }
         }
     }
+}
+
+
+.pagination-current {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    &__container {
+
+        height: 24px;
+        display: flex;
+        align-items: center;
+        padding: 0 4px;
+        border-radius: 6px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        background: rgba(217, 241, 233, 0.05);
+        overflow: hidden;
+
+        &__current {
+
+
+            //  display: flex;
+
+            color: #D9F1E9;
+        }
+
+        //  &__total {}
+
+        &__text {
+            color: rgba(217, 241, 233, 0.80);
+
+
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px;
+        }
+    }
+}
+
+.pools-modal-loading {
+    pointer-events: none;
+
+    .pool-item__fdv__header {
+        height: 20px;
+    }
+
+    .pool-item__fdv__container {
+        gap: 2px;
+    }
+}
+
+
+
+.chart-error {
+    display: flex;
+    padding: 16px;
+    max-width: 300px;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    h3 {
+        color: #F13D20;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        text-align: center;
+    }
+
+    p {
+        color: #889697;
+        text-align: center;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 16px;
+        margin: 0;
+    }
+
+    &__buttons {
+        display: flex;
+        color: #D9F1E9;
+        gap: 14px;
+
+        text-align: center;
+        font-family: "Fira Code";
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 16px;
+
+
+
+        &__left {
+            color: #889697;
+
+            &:hover {
+                color: #D9F1E9;
+            }
+        }
+
+        &__right {
+            &:hover {
+                opacity: .8;
+            }
+        }
+
+        &__left,
+        &__right {
+            transition: color .2s ease-in-out, opacity .2s ease-in-out;
+            text-decoration: underline;
+
+            &:active {
+                color: #AEE900;
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.trades-modal tbody tr {
+    cursor: default;
+}
+
+.pools-modal-cursor tbody tr {
+    cursor: pointer;
+}
+
+
+.pools-modal-cursor table tbody tr {
+    transition: background-color .2s ease-in-out;
+
+
+    &:hover {
+        background-color: rgba(217, 241, 233, 0.10);
+    }
+
+    &:active {
+        background-color: rgba(174, 233, 0, 0.10);
+
+
+    }
+
+
+}
+
+
+#tv-attr-logo {
+    display: none;
+}
+
+
+.pool-item-skeleton {
+    .pool-item__fdv__container {
+        gap: 2px;
+    }
+}
+
+.pool-item__pool__name__top span {
+    max-width: 9ch;
 }

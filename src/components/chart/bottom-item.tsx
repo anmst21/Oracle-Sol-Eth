@@ -7,6 +7,7 @@ import DateModal from "./date-modal";
 
 type Props = {
   arrayTimestamp: string[];
+  isError: boolean;
   item:
     | {
         key: string;
@@ -29,7 +30,7 @@ type Props = {
   isLoading: boolean;
 };
 
-const BottomItem = ({ item, isLoading, arrayTimestamp }: Props) => {
+const BottomItem = ({ item, isLoading, arrayTimestamp, isError }: Props) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
 
   return (
@@ -38,9 +39,9 @@ const BottomItem = ({ item, isLoading, arrayTimestamp }: Props) => {
         <span>{item.key}</span>
       </div>
       <div
-        onMouseEnter={() => !isLoading && setIsVisibleModal(true)}
+        onMouseEnter={() => !isLoading && !isError && setIsVisibleModal(true)}
         onMouseMove={() =>
-          !isLoading && !isVisibleModal && setIsVisibleModal(true)
+          !isLoading && !isVisibleModal && !isError && setIsVisibleModal(true)
         }
         onMouseLeave={() => !isLoading && setIsVisibleModal(false)}
         className="chart-bottom__box__bottom"
@@ -63,7 +64,7 @@ const BottomItem = ({ item, isLoading, arrayTimestamp }: Props) => {
               />
             ))}
         </AnimatePresence>
-        {isLoading ? (
+        {isLoading || isError ? (
           <SkeletonLoaderWrapper
             radius={1}
             height={18.5}
@@ -76,11 +77,18 @@ const BottomItem = ({ item, isLoading, arrayTimestamp }: Props) => {
 
         <div
           className={classNames("chart-bottom__box__status", {
-            "chart-bottom__box__status--nobg": isLoading,
+            "chart-bottom__box__status--nobg": isLoading || isError,
           })}
         >
           <AnimatePresence initial={true}>
-            {!isLoading ? (
+            {isLoading || isError ? (
+              <SkeletonLoaderWrapper
+                radius={1}
+                height={3}
+                width={"100%"}
+                isLoading={true}
+              />
+            ) : (
               <motion.div
                 key={`active-${item.key}`} // forces re-animate on data refresh
                 className="chart-bottom__box__status--active"
@@ -93,13 +101,6 @@ const BottomItem = ({ item, isLoading, arrayTimestamp }: Props) => {
                   damping: 22,
                   mass: 0.6,
                 }}
-              />
-            ) : (
-              <SkeletonLoaderWrapper
-                radius={1}
-                height={3}
-                width={"100%"}
-                isLoading={true}
               />
             )}
           </AnimatePresence>

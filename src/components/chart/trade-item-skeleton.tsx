@@ -18,7 +18,7 @@ function TradeItemSkeleton({ index }: Props) {
   const randomIntEight = useMemo(() => `${getRandomInt(55, 75)}%`, []);
 
   return (
-    <tr className="trade-item">
+    <tr className="trade-item pools-modal-loading">
       <td className="trade-item__index">
         <div>
           <span>{index}</span>

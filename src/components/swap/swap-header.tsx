@@ -21,7 +21,7 @@ const buttons = [
 const SwapHeader = () => {
   const [isOpenSlippage, setIsOpenSlippage] = useState(false);
 
-  const { isOpenPools, setIsOpenPools } = useChart();
+  const { isOpenPools, setIsOpenPools, activePool } = useChart();
   const { isOpenHistory, setIsOpenHistory } = useHistory();
 
   const pathname = usePathname();
@@ -61,7 +61,7 @@ const SwapHeader = () => {
         }}
         onClick={() => {
           if (!isOpenSlippage && pathname === "/swap") setIsOpenSlippage(true);
-          if (!isOpenPools && pathname === "/chart")
+          if (!isOpenPools && pathname === "/chart" && activePool)
             poolsCallback(!isOpenPools);
           if (!isOpenHistory && pathname === "/history")
             historyCallback(!isOpenHistory);

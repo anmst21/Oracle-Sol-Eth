@@ -5,7 +5,7 @@ import { getRandomInt } from "@/helpers/get-random-int";
 import BottomItem from "./bottom-item";
 
 const Bottom = () => {
-  const { isLoadingPools, activePool } = useChart();
+  const { isLoadingPools, activePool, isErrorPools } = useChart();
 
   const txData = activePool?.attributes.transactions.h24;
 
@@ -71,6 +71,7 @@ const Bottom = () => {
       {bottomObjects.map((item, i) => {
         return (
           <BottomItem
+            isError={isErrorPools}
             arrayTimestamp={arrayTimestamp}
             item={item}
             isLoading={isLoadingPools}

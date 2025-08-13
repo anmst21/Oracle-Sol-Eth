@@ -2,10 +2,14 @@
 
 import { geckoTerminalBaseUri } from "@/helpers/gecko-terminal-dex-data";
 import { PoolResponse } from "@/types/token-pools";
-export const getPoolsForToken = async (address: string, chainName: string) => {
+export const getPoolsForToken = async (
+  address: string,
+  chainName: string,
+  page: number = 1
+) => {
   try {
     const res = await fetch(
-      `${geckoTerminalBaseUri}/networks/${chainName}/tokens/${address}/pools`
+      `${geckoTerminalBaseUri}/networks/${chainName}/tokens/${address}/pools?page=${page}`
     );
 
     if (!res.ok) {
