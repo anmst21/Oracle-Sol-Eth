@@ -398,8 +398,18 @@
     overflow: hidden;
     position: relative;
 
+
+
+    .modal-info__paragraph {
+        text-align: start;
+    }
+
     .chain-sidebar__contianer {
-        height: 100%;
+        height: 340px;
+
+        .modal-chains {
+            height: 100%;
+        }
     }
 
     .address-modal__use {
@@ -507,7 +517,7 @@
     }
 
     .modal-info {
-        left: -40px;
+        left: 0px;
         top: 30px;
     }
 

@@ -122,7 +122,7 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
 
               {isOpenInfo && (
                 <ModalInfo
-                  paragraph="If the price exceeds the maximum slippage percentage, the transaction will revert."
+                  paragraph="If multiple chains or wallet addresses match, they will be sorted according to your selected criteria."
                   closeModal={() => setIsOpenInfo(false)}
                 />
               )}
