@@ -15,7 +15,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       appId={process.env.NEXT_PUBLIC_PRIVY_KEY as string}
       clientId={process.env.NEXT_PUBLIC_CLIENT_ID as string}
       config={{
-        loginMethods: ["wallet"],
+        loginMethods: ["wallet", "farcaster"],
         appearance: {
           walletChainType: "ethereum-and-solana",
           //  showWalletLoginFirst: true,

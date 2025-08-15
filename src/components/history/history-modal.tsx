@@ -145,7 +145,11 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
             >
               Network
               {type === "network" ? (
-                <motion.div layoutId="underline" className="underline" />
+                <motion.div
+                  initial={false}
+                  layoutId="underline"
+                  className="underline"
+                />
               ) : null}
             </button>
             <button
@@ -157,13 +161,17 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
             >
               Wallet
               {type === "wallet" ? (
-                <motion.div layoutId="underline" className="underline" />
+                <motion.div
+                  initial={false}
+                  layoutId="underline"
+                  className="underline"
+                />
               ) : null}
             </button>
           </motion.div>
           <div className="history-modal__input">
             <label className="address-modal__input">
-              <AnimatePresence mode="popLayout">
+              <AnimatePresence initial={false} mode="popLayout">
                 <motion.div
                   key={`input-icon-${type}`}
                   {...slidingTextAnimation}
@@ -179,7 +187,7 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
                   {type === "network" ? <SearchGlass /> : <PensilLarge />}
                 </motion.div>
               </AnimatePresence>
-              <AnimatePresence mode="popLayout">
+              <AnimatePresence initial={false} mode="popLayout">
                 {type === "network" ? (
                   <motion.input
                     {...slidingTextAnimation}
@@ -214,51 +222,51 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
               )}
             </label>
           </div>
-
-          {type === "network" && (
-            <motion.div
-              {...sectionAnimation}
-              key="wallet-network"
-              className="chain-sidebar__contianer"
-            >
-              <ModalChains
-                disableSearch
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                setActiveChainId={(value) => {
-                  setActiveChainId(value);
-                  closeModal();
-                }}
-                activeChainId={activeChainId}
-                otherChains={otherChains}
-                featuredChains={featuredChains}
-                baseChain={baseChain}
-                solanaChain={solanaChain}
-                ethereumChain={ethereumChain}
-                isLoadingChains={isLoadingChains}
-              />
-            </motion.div>
-          )}
-
-          {type === "wallet" && (
-            <motion.div
-              {...sectionAnimation}
-              key="wallet-wrapper"
-              className="chain-sidebar__contianer"
-            >
-              <div className="address-modal__use">
-                <span>Use connected wallet</span>
-              </div>
-              <ConnectedWallets
-                activeAddress={activeWallet?.address}
-                setWallet={setWallet}
-              />
-              <button onClick={handleSave} className="address-modal__cta">
-                <SaveDisk />
-                <span>Save</span>
-              </button>
-            </motion.div>
-          )}
+          <AnimatePresence mode="popLayout" initial={false}>
+            {type === "network" && (
+              <motion.div
+                {...sectionAnimation}
+                key="wallet-network"
+                className="chain-sidebar__contianer"
+              >
+                <ModalChains
+                  disableSearch
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  setActiveChainId={(value) => {
+                    setActiveChainId(value);
+                    closeModal();
+                  }}
+                  activeChainId={activeChainId}
+                  otherChains={otherChains}
+                  featuredChains={featuredChains}
+                  baseChain={baseChain}
+                  solanaChain={solanaChain}
+                  ethereumChain={ethereumChain}
+                  isLoadingChains={isLoadingChains}
+                />
+              </motion.div>
+            )}
+            {type === "wallet" && (
+              <motion.div
+                {...sectionAnimation}
+                key="wallet-wrapper"
+                className="chain-sidebar__contianer"
+              >
+                <div className="address-modal__use">
+                  <span>Use connected wallet</span>
+                </div>
+                <ConnectedWallets
+                  activeAddress={activeWallet?.address}
+                  setWallet={setWallet}
+                />
+                <button onClick={handleSave} className="address-modal__cta">
+                  <SaveDisk />
+                  <span>Save</span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
     </div>

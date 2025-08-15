@@ -13,7 +13,7 @@ import Header from "@/components/header";
 import { RelayKitProviderWrapper as RelayKitProvider } from "@/context/RelayKitProvider";
 import QueryClientProvider from "@/context/QueryClientProvider";
 import HeaderFooter from "@/components/header/header-footer";
-
+// import FarcasterAuthProvider from "@/context/FarcasterAuthProvider";
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
   variable: "--font-fira-code",
@@ -54,14 +54,7 @@ export default async function RootLayout({
                         <RelayKitProvider>
                           <SlippageProvider>
                             <Header />
-                            <div className="main">
-                              {/* <TokenModal
-                                            geckoCoins={gecko}
-                                            communityCoins={community}
-                                            solanaCoins={solana}
-                                          /> */}
-                              {children}
-                            </div>
+                            <div className="main">{children}</div>
                             <HeaderFooter />
                           </SlippageProvider>
                         </RelayKitProvider>

@@ -1,315 +1,314 @@
-"use client";
-import {
-  ChainBalance as EthChainBalance,
-  getTokenAccountsWithMetadata as getUserEthTokens,
-} from "@/actions/get-user-owned-ethereum-tokens";
-import {
-  EnrichedToken,
-  getTokenAccountsWithMetadata as getUserSolTokens,
-} from "@/actions/get-user-owned-solana-tokens";
-import { useRelayChains, useTokenList } from "@reservoir0x/relay-kit-hooks";
-import { useEffect, useMemo, useState } from "react";
+// import {
+//   ChainBalance as EthChainBalance,
+//   getTokenAccountsWithMetadata as getUserEthTokens,
+// } from "@/actions/get-user-owned-ethereum-tokens";
+// import {
+//   EnrichedToken,
+//   getTokenAccountsWithMetadata as getUserSolTokens,
+// } from "@/actions/get-user-owned-solana-tokens";
+// import { useRelayChains, useTokenList } from "@reservoir0x/relay-kit-hooks";
+// import { useEffect, useMemo, useState } from "react";
 
-import { getSolBalance, SolBalanceResponse } from "@/actions/get-sol-balance";
-import { useCommunityCoins } from "@/context/FarcasterCommunityTokensProvider";
-import { isAddress, zeroAddress } from "viem";
-import { applyDecimals } from "@/helpers/apply-decimals";
-import ModalCoinItem from "@/components/modal/modal-coin-item";
-import { useSolanaCoins } from "@/context/DexScreenerTrendingSolataTokensProvider";
-import { useGeckoTokens } from "@/context/GeckoTerminalCoinsProvider";
-import { queryTokenList } from "@reservoir0x/relay-kit-hooks";
-import ModalChains from "@/components/modal/modal-chains";
-import FeaturedCoinItem from "@/components/modal/featured-coin-item";
-import { InputCross, SearchGlass } from "@/components/icons";
-import { RelayToken, UnifiedToken } from "@/types/coin-types";
+// import { getSolBalance, SolBalanceResponse } from "@/actions/get-sol-balance";
+// import { useCommunityCoins } from "@/context/FarcasterCommunityTokensProvider";
+// import { isAddress, zeroAddress } from "viem";
+// import { applyDecimals } from "@/helpers/apply-decimals";
+// import ModalCoinItem from "@/components/modal/modal-coin-item";
+// import { useSolanaCoins } from "@/context/DexScreenerTrendingSolataTokensProvider";
+// import { useGeckoTokens } from "@/context/GeckoTerminalCoinsProvider";
+// import { queryTokenList } from "@reservoir0x/relay-kit-hooks";
+// import ModalChains from "@/components/modal/modal-chains";
+// import FeaturedCoinItem from "@/components/modal/featured-coin-item";
+// import { InputCross, SearchGlass } from "@/components/icons";
+// import { RelayToken, UnifiedToken } from "@/types/coin-types";
 
-function useDebounce<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const handle = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(handle);
-  }, [value, delay]);
-  return debounced;
-}
+// function useDebounce<T>(value: T, delay: number): T {
+//   const [debounced, setDebounced] = useState(value);
+//   useEffect(() => {
+//     const handle = setTimeout(() => setDebounced(value), delay);
+//     return () => clearTimeout(handle);
+//   }, [value, delay]);
+//   return debounced;
+// }
 
 export default function Home() {
-  const [activeChainId, setActiveChainId] = useState<number>(0);
+  // const [activeChainId, setActiveChainId] = useState<number>(0);
 
-  const [searchTerm, setSearchTerm] = useState(""); // raw input
-  const [searchTokens, setSearchTokens] = useState<RelayToken[]>([]); // fetched results
-  const [loadingSearchList, setLoadingSearchList] = useState(false);
-  const [errorSearching, setErrorSearching] = useState<string | null>(null);
-  // console.log("searchTokens", searchTokens);
-  const debouncedTerm = useDebounce(searchTerm, 500);
+  // const [searchTerm, setSearchTerm] = useState(""); // raw input
+  // const [searchTokens, setSearchTokens] = useState<RelayToken[]>([]); // fetched results
+  // const [loadingSearchList, setLoadingSearchList] = useState(false);
+  // const [errorSearching, setErrorSearching] = useState<string | null>(null);
+  // // console.log("searchTokens", searchTokens);
+  // const debouncedTerm = useDebounce(searchTerm, 500);
 
-  const { data: suggestedTokens } = useTokenList("https://api.relay.link", {
-    limit: 10,
-    term: "",
-    chainIds: activeChainId === 0 ? undefined : [activeChainId],
-  });
-
-  useEffect(() => {
-    if (!debouncedTerm) {
-      setSearchTokens([]);
-      setErrorSearching(null);
-      return;
-    }
-
-    let cancelled = false;
-    setLoadingSearchList(true);
-    setErrorSearching(null);
-
-    queryTokenList("https://api.relay.link", {
-      limit: 10,
-      term: isAddress(debouncedTerm) ? undefined : debouncedTerm,
-      chainIds: activeChainId === 0 ? undefined : [activeChainId],
-      address: isAddress(debouncedTerm) ? debouncedTerm : undefined,
-    })
-      .then((data) => {
-        if (!cancelled) setSearchTokens(data);
-      })
-      .catch((err) => {
-        if (!cancelled) setErrorSearching(err.message || "Unknown error");
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingSearchList(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedTerm, activeChainId]);
-
-  const {
-    data: communityCoins,
-    isLoading: isLoadingCommunityCoins,
-    loadCoins: loadCommunityCoins,
-  } = useCommunityCoins();
-
-  const {
-    data: solanaTrendingCoins,
-    isLoading: isLoadingSolanaTrendingCoins,
-    loadCoins: loadSolanaCoins,
-  } = useSolanaCoins();
-
-  console.log("solanaTrendingCoins", solanaTrendingCoins);
-
-  const {
-    data: geckoTrendingCoins,
-    isLoading: isLoadingGeckoCoins,
-    loadTokens: loadGeckoCoinsForChain,
-  } = useGeckoTokens();
-
-  const [userEthTokens, setUserEthTokens] = useState<UnifiedToken[] | null>(
-    null
-  );
-  const [nativeSolBalance, setNativeSolBalance] =
-    useState<SolBalanceResponse | null>(null);
-
-  const [userSolanaTokens, setUserSolanaTokens] = useState<
-    UnifiedToken[] | null
-  >(null);
-  // console.log("geckoTrendingCoins", geckoTrendingCoins);
-
-  // queryTokenList("https://api.relay.link", {
-  //   limit: 20,
-  //   term: "usdc",
+  // const { data: suggestedTokens } = useTokenList("https://api.relay.link", {
+  //   limit: 10,
+  //   term: "",
+  //   chainIds: activeChainId === 0 ? undefined : [activeChainId],
   // });
 
-  useEffect(() => {
-    loadGeckoCoinsForChain("base");
-  }, [loadGeckoCoinsForChain]);
+  // useEffect(() => {
+  //   if (!debouncedTerm) {
+  //     setSearchTokens([]);
+  //     setErrorSearching(null);
+  //     return;
+  //   }
 
-  useEffect(() => {
-    loadCommunityCoins();
-  }, [loadCommunityCoins]);
+  //   let cancelled = false;
+  //   setLoadingSearchList(true);
+  //   setErrorSearching(null);
 
-  useEffect(() => {
-    loadSolanaCoins();
-  }, [loadSolanaCoins]);
+  //   queryTokenList("https://api.relay.link", {
+  //     limit: 10,
+  //     term: isAddress(debouncedTerm) ? undefined : debouncedTerm,
+  //     chainIds: activeChainId === 0 ? undefined : [activeChainId],
+  //     address: isAddress(debouncedTerm) ? debouncedTerm : undefined,
+  //   })
+  //     .then((data) => {
+  //       if (!cancelled) setSearchTokens(data);
+  //     })
+  //     .catch((err) => {
+  //       if (!cancelled) setErrorSearching(err.message || "Unknown error");
+  //     })
+  //     .finally(() => {
+  //       if (!cancelled) setLoadingSearchList(false);
+  //     });
 
-  useEffect(() => {
-    const solNativeBalance = async () => {
-      const balance = await getSolBalance(
-        "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp"
-      );
-      setNativeSolBalance(balance);
-    };
-    const ethCoins = async () => {
-      const tokens = await getUserEthTokens({
-        address: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
-      });
-      setUserEthTokens(tokens);
-    };
-    const solCoins = async () => {
-      const tokens = await getUserSolTokens({
-        address: "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp",
-      });
-      setUserSolanaTokens(tokens);
-    };
-    solNativeBalance();
-    solCoins();
-    ethCoins();
-  }, []);
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [debouncedTerm, activeChainId]);
 
-  const nativeTokens = useMemo(
-    () => userEthTokens?.filter((t) => t.address === zeroAddress) ?? [],
-    [userEthTokens]
-  );
-  const nonNativeUserEthTokens = useMemo(
-    () => userEthTokens?.filter((t) => t.address !== zeroAddress) ?? [],
-    [userEthTokens]
-  );
+  // const {
+  //   data: communityCoins,
+  //   isLoading: isLoadingCommunityCoins,
+  //   loadCoins: loadCommunityCoins,
+  // } = useCommunityCoins();
 
-  const { chains, isLoading } = useRelayChains();
+  // const {
+  //   data: solanaTrendingCoins,
+  //   isLoading: isLoadingSolanaTrendingCoins,
+  //   loadCoins: loadSolanaCoins,
+  // } = useSolanaCoins();
 
-  const nonBitcoin = useMemo(
-    () => (chains ?? []).filter((c) => c.id !== 8253038),
-    [chains]
-  );
-  const featuredIds = useMemo(
-    () => new Set<number>([7777777, 42161, 8453, 1, 56, 666666666, 792703809]),
-    []
-  );
+  // console.log("solanaTrendingCoins", solanaTrendingCoins);
 
-  // 3. Partition into featured vs others
-  const featuredChains = useMemo(
-    () => nonBitcoin.filter((c) => featuredIds.has(c.id)),
-    [nonBitcoin, featuredIds]
-  );
-  const otherChains = useMemo(
-    () => nonBitcoin.filter((c) => !featuredIds.has(c.id)),
-    [nonBitcoin, featuredIds]
-  );
+  // const {
+  //   data: geckoTrendingCoins,
+  //   isLoading: isLoadingGeckoCoins,
+  //   loadTokens: loadGeckoCoinsForChain,
+  // } = useGeckoTokens();
 
-  const solanaChain = useMemo(
-    () => featuredChains.find((chain) => chain.id === 792703809),
-    [featuredChains]
-  );
-  const baseChain = useMemo(
-    () => featuredChains.find((chain) => chain.id === 8453),
-    [featuredChains]
-  );
+  // const [userEthTokens, setUserEthTokens] = useState<UnifiedToken[] | null>(
+  //   null
+  // );
+  // const [nativeSolBalance, setNativeSolBalance] =
+  //   useState<SolBalanceResponse | null>(null);
 
-  console.log("geckoTrendingCoins", geckoTrendingCoins);
+  // const [userSolanaTokens, setUserSolanaTokens] = useState<
+  //   UnifiedToken[] | null
+  // >(null);
+  // // console.log("geckoTrendingCoins", geckoTrendingCoins);
 
-  const allTokens = useMemo<UnifiedToken[]>(() => {
-    const out: UnifiedToken[] = [];
+  // // queryTokenList("https://api.relay.link", {
+  // //   limit: 20,
+  // //   term: "usdc",
+  // // });
 
-    // -- Relay search results --
-    out.push(
-      ...searchTokens.map((t) => ({
-        source: "relay" as const,
-        chainId: t.chainId,
-        address: t.address === "native" ? zeroAddress : t.address!,
-        symbol: t.symbol!,
-        logo: t.metadata?.logoURI,
-        priceUsd: undefined,
-        name: t.name || "Token",
-      }))
-    );
+  // useEffect(() => {
+  //   loadGeckoCoinsForChain("base");
+  // }, [loadGeckoCoinsForChain]);
 
-    // -- your Ethereum balances --
-    if (userEthTokens) {
-      out.push(...userEthTokens);
-    }
+  // useEffect(() => {
+  //   loadCommunityCoins();
+  // }, [loadCommunityCoins]);
 
-    // -- native SOL --
-    if (nativeSolBalance && solanaChain) {
-      out.push({
-        source: "sol" as const,
-        chainId: solanaChain.id,
-        address: solanaChain.currency!.address as string,
-        symbol: solanaChain.currency!.symbol as string,
-        logo: solanaChain.icon!.light,
-        priceUsd: nativeSolBalance.solUsdPrice as number,
-        balance: nativeSolBalance.balance,
-        name: "Solana",
-      });
-    }
-    if (userSolanaTokens) {
-      out.push(...userSolanaTokens);
-    }
-    // -- other Solana tokens --
+  // useEffect(() => {
+  //   loadSolanaCoins();
+  // }, [loadSolanaCoins]);
 
-    // -- Farcaster community coins --
+  // useEffect(() => {
+  //   const solNativeBalance = async () => {
+  //     const balance = await getSolBalance(
+  //       "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp"
+  //     );
+  //     setNativeSolBalance(balance);
+  //   };
+  //   const ethCoins = async () => {
+  //     const tokens = await getUserEthTokens({
+  //       address: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
+  //     });
+  //     setUserEthTokens(tokens);
+  //   };
+  //   const solCoins = async () => {
+  //     const tokens = await getUserSolTokens({
+  //       address: "8dc4Gk3riGii9sASFB8EuEEJeQ5BruDWPZQW7so55JEp",
+  //     });
+  //     setUserSolanaTokens(tokens);
+  //   };
+  //   solNativeBalance();
+  //   solCoins();
+  //   ethCoins();
+  // }, []);
 
-    if (communityCoins) {
-      out.push(...communityCoins);
-    }
-    if (geckoTrendingCoins) {
-      out.push(...geckoTrendingCoins);
-    }
-    if (solanaTrendingCoins) {
-      out.push(...solanaTrendingCoins);
-    }
+  // const nativeTokens = useMemo(
+  //   () => userEthTokens?.filter((t) => t.address === zeroAddress) ?? [],
+  //   [userEthTokens]
+  // );
+  // const nonNativeUserEthTokens = useMemo(
+  //   () => userEthTokens?.filter((t) => t.address !== zeroAddress) ?? [],
+  //   [userEthTokens]
+  // );
 
-    // -- Gecko trending on Base --
+  // const { chains, isLoading } = useRelayChains();
 
-    // -- Solana trending --
+  // const nonBitcoin = useMemo(
+  //   () => (chains ?? []).filter((c) => c.id !== 8253038),
+  //   [chains]
+  // );
+  // const featuredIds = useMemo(
+  //   () => new Set<number>([7777777, 42161, 8453, 1, 56, 666666666, 792703809]),
+  //   []
+  // );
 
-    return out;
-  }, [
-    searchTokens,
-    userEthTokens,
-    nativeSolBalance,
-    userSolanaTokens,
-    communityCoins,
-    geckoTrendingCoins,
-    solanaTrendingCoins,
-    solanaChain,
-  ]);
+  // // 3. Partition into featured vs others
+  // const featuredChains = useMemo(
+  //   () => nonBitcoin.filter((c) => featuredIds.has(c.id)),
+  //   [nonBitcoin, featuredIds]
+  // );
+  // const otherChains = useMemo(
+  //   () => nonBitcoin.filter((c) => !featuredIds.has(c.id)),
+  //   [nonBitcoin, featuredIds]
+  // );
 
-  console.log("solanaChain", allTokens);
+  // const solanaChain = useMemo(
+  //   () => featuredChains.find((chain) => chain.id === 792703809),
+  //   [featuredChains]
+  // );
+  // const baseChain = useMemo(
+  //   () => featuredChains.find((chain) => chain.id === 8453),
+  //   [featuredChains]
+  // );
 
-  const filteredUnique = useMemo(() => {
-    if (!searchTerm) return [];
+  // console.log("geckoTrendingCoins", geckoTrendingCoins);
 
-    const term = searchTerm.toLowerCase();
-    const seen = new Set<string>();
+  // const allTokens = useMemo<UnifiedToken[]>(() => {
+  //   const out: UnifiedToken[] = [];
 
-    return allTokens
-      .filter((t) => {
-        const matchesTerm =
-          t.symbol.toLowerCase().includes(term) ||
-          t.address.toLowerCase().includes(term);
+  //   // -- Relay search results --
+  //   out.push(
+  //     ...searchTokens.map((t) => ({
+  //       source: "relay" as const,
+  //       chainId: t.chainId,
+  //       address: t.address === "native" ? zeroAddress : t.address!,
+  //       symbol: t.symbol!,
+  //       logo: t.metadata?.logoURI,
+  //       priceUsd: undefined,
+  //       name: t.name || "Token",
+  //     }))
+  //   );
 
-        const matchesChain = activeChainId === 0 || t.chainId === activeChainId;
+  //   // -- your Ethereum balances --
+  //   if (userEthTokens) {
+  //     out.push(...userEthTokens);
+  //   }
 
-        return matchesTerm && matchesChain;
-      })
-      .filter((t) => {
-        if (seen.has(t.address)) {
-          return false;
-        }
-        seen.add(t.address);
-        return true;
-      });
-  }, [searchTerm, allTokens, activeChainId]);
+  //   // -- native SOL --
+  //   if (nativeSolBalance && solanaChain) {
+  //     out.push({
+  //       source: "sol" as const,
+  //       chainId: solanaChain.id,
+  //       address: solanaChain.currency!.address as string,
+  //       symbol: solanaChain.currency!.symbol as string,
+  //       logo: solanaChain.icon!.light,
+  //       priceUsd: nativeSolBalance.solUsdPrice as number,
+  //       balance: nativeSolBalance.balance,
+  //       name: "Solana",
+  //     });
+  //   }
+  //   if (userSolanaTokens) {
+  //     out.push(...userSolanaTokens);
+  //   }
+  //   // -- other Solana tokens --
 
-  const ethNativeList = useMemo(() => {
-    if (!nativeTokens) return [];
-    return activeChainId === 0
-      ? nativeTokens
-      : nativeTokens.filter((t) => t.chainId === activeChainId);
-  }, [nativeTokens, activeChainId]);
+  //   // -- Farcaster community coins --
 
-  // same for the “other” ERC-20s
-  const ethOtherList = useMemo(() => {
-    if (!nonNativeUserEthTokens) return [];
-    return activeChainId === 0
-      ? nonNativeUserEthTokens
-      : nonNativeUserEthTokens.filter((t) => t.chainId === activeChainId);
-  }, [nonNativeUserEthTokens, activeChainId]);
+  //   if (communityCoins) {
+  //     out.push(...communityCoins);
+  //   }
+  //   if (geckoTrendingCoins) {
+  //     out.push(...geckoTrendingCoins);
+  //   }
+  //   if (solanaTrendingCoins) {
+  //     out.push(...solanaTrendingCoins);
+  //   }
 
-  const filteredCommunityCoins = useMemo(() => {
-    if (!communityCoins) return [];
-    return activeChainId === 0
-      ? communityCoins
-      : communityCoins.filter((c) => c.chainId === activeChainId);
-  }, [communityCoins, activeChainId]);
+  //   // -- Gecko trending on Base --
 
-  console.log("ethNativeList", ethNativeList);
+  //   // -- Solana trending --
+
+  //   return out;
+  // }, [
+  //   searchTokens,
+  //   userEthTokens,
+  //   nativeSolBalance,
+  //   userSolanaTokens,
+  //   communityCoins,
+  //   geckoTrendingCoins,
+  //   solanaTrendingCoins,
+  //   solanaChain,
+  // ]);
+
+  // console.log("solanaChain", allTokens);
+
+  // const filteredUnique = useMemo(() => {
+  //   if (!searchTerm) return [];
+
+  //   const term = searchTerm.toLowerCase();
+  //   const seen = new Set<string>();
+
+  //   return allTokens
+  //     .filter((t) => {
+  //       const matchesTerm =
+  //         t.symbol.toLowerCase().includes(term) ||
+  //         t.address.toLowerCase().includes(term);
+
+  //       const matchesChain = activeChainId === 0 || t.chainId === activeChainId;
+
+  //       return matchesTerm && matchesChain;
+  //     })
+  //     .filter((t) => {
+  //       if (seen.has(t.address)) {
+  //         return false;
+  //       }
+  //       seen.add(t.address);
+  //       return true;
+  //     });
+  // }, [searchTerm, allTokens, activeChainId]);
+
+  // const ethNativeList = useMemo(() => {
+  //   if (!nativeTokens) return [];
+  //   return activeChainId === 0
+  //     ? nativeTokens
+  //     : nativeTokens.filter((t) => t.chainId === activeChainId);
+  // }, [nativeTokens, activeChainId]);
+
+  // // same for the “other” ERC-20s
+  // const ethOtherList = useMemo(() => {
+  //   if (!nonNativeUserEthTokens) return [];
+  //   return activeChainId === 0
+  //     ? nonNativeUserEthTokens
+  //     : nonNativeUserEthTokens.filter((t) => t.chainId === activeChainId);
+  // }, [nonNativeUserEthTokens, activeChainId]);
+
+  // const filteredCommunityCoins = useMemo(() => {
+  //   if (!communityCoins) return [];
+  //   return activeChainId === 0
+  //     ? communityCoins
+  //     : communityCoins.filter((c) => c.chainId === activeChainId);
+  // }, [communityCoins, activeChainId]);
+
+  // console.log("ethNativeList", ethNativeList);
 
   return (
     <div className="coins-list">
@@ -320,7 +319,7 @@ export default function Home() {
         featuredChains={featuredChains}
       /> */}
 
-      <div className="chain-sidebar__contianer">
+      {/* <div className="chain-sidebar__contianer">
         <label className="chain-sidebar__input">
           <SearchGlass />
           <input
@@ -593,7 +592,7 @@ export default function Home() {
               })}
             </div>
           )}
-      </div>
+      </div> */}
     </div>
   );
 }

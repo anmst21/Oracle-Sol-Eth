@@ -1,18 +1,16 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useState } from "react";
 import BuyInput from "@/components/buy/buy-input";
 import TokenToBuy from "@/components/buy/token-to-buy";
 import RecipientWindow from "@/components/buy/recipient-window";
 
-const MoonPayBuyWidget = dynamic(
-  () => import("@moonpay/moonpay-react").then((mod) => mod.MoonPayBuyWidget),
-  { ssr: false }
-);
+// const MoonPayBuyWidget = dynamic(
+//   () => import("@moonpay/moonpay-react").then((mod) => mod.MoonPayBuyWidget),
+//   { ssr: false }
+// );
 
 export default function Page() {
-  const [visible, setVisible] = useState(false);
+  // const [visible, setVisible] = useState(false);
 
   return (
     <div className="buy-page">
