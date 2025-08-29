@@ -10,6 +10,7 @@ import { AnimatePresence } from "motion/react";
 import { useChart } from "@/context/ChartProvider";
 import { useHistory } from "@/context/HistoryProvider";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
+import { useOnRamp } from "@/context/OnRampProvider";
 
 const buttons = [
   { name: "Swap", icon: <SwapIcon />, href: "/swap" },
@@ -24,6 +25,8 @@ const SwapHeader = () => {
   const { isOpenPools, setIsOpenPools, activePool } = useChart();
   const { isOpenHistory, setIsOpenHistory } = useHistory();
 
+  const { isOpenRegions, setIsOpenRegions } = useOnRamp();
+
   const pathname = usePathname();
 
   const poolsCallback = useCallback(
@@ -33,6 +36,10 @@ const SwapHeader = () => {
   const historyCallback = useCallback(
     (value: boolean) => setIsOpenHistory(value),
     [setIsOpenHistory]
+  );
+  const onRampCallback = useCallback(
+    (value: boolean) => setIsOpenRegions(value),
+    [setIsOpenRegions]
   );
 
   const { activeWallet } = useActiveWallet();
@@ -65,6 +72,8 @@ const SwapHeader = () => {
             poolsCallback(!isOpenPools);
           if (!isOpenHistory && pathname === "/history")
             historyCallback(!isOpenHistory);
+          if (!isOpenRegions && pathname === "/buy")
+            onRampCallback(!isOpenRegions);
         }}
         className={classNames("swap-header__settings", {
           "swap-header__settings--active": isOpenSlippage,

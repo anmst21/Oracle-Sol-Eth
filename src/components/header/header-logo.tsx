@@ -4,10 +4,10 @@ import React, { useEffect, useRef, useState } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import animationData from "@/animations/logo-animation.json";
 // import Image from "next/image";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+// import Link from "next/link";
 
-const HeaderLogo: React.FC = () => {
+const HeaderLogo = ({ isRedirect }: { isRedirect?: boolean }) => {
   const lottieRef = useRef<LottieRefCurrentProps | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   console.log("isAnimating", isAnimating);
@@ -21,7 +21,7 @@ const HeaderLogo: React.FC = () => {
   const handleComplete = () => {
     setIsAnimating(false);
   };
-
+  const { push } = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -29,11 +29,14 @@ const HeaderLogo: React.FC = () => {
   }, [pathname]);
 
   return (
-    <Link
-      href={"/"}
+    <button
+      // href={"/"}
       className="header__logo"
       style={{ cursor: "pointer", width: 52, height: 22 }}
-      onClick={handlePlay}
+      onClick={() => {
+        handlePlay();
+        if (isRedirect) push("/");
+      }}
     >
       <Lottie
         lottieRef={lottieRef}
@@ -54,7 +57,7 @@ const HeaderLogo: React.FC = () => {
           alt="Oracle Logo"
         />
       )} */}
-    </Link>
+    </button>
   );
 };
 

@@ -1,6 +1,9 @@
 "use client";
 
+import { fetchFeedEnriched } from "@/actions/fetch-feed-enriched";
+import { useFeed } from "@/context/FeedProvider";
 import { usePrivy } from "@privy-io/react-auth";
+import { useEffect } from "react";
 
 //  signIn: () => void;
 //     signOut: () => void;
@@ -18,14 +21,29 @@ import { usePrivy } from "@privy-io/react-auth";
 //     validSignature: boolean;
 
 export default function Page() {
+  const {
+    loadFeaturedFeed,
+    featuredFeed,
+    cursor,
+    metaByKey,
+    isLoadingFeaturedFeed,
+    isLoadingMoreFeaturedFeed,
+  } = useFeed();
+
+  useEffect(() => {
+    if (!featuredFeed) loadFeaturedFeed();
+  }, [featuredFeed]);
+
+  console.log({ metaByKey, featuredFeed });
+
   // const { signIn, url, data, signOut, connect, isConnected, reconnect } =
   //   useSignIn({
   //     onSuccess: ({ fid }) => console.log("Your fid:", fid),
   //   });
 
-  const { linkFarcaster, user, unlinkFarcaster } = usePrivy();
+  // const { linkFarcaster, user, unlinkFarcaster } = usePrivy();
 
-  console.log("isAuthenticated", user);
+  // console.log("isAuthenticated", user);
 
   // const { message, signature } = useSignInMessage();
   // // useEffect(() => {
@@ -39,31 +57,17 @@ export default function Page() {
   //   username,
   //   fid,
   // });
+
+  // const feed = await fetchFeedEnriched();
   return (
     <div className="feed-page">
-      {/* <span>{url}</span>
-      <span>{data?.username || "Not signed in"}</span>
-      <button onClick={connect}>Connect</button>
-      <button
-        onClick={() => {
-          signIn();
-          connect();
-        }}
-      >
-        Sign in
-      </button>
-      {url && (
-        <span>
-          Scan this: <QRCode uri={url} />
-        </span>
-      )} */}
-      {user?.farcaster?.fid != null ? (
+      {/* {user?.farcaster?.fid != null ? (
         <button onClick={() => unlinkFarcaster(user.farcaster!.fid!)}>
           Unlink your Farcaster
         </button>
       ) : (
         <button onClick={linkFarcaster}>Link your Farcaster</button>
-      )}
+      )} */}
     </div>
   );
 }

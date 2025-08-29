@@ -1,0 +1,138 @@
+.region-item {
+
+    &--active {
+        background-color: rgba(174, 233, 0, 0.1) !important;
+    }
+
+    .pool-item__pool__name__bottom {
+        span {
+            display: inline-block; // inline elements ignore width/max-width
+            width: 17ch; // or keep max-width if you prefer
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+
+    img {
+        background-color: white !important;
+    }
+
+
+    .trade-item__kind__block {
+        width: fit-content;
+        padding: 0;
+        background: none;
+    }
+
+
+    &__doc {
+        &__icon {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 24px;
+            gap: 2px;
+        }
+    }
+}
+
+
+.document-item {
+
+
+
+    position: relative;
+
+    display: flex;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+        transition: all .2s ease-in;
+    }
+
+
+    &--active {
+        svg {
+            color: #D9F1E9;
+        }
+    }
+}
+
+
+.document-item-modal {
+    border-radius: 8px;
+    background: rgba(136, 150, 151, 0.05);
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    gap: 4px;
+
+
+    &__wrapper {
+        border-radius: 12px;
+        border: 1px solid rgba(136, 150, 151, 0.20);
+        background: rgba(136, 150, 151, 0.05);
+        backdrop-filter: blur(30px);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+        position: absolute;
+        //width: 200px;
+        top: calc(100% + 8px);
+        right: 0;
+        z-index: 10;
+        min-width: 200px;
+
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            width: 100%;
+            height: 8px;
+        }
+    }
+
+    &__header {
+        display: flex;
+        gap: 30px;
+        text-align: center;
+        font-family: var(--font-handjet);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+        white-space: nowrap;
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        height: 28px;
+        padding: 2px 4px 2px 8px;
+        align-items: center;
+
+        svg {
+            margin-left: auto;
+            color: #AEE900;
+        }
+
+        span {
+            color: #D9F1E9;
+        }
+    }
+
+    &__main {
+        display: flex;
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        padding: 4px 8px;
+        color: #889697;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 16px;
+    }
+}

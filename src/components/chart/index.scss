@@ -847,6 +847,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 10;
+        padding: 115px 0;
     }
 
 }
@@ -1337,5 +1339,8 @@
     width: 100%;
     max-width: 1000px;
     margin: 36px;
-    height: calc(100% - 120px);
+    height: 100%;
+    max-height: 1000px;
+
+
 }

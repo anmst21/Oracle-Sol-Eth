@@ -85,5 +85,7 @@ export async function getTokenAccountsWithMetadata({
     decimals: t.decimals,
   }));
 
+  console.log("formatted", formatted);
+
   return formatted;
 }

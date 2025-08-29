@@ -6,19 +6,19 @@
     align-items: center;
     position: relative;
 
-    &:before {
-        position: absolute;
-        top: calc(100% + 8px);
-        content: "";
-        left: 41.5px;
-        right: 41.5px;
-        height: 150px;
+    // &:before {
+    //     position: absolute;
+    //     top: calc(100% + 8px);
+    //     content: "";
+    //     left: 41.5px;
+    //     right: 41.5px;
+    //     height: 150px;
 
-        border: #889697 solid 1px;
-        border-top: none;
-        border-bottom: none;
-        pointer-events: none;
-    }
+    //     border: #889697 solid 1px;
+    //     border-top: none;
+    //     border-bottom: none;
+    //     pointer-events: none;
+    // }
 
     &__wallet {
         display: flex;
@@ -134,17 +134,17 @@
     }
 
 
-    &:before {
-        position: absolute;
-        bottom: calc(100% + 8px);
-        content: "";
-        left: 41.5px;
-        right: 41.5px;
-        height: 150px;
+    // &:before {
+    //     position: absolute;
+    //     bottom: calc(100% + 8px);
+    //     content: "";
+    //     left: 41.5px;
+    //     right: 41.5px;
+    //     height: 150px;
 
-        border: #889697 solid 1px;
-        border-top: none;
-        border-bottom: none;
-        pointer-events: none;
-    }
+    //     border: #889697 solid 1px;
+    //     border-top: none;
+    //     border-bottom: none;
+    //     pointer-events: none;
+    // }
 }

@@ -306,7 +306,9 @@ Props) => {
                         : (token.address as string)
                     }
                     coinSymbol={token.symbol}
-                    chainSrc={getIconUri(1)}
+                    chainSrc={
+                      token.chainId ? getIconUri(token.chainId) : getIconUri(1)
+                    }
                     coinSrc={token.logo}
                     coinName={"Ether"}
                     onSelect={onSelect}

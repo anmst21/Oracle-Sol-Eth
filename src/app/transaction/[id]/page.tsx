@@ -14,7 +14,7 @@ export default async function Page({ params }: PageProps) {
   try {
     data = await queryRequests("https://api.relay.link", {
       id,
-      limit: "1",
+      limit: 1,
     });
   } catch (err) {
     console.error("Error fetching transaction", err);

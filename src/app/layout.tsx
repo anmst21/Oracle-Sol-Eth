@@ -1,5 +1,5 @@
 // import type { Metadata } from "next";
-import { Fira_Code, Handjet } from "next/font/google";
+import { Fira_Code, Funnel_Display, Handjet } from "next/font/google";
 import PrivyProvider from "../context/PrivyProvider";
 import "../styles/index.scss";
 import { CommunityCoinsProvider } from "@/context/FarcasterCommunityTokensProvider";
@@ -12,7 +12,11 @@ import { SlippageProvider } from "@/context/SlippageContext";
 import Header from "@/components/header";
 import { RelayKitProviderWrapper as RelayKitProvider } from "@/context/RelayKitProvider";
 import QueryClientProvider from "@/context/QueryClientProvider";
-import HeaderFooter from "@/components/header/header-footer";
+import HeaderFooter from "@/components/footer/header-footer";
+import FaviconAnimator from "@/components/favicon-animatior";
+import OnRampProvider from "@/context/OnRampProvider";
+import FeedProvider from "@/context/FeedProvider";
+import Footer from "@/components/footer";
 // import FarcasterAuthProvider from "@/context/FarcasterAuthProvider";
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
@@ -23,6 +27,10 @@ const firaCode = Fira_Code({
 const handjet = Handjet({
   subsets: ["latin"],
   variable: "--font-handjet",
+});
+const funnelDisplay = Funnel_Display({
+  subsets: ["latin"],
+  variable: "--font-funnel-display",
 });
 
 // export const metadata: Metadata = {
@@ -42,7 +50,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${firaCode.variable} ${handjet.variable}`}>
+      <body
+        className={`${firaCode.variable} ${handjet.variable} ${funnelDisplay.variable}`}
+      >
+        <FaviconAnimator />
+
         <QueryClientProvider>
           <PrivyProvider>
             <SolanaCoinsProvider>
@@ -52,11 +64,16 @@ export default async function RootLayout({
                     <ActiveWalletProvider>
                       <TokenModalProvider>
                         <RelayKitProvider>
-                          <SlippageProvider>
-                            <Header />
-                            <div className="main">{children}</div>
-                            <HeaderFooter />
-                          </SlippageProvider>
+                          <OnRampProvider>
+                            <FeedProvider>
+                              <SlippageProvider>
+                                <Header />
+                                <div className="main">{children}</div>
+                                <Footer />
+                                <HeaderFooter />
+                              </SlippageProvider>
+                            </FeedProvider>
+                          </OnRampProvider>
                         </RelayKitProvider>
                       </TokenModalProvider>
                     </ActiveWalletProvider>

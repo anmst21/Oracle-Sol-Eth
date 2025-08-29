@@ -561,3 +561,11 @@
     gap: 12px;
     padding: 12px;
 }
+
+
+.history-modal__wrapper--center {
+    .modal-info {
+        left: -50px;
+        top: 30px;
+    }
+}

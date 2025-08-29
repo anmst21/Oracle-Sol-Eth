@@ -2,14 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { HistorySortType } from "./types";
 import classNames from "classnames";
-import ModalInfo from "../slippage-modal/modal-info";
-import {
-  InputCross,
-  ModalInfo as Info,
-  PensilLarge,
-  SearchGlass,
-  SaveDisk,
-} from "../icons";
+import { InputCross, PensilLarge, SearchGlass, SaveDisk } from "../icons";
 import { useAddressModal } from "@/hooks/useAdddressModal";
 import { PastedWallet } from "../swap/types";
 import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
@@ -18,6 +11,7 @@ import { useChainsData } from "@/hooks/useChains";
 import ConnectedWallets from "../wallets/connected-wallets";
 import { useHistory } from "@/context/HistoryProvider";
 import { slidingTextAnimation } from "../swap/animation";
+import HistoryModalWrapper from "./history-modal-wrapper";
 
 type Props = {
   closeModal: () => void;
@@ -38,7 +32,6 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
     closeModal,
     setActiveWallet,
   });
-  const [isOpenInfo, setIsOpenInfo] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -94,182 +87,144 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
   };
 
   return (
-    <div onClick={closeModal} className="history-modal__wrapper">
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 50 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        onClick={(e) => e.stopPropagation()}
-        className="history-modal"
-      >
-        <div className="history-modal__inner">
-          <div className="modal__header__inner">
-            <span>Sort By</span>
-
-            <div
-              className={classNames("slippage-modal__header__item info-hover", {
-                "info-active": isOpenInfo,
-              })}
-              onMouseLeave={() => {
-                if (isOpenInfo) setIsOpenInfo(false);
+    <HistoryModalWrapper
+      info="If multiple chains or wallet addresses match, they will be sorted according to your selected criteria."
+      closeModal={closeModal}
+      header="Sort By"
+    >
+      <motion.div className="slippage-modal__button">
+        <button
+          className={classNames({
+            "slippage-modal__button--active": type === "network",
+          })}
+          onClick={() => setType("network")}
+          key={"network-sort"}
+        >
+          Network
+          {type === "network" ? (
+            <motion.div
+              initial={false}
+              layoutId="underline"
+              className="underline"
+            />
+          ) : null}
+        </button>
+        <button
+          key={"wallet-sort"}
+          className={classNames({
+            "slippage-modal__button--active": type === "wallet",
+          })}
+          onClick={() => setType("wallet")}
+        >
+          Wallet
+          {type === "wallet" ? (
+            <motion.div
+              initial={false}
+              layoutId="underline"
+              className="underline"
+            />
+          ) : null}
+        </button>
+      </motion.div>
+      <div className="history-modal__input">
+        <label className="address-modal__input">
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.div
+              key={`input-icon-${type}`}
+              {...slidingTextAnimation}
+              style={{
+                display: "flex",
+                width: 24,
+                height: 24,
+                alignItems: "center",
+                justifyContent: "center",
               }}
-              onMouseEnter={() => {
-                if (!isOpenInfo) setIsOpenInfo(true);
-              }}
+              // className="chain-sidebar__input__abandon"
             >
-              <Info />
+              {type === "network" ? <SearchGlass /> : <PensilLarge />}
+            </motion.div>
+          </AnimatePresence>
+          <AnimatePresence initial={false} mode="popLayout">
+            {type === "network" ? (
+              <motion.input
+                {...slidingTextAnimation}
+                key="input-chain"
+                type="text"
+                placeholder="Search Chain"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            ) : (
+              <motion.input
+                {...slidingTextAnimation}
+                key="input-address"
+                value={manualAddress}
+                onChange={(e) => setManualAddress(e.target.value.trim())}
+                placeholder="Enter Address"
+                type="text"
+              />
+            )}
+          </AnimatePresence>
 
-              {isOpenInfo && (
-                <ModalInfo
-                  paragraph="If multiple chains or wallet addresses match, they will be sorted according to your selected criteria."
-                  closeModal={() => setIsOpenInfo(false)}
-                />
-              )}
-            </div>
+          {(manualAddress.length > 0 || searchTerm.length > 0) && (
             <button
-              onClick={() => closeModal()}
+              onClick={() => {
+                if (manualAddress.length > 0) setManualAddress("");
+                if (searchTerm.length > 0) setSearchTerm("");
+              }}
               className="chain-sidebar__input__abandon"
             >
               <InputCross />
             </button>
-          </div>
-
-          <motion.div className="slippage-modal__button">
-            <button
-              className={classNames({
-                "slippage-modal__button--active": type === "network",
-              })}
-              onClick={() => setType("network")}
-              key={"network-sort"}
-            >
-              Network
-              {type === "network" ? (
-                <motion.div
-                  initial={false}
-                  layoutId="underline"
-                  className="underline"
-                />
-              ) : null}
-            </button>
-            <button
-              key={"wallet-sort"}
-              className={classNames({
-                "slippage-modal__button--active": type === "wallet",
-              })}
-              onClick={() => setType("wallet")}
-            >
-              Wallet
-              {type === "wallet" ? (
-                <motion.div
-                  initial={false}
-                  layoutId="underline"
-                  className="underline"
-                />
-              ) : null}
+          )}
+        </label>
+      </div>
+      <AnimatePresence mode="popLayout" initial={false}>
+        {type === "network" && (
+          <motion.div
+            {...sectionAnimation}
+            key="wallet-network"
+            className="chain-sidebar__contianer"
+          >
+            <ModalChains
+              disableSearch
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              setActiveChainId={(value) => {
+                setActiveChainId(value);
+                closeModal();
+              }}
+              activeChainId={activeChainId}
+              otherChains={otherChains}
+              featuredChains={featuredChains}
+              baseChain={baseChain}
+              solanaChain={solanaChain}
+              ethereumChain={ethereumChain}
+              isLoadingChains={isLoadingChains}
+            />
+          </motion.div>
+        )}
+        {type === "wallet" && (
+          <motion.div
+            {...sectionAnimation}
+            key="wallet-wrapper"
+            className="chain-sidebar__contianer"
+          >
+            <div className="address-modal__use">
+              <span>Use connected wallet</span>
+            </div>
+            <ConnectedWallets
+              activeAddress={activeWallet?.address}
+              setWallet={setWallet}
+            />
+            <button onClick={handleSave} className="address-modal__cta">
+              <SaveDisk />
+              <span>Save</span>
             </button>
           </motion.div>
-          <div className="history-modal__input">
-            <label className="address-modal__input">
-              <AnimatePresence initial={false} mode="popLayout">
-                <motion.div
-                  key={`input-icon-${type}`}
-                  {...slidingTextAnimation}
-                  style={{
-                    display: "flex",
-                    width: 24,
-                    height: 24,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  // className="chain-sidebar__input__abandon"
-                >
-                  {type === "network" ? <SearchGlass /> : <PensilLarge />}
-                </motion.div>
-              </AnimatePresence>
-              <AnimatePresence initial={false} mode="popLayout">
-                {type === "network" ? (
-                  <motion.input
-                    {...slidingTextAnimation}
-                    key="input-chain"
-                    type="text"
-                    placeholder="Search Chain"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                ) : (
-                  <motion.input
-                    {...slidingTextAnimation}
-                    key="input-address"
-                    value={manualAddress}
-                    onChange={(e) => setManualAddress(e.target.value.trim())}
-                    placeholder="Enter Address"
-                    type="text"
-                  />
-                )}
-              </AnimatePresence>
-
-              {(manualAddress.length > 0 || searchTerm.length > 0) && (
-                <button
-                  onClick={() => {
-                    if (manualAddress.length > 0) setManualAddress("");
-                    if (searchTerm.length > 0) setSearchTerm("");
-                  }}
-                  className="chain-sidebar__input__abandon"
-                >
-                  <InputCross />
-                </button>
-              )}
-            </label>
-          </div>
-          <AnimatePresence mode="popLayout" initial={false}>
-            {type === "network" && (
-              <motion.div
-                {...sectionAnimation}
-                key="wallet-network"
-                className="chain-sidebar__contianer"
-              >
-                <ModalChains
-                  disableSearch
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
-                  setActiveChainId={(value) => {
-                    setActiveChainId(value);
-                    closeModal();
-                  }}
-                  activeChainId={activeChainId}
-                  otherChains={otherChains}
-                  featuredChains={featuredChains}
-                  baseChain={baseChain}
-                  solanaChain={solanaChain}
-                  ethereumChain={ethereumChain}
-                  isLoadingChains={isLoadingChains}
-                />
-              </motion.div>
-            )}
-            {type === "wallet" && (
-              <motion.div
-                {...sectionAnimation}
-                key="wallet-wrapper"
-                className="chain-sidebar__contianer"
-              >
-                <div className="address-modal__use">
-                  <span>Use connected wallet</span>
-                </div>
-                <ConnectedWallets
-                  activeAddress={activeWallet?.address}
-                  setWallet={setWallet}
-                />
-                <button onClick={handleSave} className="address-modal__cta">
-                  <SaveDisk />
-                  <span>Save</span>
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
-    </div>
+        )}
+      </AnimatePresence>
+    </HistoryModalWrapper>
   );
 };
 

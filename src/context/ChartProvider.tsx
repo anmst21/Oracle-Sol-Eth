@@ -16,19 +16,12 @@ import { PoolItem } from "@/types/token-pools";
 import { AnimatePresence } from "motion/react";
 import PoolsModal from "@/components/chart/pools-modal";
 
-import { useRelayChains, useTokenList } from "@reservoir0x/relay-kit-hooks";
-import { RelayTokenMeta } from "@/types/relay-token-meta";
+import { useRelayChains } from "@reservoir0x/relay-kit-hooks";
 import { RelayChainFetch } from "@/types/relay-chain";
 import TradesModal from "@/components/chart/trades-modal";
 import { ChartSortOptions } from "@/helpers/chart-options";
 import { UnifiedToken } from "@/types/coin-types";
-
-// Test values for initial fetch; replace or parametrize as needed
-//const address = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
-const address = "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn";
-//FAqh648xeeaTqL7du49sztp9nfj5PjRQrfvaMccyd9cz
-//const chainId = 8453;
-const chainId = 792703809;
+import { baseEthToken } from "@/helpers/base-eth-token";
 
 export interface ChartContextType {
   tokenPools: PoolItem[] | null;
@@ -56,8 +49,6 @@ export interface ChartContextType {
   activePool: PoolItem | null;
   setActivePool: React.Dispatch<React.SetStateAction<PoolItem | null>>;
 
-  tokenMeta: RelayTokenMeta | null;
-
   relayChain: RelayChainFetch | undefined;
   fetchChart: () => Promise<void>;
   activeToken: UnifiedToken | undefined;
@@ -81,14 +72,7 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
   children,
   geckoChains,
 }) => {
-  const [activeToken, setActiveToken] = useState<UnifiedToken>({
-    source: "eth",
-    chainId: 8453,
-    address: "0x0000000000000000000000000000000000000000",
-    symbol: "ETH",
-    logo: "https://assets.relay.link/icons/1/light.png",
-    name: "Ether",
-  });
+  const [activeToken, setActiveToken] = useState<UnifiedToken>(baseEthToken);
   const [tokenPools, setTokenPools] = useState<PoolItem[] | null>(null);
   const [isLoadingPools, setIsLoadingPools] = useState<boolean>(true);
   const [isErrorPools, setIsErrorPools] = useState<boolean>(false);
@@ -226,19 +210,10 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
     fetchChart();
   }, [activePool, requestChain, sortType]);
 
-  const { data: meta } = useTokenList("https://api.relay.link", {
-    address: address ? address : undefined,
-
-    chainIds: chainId ? [chainId] : undefined,
-  });
-
-  const tokenMeta = useMemo(() => (meta ? meta[0] : null), [meta]);
-
   const relayChain = useMemo(
     () => chains?.find((c) => c.id === requestChain?.id) as RelayChainFetch,
     [chains, requestChain]
   );
-  console.log("tokenMeta", tokenMeta);
 
   return (
     <ChartContext.Provider
@@ -258,7 +233,6 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
         requestChain,
         activePool,
         setActivePool,
-        tokenMeta,
         relayChain,
         isOpenTrades,
         setIsOpenTrades,

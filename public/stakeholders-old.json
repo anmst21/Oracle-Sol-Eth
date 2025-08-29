@@ -1,0 +1,72 @@
+[
+    {
+        "header": "Base",
+        "uri": "https://base.org",
+        "description": "Featured L2 for Oracle—low fees, high throughput, and tight Coinbase ecosystem integrations. Many routes settle or traverse Base for speed and cost efficiency."
+    },
+    {
+        "header": "Relay",
+        "uri": "https://relay.link",
+        "description": "Oracle's execution rail for swap/bridge/send. Relay's relayers fill on the destination chain first, then settle cheaply—abstracting chain switching with predictable fees, SLAs, and 75+ network coverage."
+    },
+    {
+        "header": "Privy",
+        "uri": "https://privy.io",
+        "description": "Auth + wallet infrastructure. Users connect existing wallets or get an embedded, self-custodial wallet. Secure key sharding, customizable UI, and multi-wallet control power a seamless sign-in and signing flow."
+    },
+    {
+        "header": "GeckoTerminal",
+        "uri": "https://www.geckoterminal.com",
+        "description": "Market data for the Chart page: live OHLCV, liquidity, pool stats, and recent trades used to inform pre-filled swaps."
+    },
+    {
+        "header": "Dexscreener",
+        "uri": "https://dexscreener.com",
+        "description": "Discovery layer for pairs across chains. Feeds FDV, volume, and liquidity context into search, coins lists, and quick market views."
+    },
+    {
+        "header": "Farcaster.in",
+        "uri": "https://farcaster.in",
+        "description": "Community coin and trend signals. Powers parts of coin discovery and complements social context in the feed."
+    },
+    {
+        "header": "MoonPay",
+        "uri": "https://www.moonpay.com",
+        "description": "Fiat → crypto on-ramp inside Buy. MFA sign-in, KYC where required, and diverse payment methods; Oracle can auto-swap post-checkout if the target token isn't purchasable directly."
+    },
+    {
+        "header": "Warpcast",
+        "uri": "https://warpcast.com",
+        "description": "The Farcaster client linked from Oracle's social feed. Lets users jump to profiles and casts that correspond to on-chain activity."
+    },
+    {
+        "header": "Nexus Technologies NYC",
+        "uri": "https://n3xus.nyc",
+        "description": "Creator of Oracle. NYC-based team building fast, user-first crypto applications on the Ethereum stack and Superchain."
+    },
+    {
+        "header": "Sim.io (Sim IDX)",
+        "uri": "https://sim.io",
+        "description": "Managed EVM indexing for Oracle's feed. High-speed backfills and streaming pipelines enrich DEX swaps and map activity to identities."
+    },
+    {
+        "header": "Dune",
+        "uri": "https://dune.com",
+        "description": "Analytics and dashboards used for internal research, monitoring, and cross-chain market context."
+    },
+    {
+        "header": "Balancer",
+        "uri": "https://balancer.fi/",
+        "description": "One of the DEX sources indexed for the social feed—public swaps are ingested and shown with explorer links."
+    },
+    {
+        "header": "Uniswap",
+        "uri": "https://uniswap.org/",
+        "description": "Core DEX source (v2/v3) for feed activity and price context. Trades can be mirrored via Oracle's pre-filled routes."
+    },
+    {
+        "header": "PancakeSwap",
+        "uri": "https://pancakeswap.finance/",
+        "description": "DEX source for on-chain activity, especially on BNB and supported L2s. Public swaps appear in the feed with quick replay."
+    }
+]

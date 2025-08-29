@@ -1,0 +1,99 @@
+[
+    {
+        "header": "Base",
+        "uri": "https://base.org",
+        "description": "A fast, low-cost Ethereum network. Many routes use Base to keep transactions quick and affordable.",
+        "type": "featured",
+        "icon": "/stakeholders/base.svg"
+    },
+    {
+        "header": "Relay",
+        "uri": "https://relay.link",
+        "description": "The engine behind Oracle's swap, bridge, and send. Relay moves value between blockchains quickly and at low cost, so transfers feel simple and instant.",
+        "type": "swap",
+        "icon": "/stakeholders/relay.svg"
+    },
+    {
+        "header": "MoonPay",
+        "uri": "https://www.moonpay.com",
+        "description": "Buy crypto with cards, bank transfers, or mobile pay. Handles account checks where required and sends assets to your wallet.",
+        "type": "swap",
+        "icon": "/stakeholders/moon-pay.svg"
+    },
+    {
+        "header": "Privy",
+        "uri": "https://privy.io",
+        "description": "Sign-in and wallet management. Connect an existing wallet or create a new self-custodial one, with a smooth, secure experience.",
+        "type": "swap",
+        "icon": "/stakeholders/privy.svg"
+    },
+    {
+        "header": "GeckoTerminal",
+        "uri": "https://www.geckoterminal.com",
+        "description": "Price charts and pool information. Powers Oracle's chart view with live and historical market data.",
+        "type": "coins",
+        "icon": "/stakeholders/gecko.svg"
+    },
+    {
+        "header": "Dexscreener",
+        "uri": "https://dexscreener.com",
+        "description": "Helps find tokens and pairs across many networks. Adds prices, volumes, and other quick market snapshots.",
+        "type": "coins",
+        "icon": "/stakeholders/dex-screener.svg"
+    },
+    {
+        "header": "Farcaster.in",
+        "uri": "https://farcaster.in",
+        "description": "Community signals and trending coins from the Farcaster ecosystem, used for discovery.",
+        "type": "coins",
+        "icon": "/stakeholders/farcaster-in.svg"
+    },
+    {
+        "header": "Warpcast",
+        "uri": "https://warpcast.com",
+        "description": "The main Farcaster app. Oracle links to profiles and posts so you can explore the people behind on-chain activity.",
+        "icon": "/stakeholders/warpcast.svg"
+    },
+    {
+        "header": "Nexus Technologies NYC",
+        "uri": "https://n3xus.nyc",
+        "description": "The team building Oracle. Focused on fast, user-friendly crypto apps.",
+        "type": "creator",
+        "icon": "/stakeholders/nexus.svg"
+    },
+    {
+        "header": "Sim.io (Sim IDX)",
+        "uri": "https://sim.io",
+        "description": "Reads blockchain activity quickly and reliably, helping Oracle show recent trades and updates in the feed.",
+        "type": "data",
+        "icon": "/stakeholders/sim-io.svg"
+    },
+    {
+        "header": "Dune",
+        "uri": "https://dune.com",
+        "description": "Dashboards and analytics used for research and market context.",
+        "type": "data",
+        "icon": "/stakeholders/dune.svg"
+    },
+    {
+        "header": "Balancer",
+        "uri": "https://balancer.fi/",
+        "description": "A decentralized exchange (DEX). Public swaps from Balancer appear in Oracle's feed.",
+        "type": "protocol",
+        "icon": "/stakeholders/balancer.svg"
+    },
+    {
+        "header": "Uniswap",
+        "uri": "https://uniswap.org/",
+        "description": "One of the largest DEXs. Oracle shows public Uniswap trades and lets you mirror them with a pre-filled route.",
+        "type": "protocol",
+        "icon": "/stakeholders/uniswap.svg"
+    },
+    {
+        "header": "PancakeSwap",
+        "uri": "https://pancakeswap.finance/",
+        "description": "Popular DEX on multiple networks. Public swaps are surfaced in the feed with links for quick review.",
+        "type": "protocol",
+        "icon": "/stakeholders/pancake.svg"
+    }
+]

@@ -11,7 +11,7 @@ const Header = () => {
       </div>
       <div className="header__side-divider" />
 
-      <HeaderLogo />
+      <HeaderLogo isRedirect />
       <div className="divider">
         <div />
       </div>

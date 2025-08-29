@@ -68,8 +68,48 @@ import ModalChevDown from "./ModalChevDown";
 import ChartLine from "./ChartLine";
 import ChartCandle from "./ChartCandle";
 import ArrowChartControls from "./ArrowChartControls";
+import BuySwitch from "./BuySwitch";
+import BuySwitchLg from "./BuySwitchLg";
+import BuyChev from "./BuyChev";
+import DocAdditionalProofOfIncome from "./DocAdditionalProofOfIncome";
+import DocAddress from "./DocAddress";
+import DocDriversLicence from "./DocDriversLicence";
+import DocIncome from "./DocIncome";
+import DocSelfie from "./DocSelfie";
+import DocResidence from "./DocResidence";
+import DocPassport from "./DocPassport";
+import DocNationalId from "./DocNationalId";
+import CountryIsAllowed from "./CountryIsAllowed";
+import CountryNotAllowed from "./CountryNotAllowed";
+import BuyOracleRoute from "./BuyOracleRoute";
+import BuyDirect from "./BuyDirect";
+import BuyWallet from "./BuyWallet";
+import BuyCard from "./BuyCard";
+import ErrorBack from "./ErrorBack";
+import ErrorRegions from "./ErrorRegions";
+import FooterSend from "./FooterSend";
 
 export {
+  FooterSend,
+  ErrorBack,
+  ErrorRegions,
+  BuyWallet,
+  BuyCard,
+  BuyOracleRoute,
+  BuyDirect,
+  CountryIsAllowed,
+  CountryNotAllowed,
+  DocAdditionalProofOfIncome,
+  DocAddress,
+  DocDriversLicence,
+  DocIncome,
+  DocSelfie,
+  DocResidence,
+  DocPassport,
+  DocNationalId,
+  BuyChev,
+  BuySwitchLg,
+  BuySwitch,
   ArrowChartControls,
   ChartLine,
   ChartCandle,

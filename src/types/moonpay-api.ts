@@ -25,6 +25,11 @@ export interface MoonpayBaseCurrency {
   minBuyAmount: number;
   maxBuyAmount: number;
   isSellSupported: boolean;
+  icon: string;
+  decimals: number | null;
+  maxAmount: number;
+  minAmount: number;
+  isUtxoCompatible: boolean;
 }
 
 export interface MoonpayFiatCurrency extends MoonpayBaseCurrency {
@@ -77,6 +82,7 @@ export interface MoonpayCountry {
   isBuyAllowed: boolean;
   isSellAllowed: boolean;
   supportedDocuments: MoonpaySupportedDocument[];
+  suggestedDocument: MoonpaySupportedDocument;
 }
 
 export type MoonpayCountriesResponse = MoonpayCountry[];

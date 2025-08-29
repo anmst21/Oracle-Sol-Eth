@@ -1,3 +1,5 @@
+import { DexEntry } from "./feed-api-response";
+
 export type RelayTokenMeta = {
   chainId?: number | undefined;
   address?: string | undefined;
@@ -13,3 +15,14 @@ export type RelayTokenMeta = {
       }
     | undefined;
 };
+
+export type TokenKey = `${number}:${string}`;
+
+export type EnrichedDexEntry = DexEntry & {
+  tokenFromKey?: TokenKey;
+  tokenToKey?: TokenKey;
+  tokenFromCurrency?: RelayTokenMeta;
+  tokenToCurrency?: RelayTokenMeta;
+};
+
+export type MetaByKey = Record<TokenKey, RelayTokenMeta>;
