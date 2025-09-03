@@ -52,7 +52,8 @@
         "header": "Warpcast",
         "uri": "https://warpcast.com",
         "description": "The main Farcaster app. Oracle links to profiles and posts so you can explore the people behind on-chain activity.",
-        "icon": "/stakeholders/warpcast.svg"
+        "icon": "/stakeholders/warpcast.svg",
+        "type": "social"
     },
     {
         "header": "Nexus Technologies NYC",

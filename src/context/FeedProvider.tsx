@@ -16,6 +16,8 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { usePrivy } from "@privy-io/react-auth";
 
 export interface FeedContextType {
   featuredFeed: EnrichedDexEntry[] | null;
@@ -31,6 +33,8 @@ export interface FeedContextType {
   ) => Promise<void>;
   metaByKey: MetaByKey;
   cursor: string | null;
+  setIsFollowing: React.Dispatch<React.SetStateAction<boolean>>;
+  isFollowing: boolean;
 }
 
 const FeedContext = createContext<FeedContextType | undefined>(undefined);
@@ -47,17 +51,36 @@ export interface FeedProviderProps {
 //   metaByKey: MetaByKey;
 
 export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
+  const [isFollowing, setIsFollowing] = useState(false);
+
   const [featuredFeed, setFeaturedFeed] = useState<EnrichedDexEntry[] | null>(
     null
   );
   const [uniqueKeys, setUniqueKeys] = useState<TokenKey[] | null>(null);
   const [metaByKey, setMetaByKey] = useState<MetaByKey>({});
   const [cursor, setCursor] = useState<string | null>(null);
-
   const [isLoadingFeaturedFeed, setIsLoadingFeaturedFeed] = useState(false);
   const [isLoadingMoreFeaturedFeed, setIsLoadingMoreFeaturedFeed] =
     useState(false);
   const [isErrorFeaturedFeed, setIsErrorFeaturedFeed] = useState(false);
+
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  const { user } = usePrivy();
+
+  useEffect(() => {
+    if (pathname === "/feed") {
+      if (!isFollowing) {
+        replace("/feed/featured");
+      } else {
+        replace("/feed/following");
+      }
+    }
+    if (pathname === "/feed/following" && !user?.farcaster) {
+      replace("/feed/featured");
+      setIsFollowing(false);
+    }
+  }, [pathname, isFollowing, replace, user?.farcaster]);
 
   const loadFeaturedFeed = useCallback(
     async (opts?: { cursor?: string }) => {
@@ -123,6 +146,8 @@ export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
         loadFeaturedFeed,
         metaByKey,
         cursor,
+        isFollowing,
+        setIsFollowing,
       }}
     >
       {children}

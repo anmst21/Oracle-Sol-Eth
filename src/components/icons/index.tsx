@@ -88,8 +88,22 @@ import BuyCard from "./BuyCard";
 import ErrorBack from "./ErrorBack";
 import ErrorRegions from "./ErrorRegions";
 import FooterSend from "./FooterSend";
+import FarcasterLogo from "./FarcasterLogo";
+import PfpPlaceholder from "./PfpPlaceholder";
+import FeedUnlink from "./FeedUnlink";
+import FeedProfile from "./FeedProfile";
+import FeedCalendar from "./FeedCalendar";
+import ExplorerFeed from "./ExplorerFeed";
+import FeedChange from "./FeedChange";
 
 export {
+  FeedChange,
+  ExplorerFeed,
+  FeedCalendar,
+  FeedProfile,
+  FeedUnlink,
+  PfpPlaceholder,
+  FarcasterLogo,
   FooterSend,
   ErrorBack,
   ErrorRegions,

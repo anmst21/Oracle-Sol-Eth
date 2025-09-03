@@ -1,9 +1,4 @@
-"use client";
-
-import { fetchFeedEnriched } from "@/actions/fetch-feed-enriched";
-import { useFeed } from "@/context/FeedProvider";
-import { usePrivy } from "@privy-io/react-auth";
-import { useEffect } from "react";
+// "use client";
 
 //  signIn: () => void;
 //     signOut: () => void;
@@ -21,20 +16,20 @@ import { useEffect } from "react";
 //     validSignature: boolean;
 
 export default function Page() {
-  const {
-    loadFeaturedFeed,
-    featuredFeed,
-    cursor,
-    metaByKey,
-    isLoadingFeaturedFeed,
-    isLoadingMoreFeaturedFeed,
-  } = useFeed();
+  // const {
+  //   loadFeaturedFeed,
+  //   featuredFeed,
+  //   cursor,
+  //   metaByKey,
+  //   isLoadingFeaturedFeed,
+  //   isLoadingMoreFeaturedFeed,
+  // } = useFeed();
 
-  useEffect(() => {
-    if (!featuredFeed) loadFeaturedFeed();
-  }, [featuredFeed]);
+  // useEffect(() => {
+  //   if (!featuredFeed) loadFeaturedFeed();
+  // }, [featuredFeed]);
 
-  console.log({ metaByKey, featuredFeed });
+  // console.log({ metaByKey, featuredFeed });
 
   // const { signIn, url, data, signOut, connect, isConnected, reconnect } =
   //   useSignIn({
@@ -59,15 +54,16 @@ export default function Page() {
   // });
 
   // const feed = await fetchFeedEnriched();
-  return (
-    <div className="feed-page">
-      {/* {user?.farcaster?.fid != null ? (
-        <button onClick={() => unlinkFarcaster(user.farcaster!.fid!)}>
-          Unlink your Farcaster
-        </button>
-      ) : (
-        <button onClick={linkFarcaster}>Link your Farcaster</button>
-      )} */}
-    </div>
-  );
+  return <div className="feed-page"></div>;
+  //  (
+  //   <div className="feed-page">
+  //     {/* {user?.farcaster?.fid != null ? (
+  //       <button onClick={() => unlinkFarcaster(user.farcaster!.fid!)}>
+  //         Unlink your Farcaster
+  //       </button>
+  //     ) : (
+  //       <button onClick={linkFarcaster}>Link your Farcaster</button>
+  //     )} */}
+  //   </div>
+  // );
 }
