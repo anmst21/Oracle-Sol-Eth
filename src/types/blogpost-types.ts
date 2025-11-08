@@ -16,3 +16,29 @@ export type PrivacyPolicy = {
   subheader: PortableTextBlock[];
   content: PortableTextBlock[];
 };
+
+export type Category = {
+  _id: string;
+  title: string;
+  slug: string;
+  textColor: {
+    r: number;
+    g: number;
+    b: number;
+  };
+};
+
+export type Blogpost = {
+  featured: boolean;
+  _id: string;
+  _createdAt: Date;
+  name: string;
+  slug: string;
+  image: string;
+  subheader: string;
+  url: string;
+  alt: string;
+  content: PortableTextBlock[];
+  author: Author;
+  category: Category;
+};

@@ -95,8 +95,10 @@ import FeedProfile from "./FeedProfile";
 import FeedCalendar from "./FeedCalendar";
 import ExplorerFeed from "./ExplorerFeed";
 import FeedChange from "./FeedChange";
+import BlogSubscribe from "./BlogSubscribe";
 
 export {
+  BlogSubscribe,
   FeedChange,
   ExplorerFeed,
   FeedCalendar,
