@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { getBlogposts } from "../../../sanity/sanity-utils";
 import BlogSubscribe from "@/components/blog/blog-subscribe";
+import BlogHeader from "@/components/blog/blog-header";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -13,7 +14,7 @@ export default async function Page({
 }: {
   searchParams?: { category: string };
 }) {
-  const { blogposts } = await getBlogposts(searchParams?.category);
+  const { blogposts, categories } = await getBlogposts(searchParams?.category);
 
   if (blogposts.length === 0) {
     return;
@@ -24,6 +25,9 @@ export default async function Page({
       {/* {blogposts.map((blogpost) => {
         return blogpost.name;
       })} */}
+      <div className="blog-page__main">
+        <BlogHeader categories={categories} />
+      </div>
       <BlogSubscribe />
     </div>
   );

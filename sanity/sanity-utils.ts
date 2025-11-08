@@ -1,4 +1,4 @@
-import { Blogpost, PrivacyPolicy } from "@/types/blogpost-types";
+import { Blogpost, Category, PrivacyPolicy } from "@/types/blogpost-types";
 import { createClient, groq } from "next-sanity";
 
 const config = {
@@ -32,6 +32,16 @@ export async function getPrivacy(): Promise<PrivacyPolicy> {
 
 export async function getBlogposts(category?: string) {
   const client = createClient(config);
+
+  const categoriesQuery = groq`
+    *[_type == "category"]{
+      _id,
+      title,
+      "slug": slug.current,
+    }
+  `;
+
+  const categories = await client.fetch<Category[]>(categoriesQuery);
 
   const query = `{
   _id,
@@ -71,5 +81,5 @@ export async function getBlogposts(category?: string) {
     : client.fetch<Blogpost[]>(blogpostQuery);
 
   const [blogposts] = await Promise.all([decider]);
-  return { blogposts };
+  return { blogposts, categories };
 }

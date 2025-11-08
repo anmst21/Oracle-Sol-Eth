@@ -1,3 +1,63 @@
+.blog-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 12px;
+
+    &__btn {
+        position: relative;
+        display: flex;
+
+        font-family: var(--font-funnel-display);
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        color: rgba(217, 241, 233, 0.80);
+        transition: all .2s ease-in;
+        width: 102px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            color: white;
+        }
+
+        &--active {
+            color: #AEE900 !important;
+        }
+
+        .underline {
+            z-index: 1;
+            border-radius: 6px;
+        }
+    }
+
+    .blog-mini-divider,
+    .blog-divider {
+
+        height: 1px;
+        background-color: #889697;
+    }
+
+    .blog-mini-divider {
+        width: 5.5px;
+    }
+
+    .blog-divider {
+        display: flex;
+        flex: 1;
+    }
+
+}
+
+
+
+
+
+
+
 .blog-subscribe {
 
     display: flex;

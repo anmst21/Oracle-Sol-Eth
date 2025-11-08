@@ -1,4 +1,16 @@
 .blog-page {
     display: flex;
     gap: 48px;
+    width: 100%;
+    padding: 0 118px;
+
+
+
+
+    &__main {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        flex: 1;
+    }
 }
