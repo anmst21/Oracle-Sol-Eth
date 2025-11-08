@@ -1,0 +1,77 @@
+/* src/styles/_mq.scss */
+/* Desktop-first media query helpers
+   Usage: write default (desktop) styles first, then progressively "down()" */
+
+$breakpoints: (
+    xl: 1440px,
+    lg: 1280px,
+    md: 1024px,
+    sm: 768px,
+    xs: 480px
+);
+
+/* Get a breakpoint value */
+@function bp($key) {
+    @return map-get($breakpoints, $key);
+}
+
+/* Down from a breakpoint (<= bp - 1px) */
+@mixin down($key) {
+    $val: bp($key);
+
+    @if $val ==null {
+        @error "Unknown breakpoint `#{$key}`. Available: #{map-keys($breakpoints)}";
+    }
+
+    @media (max-width: calc(#{$val} - 1px)) {
+        @content;
+    }
+}
+
+/* Up from a breakpoint (>= bp) — rarely used in desktop-first but handy */
+@mixin up($key) {
+    $val: bp($key);
+
+    @if $val ==null {
+        @error "Unknown breakpoint `#{$key}`. Available: #{map-keys($breakpoints)}";
+    }
+
+    @media (min-width: #{$val}) {
+        @content;
+    }
+}
+
+/* Between two breakpoints: from >= $from down to < $to */
+@mixin between($from, $to) {
+    $fromVal: bp($from);
+    $toVal: bp($to);
+
+    @if $fromVal ==null or $toVal ==null {
+        @error "Unknown breakpoint(s). Available: #{map-keys($breakpoints)}";
+    }
+
+    @media (min-width: #{$fromVal}) and (max-width: calc(#{$toVal} - 1px)) {
+        @content;
+    }
+}
+
+/* Helpers for common prefs */
+@mixin retina {
+
+    @media (-webkit-min-device-pixel-ratio: 2),
+    (min-resolution: 192dpi) {
+        @content;
+    }
+}
+
+@mixin prefers-reduced-motion {
+    @media (prefers-reduced-motion: reduce) {
+        @content;
+    }
+}
+
+@mixin hover-capable {
+    @media (hover: hover) and (pointer: fine) {
+        @content;
+    }
+}

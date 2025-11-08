@@ -1,5 +1,10 @@
 // import type { Metadata } from "next";
-import { Fira_Code, Funnel_Display, Handjet } from "next/font/google";
+import {
+  Fira_Code,
+  Funnel_Display,
+  Handjet,
+  Funnel_Sans,
+} from "next/font/google";
 import PrivyProvider from "../context/PrivyProvider";
 import "../styles/index.scss";
 import { CommunityCoinsProvider } from "@/context/FarcasterCommunityTokensProvider";
@@ -32,6 +37,10 @@ const funnelDisplay = Funnel_Display({
   subsets: ["latin"],
   variable: "--font-funnel-display",
 });
+const funnelSans = Funnel_Sans({
+  subsets: ["latin"],
+  variable: "--font-funnel-sans",
+});
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -51,7 +60,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${firaCode.variable} ${handjet.variable} ${funnelDisplay.variable}`}
+        className={`${firaCode.variable} ${handjet.variable} ${funnelDisplay.variable} ${funnelSans.variable}`}
       >
         <FaviconAnimator />
 

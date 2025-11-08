@@ -1,4 +1,5 @@
 @import "./globals.scss";
+@import "./media.scss";
 
 
 @import "../components/token-modal/index.scss";
@@ -11,6 +12,7 @@
 @import "../components/history/index.scss";
 @import "../components/buy/index.scss";
 @import "../components/buy/modal.scss";
+@import "../app/admin/[[...index]]/index.scss";
 @import "../components/header/index.scss";
 @import "../components/footer/index.scss";
 @import "../components/skeleton/index.scss";
@@ -22,6 +24,9 @@
 @import "../components/deep-link/index.scss";
 @import "../components/slippage-modal/index.scss";
 @import "../app/(exchange)/index.scss";
+@import "../app/blog/[post]/index.scss";
+@import "../app/privacy/index.scss";
+@import "../app/blog/index.scss";
 @import "../app/(exchange)/buy/index.scss";
 @import "../app/index.scss";
 @import "./privy.scss";
