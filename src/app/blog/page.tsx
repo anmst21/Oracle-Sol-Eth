@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { getBlogposts } from "../../../sanity/sanity-utils";
 import BlogSubscribe from "@/components/blog/blog-subscribe";
 import BlogHeader from "@/components/blog/blog-header";
+import BlogCard from "@/components/blog/blog-card";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -20,13 +21,16 @@ export default async function Page({
     return;
   }
 
+  // console.log("blogposts", date, month, year);
   return (
     <div className="blog-page">
-      {/* {blogposts.map((blogpost) => {
-        return blogpost.name;
-      })} */}
       <div className="blog-page__main">
         <BlogHeader categories={categories} />
+        <div className="blog-page__list">
+          {blogposts.map((blogpost, i) => {
+            return <BlogCard key={i} blogpost={blogpost} index={i} />;
+          })}
+        </div>
       </div>
       <BlogSubscribe />
     </div>

@@ -96,8 +96,22 @@ import FeedCalendar from "./FeedCalendar";
 import ExplorerFeed from "./ExplorerFeed";
 import FeedChange from "./FeedChange";
 import BlogSubscribe from "./BlogSubscribe";
+import LinkBlog from "./LinkBlog";
+import BlogX from "./BlogX";
+import BlogFarcaster from "./BlogFarcaster";
+import BlogLinkedIn from "./BlogLinkedIn";
+import BlogShare from "./BlogShare";
+import BlogBack from "./BlogBack";
+import BlogDate from "./BlogDate";
 
 export {
+  BlogDate,
+  BlogBack,
+  BlogShare,
+  BlogX,
+  BlogFarcaster,
+  BlogLinkedIn,
+  LinkBlog,
   BlogSubscribe,
   FeedChange,
   ExplorerFeed,

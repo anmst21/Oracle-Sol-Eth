@@ -1,36 +1,19 @@
 "use client";
 
+import { useCategory } from "@/hooks/useCategory";
 import { Category } from "@/types/blogpost-types";
 import classNames from "classnames";
 import { motion } from "motion/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback } from "react";
+import React from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   categories: Category[];
 };
 
 const BlogHeader = ({ categories }: Props) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const activeCategory = searchParams.get("category");
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams]
-  );
-
-  const onClick = (slug: string) => {
-    const newPath = "/blog" + "?" + createQueryString("category", slug);
-    router.push(newPath);
-    router.refresh();
-  };
-
+  const { activeCategory, setCategory } = useCategory();
+  const { push } = useRouter();
   //   <button
   //     className={classNames({
   //       "slippage-modal__button--active": !isFollowing,
@@ -45,7 +28,7 @@ const BlogHeader = ({ categories }: Props) => {
     <div className="blog-header">
       <div className="blog-mini-divider" />
       <button
-        onClick={() => router.push("/blog")}
+        onClick={() => push("/blog")}
         className={classNames("blog-header__btn", {
           "blog-header__btn--active": !activeCategory,
         })}
@@ -58,7 +41,7 @@ const BlogHeader = ({ categories }: Props) => {
       {categories.map((category, i) => {
         return (
           <button
-            onClick={() => onClick(category.slug)}
+            onClick={() => setCategory(category.slug)}
             key={i}
             className={classNames("blog-header__btn", {
               "blog-header__btn--active": activeCategory === category.slug,

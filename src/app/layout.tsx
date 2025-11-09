@@ -17,7 +17,7 @@ import { SlippageProvider } from "@/context/SlippageContext";
 import Header from "@/components/header";
 import { RelayKitProviderWrapper as RelayKitProvider } from "@/context/RelayKitProvider";
 import QueryClientProvider from "@/context/QueryClientProvider";
-import HeaderFooter from "@/components/footer/header-footer";
+// import HeaderFooter from "@/components/footer/header-footer";
 import FaviconAnimator from "@/components/favicon-animatior";
 import OnRampProvider from "@/context/OnRampProvider";
 import FeedProvider from "@/context/FeedProvider";
@@ -79,7 +79,7 @@ export default async function RootLayout({
                                 <Header />
                                 <div className="main">{children}</div>
                                 <Footer />
-                                <HeaderFooter />
+                                {/* <HeaderFooter /> */}
                               </SlippageProvider>
                             </FeedProvider>
                           </OnRampProvider>

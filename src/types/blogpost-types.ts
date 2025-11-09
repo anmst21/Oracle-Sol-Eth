@@ -6,6 +6,7 @@ export type Author = {
   image: string;
   alt: string;
   resourceUri: string;
+  url: string;
 };
 
 export type PrivacyPolicy = {
@@ -41,4 +42,5 @@ export type Blogpost = {
   content: PortableTextBlock[];
   author: Author;
   category: Category;
+  relatedPosts: Blogpost[];
 };

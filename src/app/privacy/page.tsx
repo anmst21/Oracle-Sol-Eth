@@ -21,7 +21,7 @@ export default async function Privacy() {
 
   // console.log("privacy", subheader);
   return (
-    <div className="privacy-page">
+    <div className="privacy-page privacy-page-container">
       <div className="privacy-page__content">
         <h1>{title.split("—")[0]}</h1>
         <div className="privacy-page__author">
