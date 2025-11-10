@@ -103,8 +103,10 @@ import BlogLinkedIn from "./BlogLinkedIn";
 import BlogShare from "./BlogShare";
 import BlogBack from "./BlogBack";
 import BlogDate from "./BlogDate";
+import HomeSectionCross from "./HomeSectionCross";
 
 export {
+  HomeSectionCross,
   BlogDate,
   BlogBack,
   BlogShare,
