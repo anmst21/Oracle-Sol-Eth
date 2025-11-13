@@ -24,6 +24,7 @@ import FeedProvider from "@/context/FeedProvider";
 import Footer from "@/components/footer";
 import { getHeaderModal } from "../../sanity/sanity-utils";
 import MenuBar from "@/components/menu";
+import CookieConsentBanner from "@/components/cookie-consent";
 // import FarcasterAuthProvider from "@/context/FarcasterAuthProvider";
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
@@ -83,11 +84,14 @@ export default async function RootLayout({
                                   blogposts={blogposts}
                                 />
                                 <div className="main">{children}</div>
+                                <CookieConsentBanner />
+
                                 <MenuBar
                                   categories={categories}
                                   blogposts={blogposts}
                                 />
                                 <Footer />
+
                                 {/* <HeaderFooter /> */}
                               </SlippageProvider>
                             </FeedProvider>
