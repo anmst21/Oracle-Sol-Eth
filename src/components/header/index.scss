@@ -6,6 +6,14 @@
     align-items: center;
     position: relative;
 
+
+    @include down(md) {
+        display: none;
+    }
+
+
+
+
     // &:before {
     //     position: absolute;
     //     top: calc(100% + 8px);
@@ -72,6 +80,30 @@
 }
 
 
+.confirmation__buttons__cta {
+    //  color: #0F0E1B;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 4px 10px;
+    height: 28px;
+    border-radius: 5px;
+
+    .btn-polygons,
+    svg {
+        height: 28px !important;
+        width: 208px !important;
+    }
+
+    .btn-polygons {
+        left: auto;
+    }
+
+    /* 125% */
+}
+
+
 .divider-long {
     display: flex;
     flex: 1;
@@ -79,8 +111,7 @@
     background-color: #889697;
 }
 
-.header-navigation__item,
-.header-theme {
+.header-navigation__item {
     display: flex;
     align-items: center;
     padding: 4px 6px 4px 0px;
@@ -88,9 +119,13 @@
     transition: color .2s ease-in-out;
     position: relative;
 
+    &__wrapper {
+        display: flex;
+        cursor: pointer;
+    }
 
-
-    &:hover {
+    &:hover,
+    &--open {
         color: #D9F1E9;
     }
 
@@ -113,7 +148,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-
+    position: relative;
 
     margin: 0 4px;
 }

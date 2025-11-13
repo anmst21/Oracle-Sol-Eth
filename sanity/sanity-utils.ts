@@ -11,7 +11,13 @@ const categoriesQuery = groq`
     *[_type == "category"]{
       _id,
       title,
+      description,
       "slug": slug.current,
+        textColor {
+          r,
+          g,
+          b
+        }
     }
   `;
 
@@ -41,6 +47,17 @@ const listBlogpostQuery = `{
     "alt": image.alt,
   },
 }`;
+
+export async function getHeaderModal() {
+  const client = createClient(config);
+
+  const blogpostQuery = groq`
+          *[_type == "blogposts" && featured == true] | order(_createdAt asc) ${listBlogpostQuery}`;
+  const categories = await client.fetch<Category[]>(categoriesQuery);
+  const blogposts = await client.fetch<Blogpost[]>(blogpostQuery);
+
+  return { categories, blogposts };
+}
 
 export async function getCategories(): Promise<Category[]> {
   const client = createClient(config);

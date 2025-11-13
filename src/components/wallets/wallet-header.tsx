@@ -64,39 +64,6 @@ const WalletHeader = ({
       ) : (
         <>
           <button
-            onClick={() => (chainCallback(), closeIfOpen())}
-            className="wallet-header__balance"
-          >
-            <div
-              key={activeWallet?.address}
-              className="wallet-header__balance__chain"
-            >
-              <HexChain
-                width={20}
-                uri={
-                  activeWallet?.type === "ethereum"
-                    ? getIconUri(Number(activeWallet.chainId.split(":")[1]))
-                    : getIconUri(792703809)
-                }
-              />
-            </div>
-
-            <div
-              className={classNames("wallet-header__balance__number", {
-                "button--active": isOpenChains,
-              })}
-            >
-              <AnimatePresence mode="popLayout">
-                <motion.span {...slidingTextAnimation} key={activeBalance}>
-                  <GreenDot int={balance[0]} dec={balance[1]} />
-                </motion.span>
-              </AnimatePresence>
-            </div>
-          </button>
-          <div className="divider">
-            <div />
-          </div>
-          <button
             onClick={() => (callback(), closeIfOpenChains())}
             className="wallet-header__address"
           >
@@ -129,6 +96,38 @@ const WalletHeader = ({
                   {activeWallet?.address
                     ? truncateAddress(activeWallet?.address)
                     : "0xXX...XXXX"}
+                </motion.span>
+              </AnimatePresence>
+            </div>
+          </button>
+          <div className="divider">
+            <div />
+          </div>
+          <button
+            onClick={() => (chainCallback(), closeIfOpen())}
+            className="wallet-header__balance"
+          >
+            <div
+              key={activeWallet?.address}
+              className="wallet-header__balance__chain"
+            >
+              <HexChain
+                width={20}
+                uri={
+                  activeWallet?.type === "ethereum"
+                    ? getIconUri(Number(activeWallet.chainId.split(":")[1]))
+                    : getIconUri(792703809)
+                }
+              />
+            </div>
+            <div
+              className={classNames("wallet-header__balance__number", {
+                "button--active": isOpenChains,
+              })}
+            >
+              <AnimatePresence mode="popLayout">
+                <motion.span {...slidingTextAnimation} key={activeBalance}>
+                  <GreenDot int={balance[0]} dec={balance[1]} />
                 </motion.span>
               </AnimatePresence>
             </div>

@@ -104,8 +104,48 @@ import BlogShare from "./BlogShare";
 import BlogBack from "./BlogBack";
 import BlogDate from "./BlogDate";
 import HomeSectionCross from "./HomeSectionCross";
+import NavigationBlog from "./NavigationBlog";
+import NavigationPrivacy from "./NavigationPrivacy";
+import NavigationContacts from "./NavigationContacts";
+import NavigationEthereum from "./NavigationEthereum";
+import NavigationFeatured from "./NavigationFeatured";
+import NavigationFollowing from "./NavigationFollowing";
+import NavigationSolana from "./NavigationSolana";
+import NavigationCommunity from "./NavigationCommunity";
+import DropdownGuides from "./DropdownGuides";
+import DropdownNews from "./DropdownNews";
+import DropdownVision from "./DropdownVision";
+import DropdownCheck from "./DropdownCheck";
+import MenuLogoDefault from "./MenuLogoDefault";
+import MenuHome from "./MenuHome";
+import SwapIconMobile from "./SwapIconMobile";
+import CoinsIconMobile from "./CoinsIconMobile";
+import FeedIconMobile from "./FeedIconMobile";
+import PrivacyIconMobile from "./PrivacyIconMobile";
+import ContactsIconMobile from "./ContactsIconMobile";
+import BlogIconMobile from "./BlogIconMobile";
 
 export {
+  FeedIconMobile,
+  SwapIconMobile,
+  CoinsIconMobile,
+  PrivacyIconMobile,
+  ContactsIconMobile,
+  BlogIconMobile,
+  MenuHome,
+  MenuLogoDefault,
+  DropdownCheck,
+  DropdownGuides,
+  DropdownNews,
+  DropdownVision,
+  NavigationEthereum,
+  NavigationCommunity,
+  NavigationFeatured,
+  NavigationFollowing,
+  NavigationSolana,
+  NavigationContacts,
+  NavigationBlog,
+  NavigationPrivacy,
   HomeSectionCross,
   BlogDate,
   BlogBack,

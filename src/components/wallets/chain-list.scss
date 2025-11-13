@@ -13,6 +13,12 @@
     overflow: scroll;
     z-index: 15;
 
+    .modal__header {
+        position: sticky;
+        top: 0;
+        background: #131515;
+        z-index: 10;
+    }
 
     &::-webkit-scrollbar {
         width: 0;
@@ -29,7 +35,7 @@
 .chain-item {
     border-radius: 8px;
     background: rgba(136, 150, 151, 0.05);
-    backdrop-filter: blur(75px);
+    // backdrop-filter: blur(75px);
     padding: 4px;
     gap: 4px;
     display: flex;

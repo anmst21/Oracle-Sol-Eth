@@ -6,6 +6,8 @@ const category = {
   fields: [
     { name: "title", title: "Category", type: "string" },
     { name: "slug", title: "Slug", type: "slug", options: { source: "title" } },
+    { name: "description", title: "Description", type: "string" },
+
     {
       name: "textColor",
       title: "Text Color",

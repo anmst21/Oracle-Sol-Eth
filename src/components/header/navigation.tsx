@@ -1,60 +1,30 @@
 "use client";
 
 import React from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { SwapIcon, SwapBuy, HeaderFeed } from "../icons";
-import classNames from "classnames";
 import { motion } from "motion/react";
+import { Blogpost, Category } from "@/types/blogpost-types";
+import NavigationItem from "./navigation-item";
+import { useRouteOptions } from "@/hooks/useRouteOptions";
 
-const Navigation = () => {
-  const pathname = usePathname();
-  const router = useRouter();
+const Navigation = ({
+  isHomeRoute,
+  categories,
+  blogposts,
+}: {
+  blogposts: Blogpost[];
+  categories: Category[];
+  isHomeRoute: boolean;
+}) => {
+  const { navigationItemsMain, navigationItemsHome } = useRouteOptions({
+    categories,
+    blogposts,
+  });
 
-  const navigationItem = [
-    {
-      title: "Swap",
-      slug: "/swap",
-      icon: <SwapIcon />,
-      active:
-        pathname.includes("/swap") ||
-        pathname.includes("/buy") ||
-        pathname.includes("/chart") ||
-        pathname.includes("/history"),
-    },
-    {
-      title: "Feed",
-      slug: "/feed",
-      icon: <HeaderFeed />,
-      active: pathname.includes("/feed") || pathname.includes("/user"),
-    },
-    {
-      title: "Coins",
-      slug: "/coins/community",
-      icon: <SwapBuy />,
-      active: pathname.includes("/coins"),
-    },
-  ];
   return (
     <motion.div className="header-navigation">
-      {navigationItem.map((item) => (
-        <button
-          onClick={() => router.push(item.slug)}
-          key={item.slug}
-          className={classNames("header-navigation__item", {
-            "header-navigation__item--active": item.active,
-          })}
-        >
-          {item.icon}
-          <span>{item.title}</span>
-
-          {item.active ? (
-            <motion.div
-              layoutId="underline-header"
-              className="underline-header"
-            />
-          ) : null}
-        </button>
-      ))}
+      {(isHomeRoute ? navigationItemsHome : navigationItemsMain).map((item) => {
+        return <NavigationItem key={item.slug} item={item} />;
+      })}
     </motion.div>
   );
 };

@@ -64,6 +64,18 @@ const ChainList = ({
 
   return (
     <div className="chain-list">
+      <div className="modal__header">
+        <div className="modal__header__inner">
+          <span>Chains</span>
+          <button
+            onClick={() => closeIfOpenChains()}
+            className="chain-sidebar__input__abandon"
+          >
+            <InputCross />
+          </button>
+        </div>
+      </div>
+
       <div className="chain-sidebar__contianer">
         <label
           style={{

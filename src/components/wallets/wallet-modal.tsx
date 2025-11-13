@@ -6,7 +6,7 @@ import {
   ConnectedWallet,
 } from "@privy-io/react-auth";
 import WalletItem from "./wallet-item";
-import { LogOutDoor, PensilSmall, PrivyLogo } from "../icons";
+import { InputCross, LogOutDoor, PensilSmall, PrivyLogo } from "../icons";
 import React, { useCallback } from "react";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { PastedWallet, SwapWallet } from "../swap/types";
@@ -155,6 +155,19 @@ export default function Wallets({
     <>
       {ready && (
         <div className="wallets">
+          {!swapWindow && !isBuy && (
+            <div className="modal__header">
+              <div className="modal__header__inner">
+                <span>Wallets</span>
+                <button
+                  onClick={() => linkCallback && linkCallback()}
+                  className="chain-sidebar__input__abandon"
+                >
+                  <InputCross />
+                </button>
+              </div>
+            </div>
+          )}
           {/** render in order based on userChain */}
           {userChain === "solana" ? (
             <>
@@ -169,9 +182,7 @@ export default function Wallets({
               {PastedSection}
             </>
           )}
-
           {/** always show the connect/login button */}
-
           <div className="wallets__container">
             {isBuy && authenticated && (
               <button
