@@ -4,50 +4,34 @@ import { InputCross } from "../icons";
 import { AnimatePresence, motion } from "motion/react";
 import classNames from "classnames";
 import Link from "next/link";
-import { ProgressData } from "@reservoir0x/relay-sdk";
+// import { ProgressData } from "@reservoir0x/relay-sdk";
 
-type FromTokenMeta = {
-  ticker: string | undefined;
-  address: string | undefined;
-  chainId: number | undefined;
-};
-
-type Props = {
-  error: string | null;
-  fromTokenMeta: FromTokenMeta;
-  isInsuficientBalance: boolean;
-  progress: ProgressData | null;
-};
+type NotificationType = "error" | "success" | "reminder";
 
 type Notification = {
   id: string;
   message: string;
-  type: "error" | "success" | "reminder";
+  type: NotificationType;
   href?: string;
   ticker?: string;
+  time: number;
 };
 
-const time = 5;
+type Props = {
+  message: string;
+  type: NotificationType | null;
+  time: number;
+};
 
-const DynamicNotification = ({ error, progress }: Props) => {
+// const time = 5;
+
+const DynamicNotification = ({ message, type, time }: Props) => {
   const [toasts, setToasts] = useState<Notification[]>([]);
 
-  const pushToast = (message: string | null, progress: ProgressData | null) => {
+  const pushToast = (message: string, type: NotificationType, time: number) => {
     const id = Date.now().toString();
-    if (message?.includes("'send'")) {
-      setToasts((prev) => [{ id, message, type: "reminder" }, ...prev]);
-    } else if (progress && !progress.currentStep) {
-      setToasts((prev) => [
-        {
-          id,
-          message: "Successfully fullfilled you swap order!",
-          type: "success",
-        },
-        ...prev,
-      ]);
-    } else if (message) {
-      setToasts((prev) => [{ id, message, type: "error" }, ...prev]);
-    }
+
+    setToasts((prev) => [{ id, message, type, time }, ...prev]);
 
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -55,10 +39,10 @@ const DynamicNotification = ({ error, progress }: Props) => {
   };
 
   useEffect(() => {
-    if (error || progress) {
-      pushToast(error, progress);
+    if (message && type && time) {
+      pushToast(message, type, time);
     }
-  }, [error, progress]);
+  }, [message, type, time]);
 
   return (
     <AnimatePresence mode="sync">
@@ -82,7 +66,7 @@ const DynamicNotification = ({ error, progress }: Props) => {
                   className="toast-header__status__progress"
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
-                  transition={{ duration: time, ease: "linear" }}
+                  transition={{ duration: t.time, ease: "linear" }}
                 />
                 <div className="toast-header__status__grey" />
               </div>
@@ -98,8 +82,8 @@ const DynamicNotification = ({ error, progress }: Props) => {
               {t.type === "error"
                 ? "Error"
                 : t.type === "reminder"
-                ? "Reminder"
-                : "Success"}
+                  ? "Reminder"
+                  : "Success"}
             </div>
             <div className="toast__text">
               <span>

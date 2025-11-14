@@ -17,7 +17,7 @@ import classNames from "classnames";
 
 import { AnimatePresence, motion } from "motion/react";
 
-const LoaderIcon = () => {
+export const LoaderIcon = () => {
   return (
     <motion.div
       animate={{ rotate: 360 }}
@@ -91,8 +91,8 @@ const BuyBtn = ({
     label = error.includes("Invalid address")
       ? "Invalid address for chain"
       : error.includes("'send'")
-      ? "Switch buy wallet to send"
-      : error;
+        ? "Switch buy wallet to send"
+        : error;
 
     disabled = true;
     if (error.includes("'send'")) {

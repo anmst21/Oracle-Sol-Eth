@@ -1,1 +1,57 @@
-.contacts-page {}
+.contacts-page {
+    display: flex;
+    position: relative;
+    width: 640px;
+    height: 640px;
+
+    @include down(md) {
+        width: auto;
+        height: auto;
+
+        margin: 0 30px;
+    }
+
+    &__artwork {
+        //  position: relative;
+        width: 640px;
+        height: 640px;
+        background: rgba(255, 255, 255, 0.05);
+        display: flex;
+        padding: 67px;
+        transform: translateX(-100px);
+
+        @include down(md) {
+            position: absolute;
+            padding: 0;
+            border-radius: 36px;
+            width: auto;
+            height: auto;
+            inset: 0;
+            transform: none;
+        }
+    }
+
+    &__form {
+        right: 0;
+        display: flex;
+        position: absolute;
+        transform: translateX(100px);
+
+        @include down(md) {
+            right: initial;
+            position: relative;
+            padding: 170px 16px 16px 16px;
+            transform: none;
+        }
+    }
+}
+
+// .grecaptcha-badge {
+//     position: fixed;
+//     bottom: 80px;
+
+
+//     @include down(md) {
+//         bottom: 154px;
+//     }
+// }

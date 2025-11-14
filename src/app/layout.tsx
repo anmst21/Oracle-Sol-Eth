@@ -25,6 +25,7 @@ import Footer from "@/components/footer";
 import { getHeaderModal } from "../../sanity/sanity-utils";
 import MenuBar from "@/components/menu";
 import CookieConsentBanner from "@/components/cookie-consent";
+import { CapchaProvider } from "@/context/CapchaProvier";
 // import FarcasterAuthProvider from "@/context/FarcasterAuthProvider";
 const firaCode = Fira_Code({
   subsets: ["latin"], // adjust as needed
@@ -66,45 +67,46 @@ export default async function RootLayout({
         className={`${firaCode.variable} ${handjet.variable} ${funnelDisplay.variable} ${funnelSans.variable}`}
       >
         <FaviconAnimator />
+        <CapchaProvider>
+          <QueryClientProvider>
+            <PrivyProvider>
+              <SolanaCoinsProvider>
+                <CommunityCoinsProvider>
+                  <GeckoTokensProvider>
+                    <MoonPayContextProvider>
+                      <ActiveWalletProvider>
+                        <TokenModalProvider>
+                          <RelayKitProvider>
+                            <OnRampProvider>
+                              <FeedProvider>
+                                <SlippageProvider>
+                                  <Header
+                                    categories={categories}
+                                    blogposts={blogposts}
+                                  />
+                                  <div className="main">{children}</div>
+                                  <CookieConsentBanner />
 
-        <QueryClientProvider>
-          <PrivyProvider>
-            <SolanaCoinsProvider>
-              <CommunityCoinsProvider>
-                <GeckoTokensProvider>
-                  <MoonPayContextProvider>
-                    <ActiveWalletProvider>
-                      <TokenModalProvider>
-                        <RelayKitProvider>
-                          <OnRampProvider>
-                            <FeedProvider>
-                              <SlippageProvider>
-                                <Header
-                                  categories={categories}
-                                  blogposts={blogposts}
-                                />
-                                <div className="main">{children}</div>
-                                <CookieConsentBanner />
+                                  <MenuBar
+                                    categories={categories}
+                                    blogposts={blogposts}
+                                  />
+                                  <Footer />
 
-                                <MenuBar
-                                  categories={categories}
-                                  blogposts={blogposts}
-                                />
-                                <Footer />
-
-                                {/* <HeaderFooter /> */}
-                              </SlippageProvider>
-                            </FeedProvider>
-                          </OnRampProvider>
-                        </RelayKitProvider>
-                      </TokenModalProvider>
-                    </ActiveWalletProvider>
-                  </MoonPayContextProvider>
-                </GeckoTokensProvider>
-              </CommunityCoinsProvider>
-            </SolanaCoinsProvider>
-          </PrivyProvider>
-        </QueryClientProvider>
+                                  {/* <HeaderFooter /> */}
+                                </SlippageProvider>
+                              </FeedProvider>
+                            </OnRampProvider>
+                          </RelayKitProvider>
+                        </TokenModalProvider>
+                      </ActiveWalletProvider>
+                    </MoonPayContextProvider>
+                  </GeckoTokensProvider>
+                </CommunityCoinsProvider>
+              </SolanaCoinsProvider>
+            </PrivyProvider>
+          </QueryClientProvider>
+        </CapchaProvider>
       </body>
     </html>
   );

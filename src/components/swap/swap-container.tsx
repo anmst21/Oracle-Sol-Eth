@@ -419,8 +419,8 @@ const SwapContainer = () => {
         e instanceof Error
           ? e.message
           : typeof e === "string"
-          ? e
-          : "Unknown error";
+            ? e
+            : "Unknown error";
 
       if (msg.toLowerCase().includes("no routes found")) {
         setError("No routes found for that pair");
@@ -582,19 +582,15 @@ const SwapContainer = () => {
       />
       <SwapMeta isLoading={isLoading} quote={quote} />
       {/* <DeepLink /> */}
-      <DynamicNotification
+      {/* <DynamicNotification
         progress={progress}
-        isInsuficientBalance={
-          Number(sellTokenBalance) <=
-          Number(quote?.details?.currencyIn?.amountFormatted)
-        }
-        fromTokenMeta={{
-          address: sellToken?.address,
-          chainId: sellToken?.chainId,
-          ticker: sellToken?.name,
-        }}
+        // fromTokenMeta={{
+        //   address: sellToken?.address,
+        //   chainId: sellToken?.chainId,
+        //   ticker: sellToken?.name,
+        // }}
         error={error}
-      />
+      /> */}
       <AnimatePresence mode="wait">
         {progress && (
           <Confirmation

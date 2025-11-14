@@ -32,7 +32,12 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
-input {
+textarea {
+    all: unset;
+}
+
+input,
+textarea {
     background-color: transparent;
     border: none;
     color: #D9F1E9;
