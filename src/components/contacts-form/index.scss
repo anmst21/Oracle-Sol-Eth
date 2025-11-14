@@ -3,11 +3,12 @@
     flex-direction:
         column;
     gap: 8px;
-    width: 100%;
-    max-width: 310px;
+    width: 310px;
+    // max-width: 310px;
 
     @include down(md) {
-        max-width: 100%;
+        width: 100%;
+
     }
 
     .form-input {

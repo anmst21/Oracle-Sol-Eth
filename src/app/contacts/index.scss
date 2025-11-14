@@ -5,7 +5,7 @@
     height: 640px;
 
     @include down(md) {
-        width: auto;
+        width: 100%;
         height: auto;
 
         margin: 0 30px;
@@ -32,14 +32,15 @@
     }
 
     &__form {
-        right: 0;
+        right: -100px;
         display: flex;
         position: absolute;
-        transform: translateX(100px);
+        //  transform: translateX(100px);
 
         @include down(md) {
             right: initial;
             position: relative;
+            width: 100%;
             padding: 170px 16px 16px 16px;
             transform: none;
         }

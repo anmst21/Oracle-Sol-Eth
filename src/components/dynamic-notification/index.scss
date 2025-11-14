@@ -8,10 +8,16 @@
     // background: rgba(174, 233, 0, 0.05);
     backdrop-filter: blur(75px);
     padding: 10px 12px 12px 12px;
-    position: fixed;
+    position: fixed !important;
     bottom: 75px;
     right: 66px;
     width: 230px;
+
+
+    @include down(md) {
+        bottom: 154px;
+        right: 20px;
+    }
 
 
     &__text {

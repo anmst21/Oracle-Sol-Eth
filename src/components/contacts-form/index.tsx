@@ -179,97 +179,99 @@ const ContactsForm = () => {
   } as const;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="contacts-form">
-      <div className="contacts-form__main">
-        <FormInput
-          icon={<ContactsName />}
-          type="text"
-          register={register("name")}
-          placeholder={"Steve Jobs"}
-          isError={!!errors.name}
-        />
-        <FormInput
-          icon={<ContactsMail />}
-          type="email"
-          register={register("email")}
-          placeholder={"example@oracleswap.app"}
-          isError={!!errors.email}
-        />
-        <FormInput
-          icon={<ContactsPhone />}
-          type="tel"
-          register={register("phone")}
-          placeholder={"+11234567890"}
-          isError={!!errors.phone}
-          optional
-        />
-        <FormInput
-          icon={<ContactsSubject />}
-          register={register("subject")}
-          type="subject"
-          placeholder={"Subject"}
-          isError={!!errors.subject}
-          optional
-        />
-        <FormInput
-          icon={<ContactsText />}
-          register={register("message")}
-          type="subject"
-          placeholder={"How can we help you?"}
-          isError={!!errors.message}
-          textArea
-        />
-        <label
-          className={classNames("checkbox-container", {
-            "checkbox-container--error": !!errors.consent,
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className="contacts-form">
+        <div className="contacts-form__main">
+          <FormInput
+            icon={<ContactsName />}
+            type="text"
+            register={register("name")}
+            placeholder={"Steve Jobs"}
+            isError={!!errors.name}
+          />
+          <FormInput
+            icon={<ContactsMail />}
+            type="email"
+            register={register("email")}
+            placeholder={"example@oracleswap.app"}
+            isError={!!errors.email}
+          />
+          <FormInput
+            icon={<ContactsPhone />}
+            type="tel"
+            register={register("phone")}
+            placeholder={"+11234567890"}
+            isError={!!errors.phone}
+            optional
+          />
+          <FormInput
+            icon={<ContactsSubject />}
+            register={register("subject")}
+            type="subject"
+            placeholder={"Subject"}
+            isError={!!errors.subject}
+            optional
+          />
+          <FormInput
+            icon={<ContactsText />}
+            register={register("message")}
+            type="subject"
+            placeholder={"How can we help you?"}
+            isError={!!errors.message}
+            textArea
+          />
+          <label
+            className={classNames("checkbox-container", {
+              "checkbox-container--error": !!errors.consent,
+            })}
+          >
+            Privacy consent
+            <div className="check">
+              <input type="checkbox" {...register("consent")} />
+              <CheckMark />
+            </div>
+          </label>
+          <div className={`contacts-form__warning ${messageData.className}`}>
+            <AnimatePresence mode="wait">
+              <motion.span key={messageData.key} {...fadeAnimationProps}>
+                {messageData.text}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+        </div>
+        <button
+          disabled={isSubmitting}
+          type="submit"
+          className={classNames("contacts-form__btn", {
+            "contacts-form__btn--error": btnKeyResolved === "Error",
+            "contacts-form__btn--loading": btnKeyResolved === "Submitting",
           })}
         >
-          Privacy consent
-          <div className="check">
-            <input type="checkbox" {...register("consent")} />
-            <CheckMark />
-          </div>
-        </label>
-        <div className={`contacts-form__warning ${messageData.className}`}>
-          <AnimatePresence mode="wait">
-            <motion.span key={messageData.key} {...fadeAnimationProps}>
-              {messageData.text}
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              className="contacts-form__btn__icon"
+              key={btnKeyResolved + "-icon-submit-left"}
+              {...animatedProps}
+            >
+              {btnIconResolved}
+            </motion.div>
+          </AnimatePresence>
+          <AnimatePresence mode="popLayout">
+            <motion.span key={btnKeyResolved} {...animatedProps}>
+              {btnKeyResolved}
             </motion.span>
           </AnimatePresence>
-        </div>
-      </div>
-      <button
-        disabled={isSubmitting}
-        type="submit"
-        className={classNames("contacts-form__btn", {
-          "contacts-form__btn--error": btnKeyResolved === "Error",
-          "contacts-form__btn--loading": btnKeyResolved === "Submitting",
-        })}
-      >
-        <AnimatePresence mode="popLayout">
-          <motion.div
-            className="contacts-form__btn__icon"
-            key={btnKeyResolved + "-icon-submit-left"}
-            {...animatedProps}
-          >
-            {btnIconResolved}
-          </motion.div>
-        </AnimatePresence>
-        <AnimatePresence mode="popLayout">
-          <motion.span key={btnKeyResolved} {...animatedProps}>
-            {btnKeyResolved}
-          </motion.span>
-        </AnimatePresence>
-        <AnimatePresence mode="popLayout">
-          <motion.div
-            className="contacts-form__btn__icon"
-            key={btnKeyResolved + "-icon-submit-roght"}
-            {...animatedProps}
-          >
-            {btnIconResolved}
-          </motion.div>
-        </AnimatePresence>
-      </button>
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              className="contacts-form__btn__icon"
+              key={btnKeyResolved + "-icon-submit-roght"}
+              {...animatedProps}
+            >
+              {btnIconResolved}
+            </motion.div>
+          </AnimatePresence>
+        </button>
+      </form>
       <DynamicNotification
         message={messageData.text as string}
         time={3}
@@ -283,7 +285,7 @@ const ContactsForm = () => {
                 : null
         }
       />
-    </form>
+    </>
   );
 };
 
