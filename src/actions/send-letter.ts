@@ -24,32 +24,32 @@ export const sendLetter = async (
   token: string | undefined
 ) => {
   try {
-    // if (!token) {
-    //   return { success: false, message: "CAPTCHA token is missing" };
-    // }
+    if (!token) {
+      return { success: false, message: "CAPTCHA token is missing" };
+    }
 
-    // // Verify the CAPTCHA token with Google
-    // const verificationResponse = await fetch(
-    //   `https://www.google.com/recaptcha/api/siteverify`,
-    //   {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    //     body: new URLSearchParams({
-    //       secret: SECRET_KEY || "",
-    //       response: token,
-    //     }),
-    //   }
-    // );
+    // Verify the CAPTCHA token with Google
+    const verificationResponse = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          secret: SECRET_KEY || "",
+          response: token,
+        }),
+      }
+    );
 
-    // const verificationResult = await verificationResponse.json();
+    const verificationResult = await verificationResponse.json();
 
-    // if (!verificationResult.success || verificationResult.score < 0.5) {
-    //   // If the score is too low, reject the submission
-    //   return {
-    //     success: false,
-    //     message: "CAPTCHA verification failed. You might be a bot!",
-    //   };
-    // }
+    if (!verificationResult.success || verificationResult.score < 0.5) {
+      // If the score is too low, reject the submission
+      return {
+        success: false,
+        message: "CAPTCHA verification failed. You might be a bot!",
+      };
+    }
 
     // If CAPTCHA verification is successful, format the message
     const message = formatMessage(formData);

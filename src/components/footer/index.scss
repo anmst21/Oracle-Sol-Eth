@@ -4,8 +4,16 @@
     gap: 24px;
     margin-top: auto;
     margin-bottom: 50px;
+    position: relative;
+    z-index: 0;
+
+    .blog-circle--overlay {
+        width: 32px;
+        height: 32px;
+    }
 
     .footer-dot {
+        position: relative;
         background: #D9F1E9;
         width: 32px;
         height: 32px;
@@ -22,10 +30,52 @@
     padding: 4px;
     gap: 4px;
     margin-top: 50px;
+    position: relative;
 
+    &__error {
+        position: absolute;
+        bottom: -16px;
+
+
+        color: #F13D20;
+        font-family: var(--font-funnel-sans);
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 300;
+        line-height: normal;
+        text-transform: uppercase;
+    }
 
     .email-submit {
+        transition: all .2s ease-out;
         display: flex;
+        padding: 0 6px 0 8px;
+        border-radius: 4px;
+        background: #AEE900;
+        color: #000;
+        font-family: var(--font-funnel-display);
+        color: #000;
+        font-size: 12px;
+        gap: 4px;
+        align-items: center;
+        height: 23px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        text-transform: uppercase;
+
+
+
+        &:hover {
+            opacity: 0.7;
+
+        }
+
+        &:active {
+            background-color: black;
+            color: #AEE900;
+            opacity: 1;
+        }
     }
 
     &__input {
@@ -36,7 +86,25 @@
         height: 48px;
         align-items: center;
         display: flex;
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
+
+        &--submitting {
+            opacity: 0.7;
+
+            .email-submit {
+                background-color: #889697;
+            }
+        }
+
+        &--error {
+            background: rgba(241, 61, 32, 0.05);
+
+            border-color: rgba(241, 61, 32, 0.1);
+
+            .email-submit {
+                background-color: #F13D20;
+            }
+        }
 
         &:hover {
             border: 1px solid rgba(217, 241, 233, 0.15);
@@ -51,15 +119,20 @@
         }
 
         input {
-            width: 100%;
-            font-family: var(--font-fira-code);
-            color: #D9F1E9;
+            &::placeholder {
+                color: rgba(136, 150, 151, 0.80);
+            }
 
-            font-size: 18px;
+            color: #D9F1E9;
+            font-family: var(--font-funnel-display);
+            font-size: 16px;
             font-style: normal;
-            font-weight: 500;
-            line-height: normal;
+            font-weight: 400;
+            line-height: 18px;
+            width: 100%;
         }
+
+
     }
 
     &__bottom {

@@ -12,7 +12,8 @@
     bottom: 75px;
     right: 66px;
     width: 230px;
-
+    // backdrop-filter: blur(75px);
+    z-index: 1000;
 
     @include down(md) {
         bottom: 154px;

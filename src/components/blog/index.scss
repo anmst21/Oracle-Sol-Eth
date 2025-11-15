@@ -252,6 +252,7 @@
         align-items: center;
         gap: 24px;
         margin-bottom: 60px;
+        z-index: 0;
 
         h3 {
             font-family: var(--font-funnel-display);
@@ -265,14 +266,30 @@
         &__circles {
             display: flex;
             align-items: center;
+            padding: 15.5px 8px;
+            gap: 16px;
+            position: relative;
 
-            .blog-circle {
-                margin: 15.5px 8px;
-                width: 30px;
-                height: 30px;
-                border-radius: 1000px;
-                background-color: #D9F1E9
-            }
+
+
         }
     }
+}
+
+
+.blog-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 1000px;
+    background-color: #D9F1E9
+}
+
+.blog-circle--overlay {
+    position: absolute;
+    //   top: 50%;
+    // left: 0;
+    // transform: translateY(-50%);
+    background-color: black;
+    // ensure it’s above the base circles
+    z-index: 10;
 }

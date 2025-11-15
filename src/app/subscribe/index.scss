@@ -1,0 +1,20 @@
+.subscribe-page {
+    display: flex;
+    width: 600px;
+    flex-direction: column;
+    margin: 0 20px;
+
+    .blog-subscribe {
+        width: 100%;
+        max-width: initial;
+
+
+        h3 {
+            z-index: 15;
+        }
+    }
+
+    .footer-form {
+        margin-top: 0;
+    }
+}

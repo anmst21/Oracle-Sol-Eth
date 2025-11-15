@@ -1,11 +1,6 @@
 "use client";
 
-import React, {
-  // useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CheckMark,
   ContactsText,
@@ -22,7 +17,7 @@ import { formSchema, FormSchema } from "./form-schema";
 import { getCookieConsentValue } from "react-cookie-consent";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
-// import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { AnimatePresence, motion } from "motion/react";
 import { sendLetter } from "@/actions/send-letter";
 import DynamicNotification from "../dynamic-notification";
@@ -33,7 +28,7 @@ const ContactsForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const cookieValue = getCookieConsentValue("cookieConsentOracle");
-  //   const { executeRecaptcha } = useGoogleReCaptcha();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const {
     reset,
@@ -71,22 +66,21 @@ const ContactsForm = () => {
     }
   }, [isCaptchaError]);
 
-  //   const handleReCaptchaVerify = useCallback(async () => {
-  //     if (!executeRecaptcha) {
-  //       console.log("Execute recaptcha not yet available");
-  //       return;
-  //     }
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not yet available");
+      return;
+    }
 
-  //     const token = await executeRecaptcha("yourAction");
-  //     return token;
-  //     // Do whatever you want with the token
-  //   }, [executeRecaptcha]);
+    const token = await executeRecaptcha("yourAction");
+    return token;
+    // Do whatever you want with the token
+  }, [executeRecaptcha]);
 
   const onSubmit = async (data: FormSchema) => {
     try {
       setIsSubmitting(true);
-      //const token = await handleReCaptchaVerify();
-      const token = "kek";
+      const token = await handleReCaptchaVerify();
       //   console.log(token);
       if (token) {
         const result = await sendLetter(data, token);
