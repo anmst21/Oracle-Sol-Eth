@@ -13,7 +13,7 @@ const AnimatedDots = () => {
     const gap = 24;
     const step = circleWidth + gap;
 
-    const sequence = [0, 1, 2, 1, 2, 3, 2];
+    const sequence = [0, 1, 2, 1];
     const keyframes = sequence.map((idx) => idx * step);
     const times = keyframes.map((_, i) =>
       keyframes.length === 1 ? 0 : i / (keyframes.length - 1)
@@ -26,7 +26,7 @@ const AnimatedDots = () => {
           x: keyframes,
           opacity: 1,
           transition: {
-            duration: 1.5,
+            duration: 0.5,
             ease: "easeInOut",
             times,
           },
