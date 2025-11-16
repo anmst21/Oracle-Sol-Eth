@@ -279,6 +279,18 @@
     padding: 8px;
     border: 1px solid rgba(136, 150, 151, 0.20);
     background: rgba(136, 150, 151, 0.05);
+    position: relative;
+    // z-index: 0;
+
+    &::before {
+        position: absolute;
+        content: "";
+        backdrop-filter: blur(20px);
+        inset: 0;
+        z-index: -1;
+        border-radius: 12px;
+    }
+
 
     &__switch {
 
@@ -367,6 +379,25 @@
     background: rgba(136, 150, 151, 0.05);
     display: flex;
     gap: 8px;
+
+
+    &__badge {
+        height: 34px;
+        border-radius: 6px;
+        border: 1px solid #889697;
+        background: rgba(136, 150, 151, 0.05);
+        padding: 0 10px;
+        align-items: center;
+        justify-content: center;
+
+        color: #889697;
+        font-family: var(--font-handjet);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        text-transform: uppercase;
+    }
 
     &__item {
         border: 1px solid rgba(136, 150, 151, 0.10);

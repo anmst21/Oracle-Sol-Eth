@@ -1,9 +1,41 @@
+.home-hero {
+    display: flex;
+    flex-direction: column;
+
+    &__main {
+        justify-content: center;
+        display: flex;
+        position: relative;
+    }
+
+
+    &__swap {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 10;
+        max-width: 500px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
 .hero-carousel {
     display: flex;
     width: 100%;
-    //  height: 92px;
+    height: 92px;
     pointer-events: none;
     // position: relative;
+    position: absolute;
+    top: calc(50% + 8px);
+    transform: translateY(-50%);
 
     &__viewport {
         position: absolute;

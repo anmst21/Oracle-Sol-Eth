@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { useCategory } from "@/hooks/useCategory";
 
 const FRAMES = [
   "/favicon/f1.png",
@@ -102,9 +103,11 @@ export default function FaviconAnimator() {
     };
   }, [play, clearTimer]);
 
+  const { activeCategory } = useCategory();
+
   useEffect(() => {
     play(); // auto-play on route change
-  }, [pathname, play]);
+  }, [pathname, play, activeCategory]);
 
   return null;
 }

@@ -1,0 +1,189 @@
+.home-cta {
+    display: flex;
+    flex-direction: column;
+    margin: 0 100px;
+
+    @include down(md) {
+        margin: 0 20px;
+    }
+
+
+    &__text {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        justify-content: center;
+
+        @include down(md) {
+            gap: 6px
+        }
+
+        h2 {
+            color: #D9F1E9;
+            text-align: center;
+            font-family: var(--font-funnel-display);
+            font-size: 48px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 56px;
+
+            @include down(md) {
+                font-size: 24px;
+                line-height: 32px;
+            }
+        }
+
+        span {
+            color: #889697;
+            text-align: center;
+            font-family: var(--font-funnel-sans);
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 300;
+            line-height: 38px;
+
+            @include down(md) {
+                font-size: 14px;
+                line-height: 24px;
+            }
+        }
+    }
+
+    &__container {
+        display: flex;
+        position: relative;
+        justify-content: flex-end;
+        height: 700px;
+        border-radius: 36px;
+        overflow: hidden;
+        width: 100%;
+        max-width: 1528px;
+        margin: 90px 0;
+        padding: 30px;
+
+        @include down(md) {
+            margin: 0;
+            margin-top: 20px;
+            flex-direction: column;
+            padding: 16px;
+            height: 600px;
+        }
+    }
+
+
+    &__card {
+        height: 100%;
+        border-radius: 24px;
+        background: rgba(18, 18, 18, 0.95);
+        backdrop-filter: blur(5px);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        max-width: 470px;
+        width: 100%;
+        padding: 30px;
+
+        @include down(md) {
+            height: 340px;
+            max-width: initial;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        h3 {
+            margin-top: auto;
+            color: #D9F1E9;
+            font-family: var(--font-funnel-display);
+            font-size: 36px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+
+            @include down(md) {
+                font-size: 24px;
+            }
+
+        }
+
+        &__paragraph {
+            color: #ABBDB6;
+            font-family: var(--font-funnel-sans);
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 300;
+            line-height: 30px;
+
+            @include down(md) {
+                font-size: 14px;
+                line-height: 22px;
+            }
+        }
+
+        &__badge {
+            width: fit-content;
+            display: flex;
+            padding: 0 4px;
+            color: rgba(217, 241, 233, 0.80);
+            font-family: var(--font-funnel-display);
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            border-radius: 2px;
+            background: rgba(217, 241, 233, 0.10);
+
+            @include down(md) {
+                font-size: 12px;
+            }
+        }
+
+        &__cta {
+
+            height: 44px;
+            padding: 0 10px;
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+
+            font-family: var(--font-funnel-display);
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 20px;
+
+            border: 1px solid rgba(174, 233, 0, 0.40);
+            background: rgba(174, 233, 0, 0.10);
+            color: #AEE900;
+            justify-content: space-between;
+            transition: all .2s ease-out;
+
+            @include down(md) {
+                font-size: 16px;
+            }
+
+            &:hover {
+                border-color: #AEE900;
+            }
+
+            &:active {
+                background: #AEE900;
+                color: black;
+            }
+
+            &__mid {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                @include down(md) {
+                    svg {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}

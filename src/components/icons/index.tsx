@@ -124,8 +124,10 @@ import FeedIconMobile from "./FeedIconMobile";
 import PrivacyIconMobile from "./PrivacyIconMobile";
 import ContactsIconMobile from "./ContactsIconMobile";
 import BlogIconMobile from "./BlogIconMobile";
+import HomeLaunch from "./HomeLaunch";
 
 export {
+  HomeLaunch,
   FeedIconMobile,
   SwapIconMobile,
   CoinsIconMobile,

@@ -43,7 +43,7 @@ import DynamicNotification from "../dynamic-notification";
 //   ],
 // });
 
-const SwapContainer = () => {
+const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   const [sellInputValue, setSellInputValue] = useState("");
   const [buyInputValue, setBuyInputValue] = useState("");
 
@@ -580,7 +580,7 @@ const SwapContainer = () => {
         onBuy={onBuy}
         isAdaptedWallet={adaptedWallet !== null}
       />
-      <SwapMeta isLoading={isLoading} quote={quote} />
+      {!isHero && <SwapMeta isLoading={isLoading} quote={quote} />}
       {/* <DeepLink /> */}
       {/* <DynamicNotification
         progress={progress}
