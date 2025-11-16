@@ -21,6 +21,14 @@ const BlogCard = ({ blogpost, index }: Props) => {
       key={blogpost._id}
       className={`blog-post  blog-post--${index + 1}`}
     >
+      <div className="blog-post__author__image">
+        <Image
+          alt="Author image"
+          width={16}
+          height={16}
+          src={blogpost.author.image}
+        />
+      </div>
       <div className="blog-post__top">
         <div
           style={{ background: `rgba(${r}, ${g}, ${b}, 0.1)` }}

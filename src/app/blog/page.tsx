@@ -7,7 +7,7 @@ import BlogCard from "@/components/blog/blog-card";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Explore the OracleSwap Blog for the latest updates, feature breakdowns, and insights into the multichain ecosystem. Learn how Oracle powers seamless swaps, bridges, and sends through Relay, Privy, and MoonPay. Stay informed with deep dives, product guides, and design philosophy behind the fastest cross-chain experience.",
+    "Explore the Oracle Blog for the latest updates, feature breakdowns, and insights into the multichain ecosystem. Learn how Oracle powers seamless swaps, bridges, and sends through Relay, Privy, and MoonPay. Stay informed with deep dives, product guides, and design philosophy behind the fastest cross-chain experience.",
 };
 
 export default async function Page({

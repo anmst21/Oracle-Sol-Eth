@@ -35,6 +35,8 @@
         right: -100px;
         display: flex;
         position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
         //  transform: translateX(100px);
 
         @include down(md) {
@@ -43,6 +45,7 @@
             width: 100%;
             padding: 170px 16px 16px 16px;
             transform: none;
+            top: auto;
         }
     }
 }

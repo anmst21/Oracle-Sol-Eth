@@ -9,7 +9,7 @@ const BlogBack = () => (
     viewBox="0 0 24 24"
   >
     <path
-      stroke="#D9F1E9"
+      stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
       d="M11.333 14.167 9.167 12l2.166-2.167M14.833 12H9.667"

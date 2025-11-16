@@ -93,6 +93,7 @@ export default async function Page({
 
   return (
     <div className="blog-page blog-page-post">
+      <BlogSubscribe />
       <PostHeader name={name} subheader={subheader} slug={slug} />
 
       <div className="post-title">

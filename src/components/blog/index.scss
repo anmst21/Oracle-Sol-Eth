@@ -13,10 +13,26 @@
 .post-title__bottom--footer {
     margin: 0 30px;
     margin-bottom: 100px;
+
+    @include down(sm) {
+        margin: 0;
+        margin-bottom: 56px;
+    }
+
 }
 
 .posts-header {
     margin-bottom: 80px !important;
+    overflow: visible !important;
+
+    @include down(md) {
+        margin-bottom: 36px !important;
+    }
+
+    .blog-divider {
+        display: flex !important;
+    }
+
 }
 
 .blog-header {
@@ -27,10 +43,40 @@
     margin: 0px 6px;
 
     border-radius: 8px;
+    overflow-y: hidden;
 
-    position: relative;
+    @include down(md) {
+        margin: 0;
+        padding: 6px;
+    }
 
-    &:after {
+    &__wrapper {
+        display: flex;
+        gap: 4px;
+        //  width: 100%;
+        overflow-y: hidden;
+
+        position: relative;
+
+        &::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        scrollbar-width: none;
+
+        -ms-overflow-style: none;
+
+        @include down(md) {
+
+            overflow-x: scroll;
+
+        }
+    }
+
+
+
+    &:before {
         content: "";
         position: absolute;
         inset: 0;
@@ -60,6 +106,20 @@
         border-radius: 4px;
         border: 1px solid rgba(136, 150, 151, 0.10);
         background: rgba(136, 150, 151, 0.05);
+
+        transition: all .2s ease-out;
+
+        &:hover {
+            border: 1px solid rgba(217, 241, 233, 0.15);
+            color: rgba(217, 241, 233, 0.8);
+            background: rgba(217, 241, 233, 0.1);
+        }
+
+        &:active {
+            color: rgba(174, 233, 0, 0.8);
+            border: 1px solid rgba(174, 233, 0, 0.15);
+            background: rgba(174, 233, 0, 0.1);
+        }
     }
 
     &__share {
@@ -152,9 +212,15 @@
         height: 30px;
         align-items: center;
         justify-content: center;
+        min-width: 102px;
+
 
         &:hover {
-            color: white;
+            color: #D9F1E9;
+        }
+
+        &:active {
+            color: #AEE900
         }
 
         &--active {
@@ -183,6 +249,14 @@
         flex: 1;
     }
 
+    @include down(md) {
+
+        .blog-mini-divider,
+        .blog-divider {
+            display: none;
+        }
+    }
+
 }
 
 
@@ -196,11 +270,25 @@
     display: flex;
     flex-direction: column;
     max-width: 320px;
-    flex: 1;
+    flex: 0 0 1;
+
+
+    @include down(md) {
+        order: -1;
+
+        max-width: initial;
+
+
+
+    }
 
     .header__logo {
         margin: 0;
         margin-bottom: 34px;
+
+        @include down(md) {
+            margin-bottom: 16px;
+        }
     }
 
 
@@ -208,12 +296,31 @@
         display: flex;
         gap: 8px;
 
+        @include down(md) {
+
+            display: none;
+
+        }
+
         &__text {
             padding: 0 8px;
         }
 
         &__icon {
             width: 32px;
+        }
+
+        &:hover {
+            div {
+                border-color: #AEE900;
+            }
+        }
+
+        &:active {
+            div {
+                background-color: #AEE900;
+                color: black;
+            }
         }
 
         div {
@@ -224,7 +331,7 @@
             border-radius: 5px;
             border: 1px solid rgba(174, 233, 0, 0.15);
             background: rgba(174, 233, 0, 0.10);
-
+            transition: all .2s ease-out;
             color: #AEE900;
             font-family: var(--font-funnel-display);
             font-size: 22px;
@@ -243,6 +350,10 @@
         font-weight: 300;
         line-height: normal;
         margin-bottom: 30px;
+
+        @include down(md) {
+            margin-bottom: 0;
+        }
     }
 
 
@@ -254,6 +365,12 @@
         margin-bottom: 60px;
         z-index: 0;
 
+        @include down(md) {
+            margin-bottom: 8px;
+            justify-content: space-between;
+
+        }
+
         h3 {
             font-family: var(--font-funnel-display);
             color: #D9F1E9;
@@ -261,6 +378,11 @@
             font-style: normal;
             font-weight: 500;
             line-height: 110%;
+
+            @include down(sm) {
+                font-size: 36px;
+                line-height: normal;
+            }
         }
 
         &__circles {

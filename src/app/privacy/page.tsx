@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
 
   description:
-    "Understand how OracleSwap collects, processes, and protects your data. Learn about our non-custodial model, use of public blockchain information, integration with partners like Relay, MoonPay, and Privy, and your rights regarding privacy, security, and data access. Stay informed on how Oracle ensures transparency and safety across every transaction.",
+    "Understand how Oracle collects, processes, and protects your data. Learn about our non-custodial model, use of public blockchain information, integration with partners like Relay, MoonPay, and Privy, and your rights regarding privacy, security, and data access. Stay informed on how Oracle ensures transparency and safety across every transaction.",
 };
 
 export default async function Privacy() {

@@ -91,3 +91,10 @@ select {
 p {
     margin: 0;
 }
+
+
+ul {
+    @include down(md) {
+        padding-left: 24px;
+    }
+}

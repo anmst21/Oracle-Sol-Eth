@@ -21,6 +21,7 @@ const Header = ({
     pathname.includes("/blog") ||
     pathname.includes("/contacts") ||
     pathname.includes("/privacy") ||
+    pathname.includes("/subscribe") ||
     pathname === "/";
   return (
     <div className="header">

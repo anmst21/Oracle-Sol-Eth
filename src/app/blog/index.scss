@@ -5,10 +5,23 @@
     padding: 0 118px;
 
 
+    @include down(md) {
+        flex-direction: column;
+        padding: 0 20px;
+        gap: 20px;
+    }
+
+
+
     &__list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 24px;
+
+        @include down(sm) {
+            gap: 10px;
+        }
+
     }
 
     &__main {
@@ -34,6 +47,12 @@
     border-radius: 24px;
     overflow: hidden;
     z-index: 0;
+
+
+    @include down(sm) {
+        border-radius: 12px;
+        padding: 14px;
+    }
 
     &__img {
 
@@ -65,7 +84,9 @@
         border-radius: 24px;
         position: relative;
 
-
+        @include down(sm) {
+            border-radius: 12px;
+        }
     }
 
 
@@ -188,6 +209,12 @@
         color: #AEE900;
         gap: 4px;
 
+        @include down(sm) {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
         &__text,
         &__icon {
             border-radius: 5px;
@@ -205,6 +232,11 @@
             font-style: normal;
             font-weight: 300;
             line-height: normal;
+
+
+            @include down(sm) {
+                display: none;
+            }
         }
 
         &__icon {
@@ -221,6 +253,10 @@
         gap: 10px;
         z-index: 2;
 
+        @include down(sm) {
+            gap: 4px;
+        }
+
         h4 {
             color: rgba(217, 241, 233, 0.80);
             font-size: 28px;
@@ -228,6 +264,11 @@
             font-weight: 500;
             line-height: normal;
             transition: all .2s ease-in;
+
+            @include down(sm) {
+                font-size: 16px;
+                line-height: normal;
+            }
         }
 
         span {
@@ -237,6 +278,12 @@
             font-weight: 400;
             line-height: 25px;
             font-family: var(--font-funnel-sans);
+
+            @include down(sm) {
+                width: calc(100% - 46px);
+                font-size: 14px;
+                line-height: normal;
+            }
         }
     }
 
@@ -259,11 +306,41 @@
 
     &__author {
         color: #D9F1E9;
+
+        &__image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+            background: rgba(136, 150, 151, 0.05);
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            z-index: 5;
+            display: none;
+
+            @include down(sm) {
+                display: flex;
+            }
+
+            img {
+                border-radius: 1000px;
+            }
+        }
+
+        @include down(sm) {
+            display: none;
+        }
     }
 
     &__created {
         margin-left: auto;
         gap: 3px;
+
+        @include down(sm) {
+            margin-left: initial;
+            order: -1;
+        }
 
         >span {
             &:nth-child(1) {
@@ -300,6 +377,11 @@
         font-style: normal;
         font-weight: 400;
         line-height: normal;
+
+        @include down(sm) {
+            flex-direction: column;
+            align-items: flex-end;
+        }
 
     }
 
