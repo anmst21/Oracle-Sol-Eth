@@ -15,9 +15,9 @@ const HomeHero = () => {
       </div>
       <div className="home-hero__text">
         <h1>
-          <span>Swap.</span>
-          <span>Bridge.</span>
-          <span>Send.</span>
+          <span className="home-hero__text__swap">Swap. </span>
+          <span className="home-hero__text__bridge">Bridge. </span>
+          <span className="home-hero__text__send">Send.</span>
         </h1>
         <p>
           Connect a wallet, pick tokens and chains, and execute in a single

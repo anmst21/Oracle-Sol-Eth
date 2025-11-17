@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="coins-list">
       {/* <Landing /> */}
-      <Bridge />
+      {/* <Bridge /> */}
     </div>
   );
 }

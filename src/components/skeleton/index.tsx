@@ -50,7 +50,7 @@ export default function SkeletonLoaderWrapper({
     <motion.div
       className="wrapper"
       style={style}
-      layout
+      //  layout
       transition={{ type: "tween", duration: 0.2 }}
     >
       <AnimatePresence initial={false} mode="popLayout">
@@ -69,7 +69,7 @@ export default function SkeletonLoaderWrapper({
             className="to-gap"
             style={{ display: "flex" }}
             key="content"
-            layout
+            //  layout
           >
             {children}
           </motion.div>

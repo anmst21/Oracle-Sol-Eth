@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Wallet from "../header/wallet";
-import { BtnPolygons, MenuLogoDefault, MenuHome } from "../icons";
+import { BtnPolygons, MenuHome } from "../icons";
 
 import React, { useState } from "react";
 import { useRouteOptions } from "@/hooks/useRouteOptions";
@@ -11,6 +11,7 @@ import MenuItem from "./menu-item";
 import { AnimatePresence, motion } from "motion/react";
 import Wallets from "../wallets/wallet-modal";
 import ChainList from "../wallets/chain-list";
+import MenuLogo from "./menu-logo";
 
 type Props = { blogposts: Blogpost[]; categories: Category[] };
 
@@ -90,9 +91,10 @@ const MenuBar = ({ categories, blogposts }: Props) => {
           <Wallet />
         )}
       </div>
-      <div className="menu-bar__logo">
+      <MenuLogo isRedirect />
+      {/* <div className="menu-bar__logo">
         <MenuLogoDefault />
-      </div>
+      </div> */}
     </div>
   );
 };

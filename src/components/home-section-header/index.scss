@@ -10,13 +10,14 @@
     //  max-width: 1728px;
     // width: 100%;
     display: flex;
-    margin: 0 68px;
+    padding: 0 68px;
     margin-top: 194px;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
 
     @include down(md) {
-        margin: 0 20px;
+        padding: 0 20px;
         margin-top: 77px;
     }
 

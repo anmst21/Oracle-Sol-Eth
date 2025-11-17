@@ -11,7 +11,7 @@ function getRandomOpacity<T>(arr: T[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-const RECT_COUNT = 60;
+const RECT_COUNT = 40;
 
 const HeroCarousel = () => {
   const [emblaRef] = useEmblaCarousel({ loop: true }, [

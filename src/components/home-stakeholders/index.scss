@@ -1,0 +1,243 @@
+.home-stakeholders {
+    display: flex;
+    //  height: 700px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-direction: column;
+    z-index: 0;
+
+    &__container {
+        display: flex;
+        padding: 0 120px;
+        width: 100%;
+        justify-content: space-between;
+        height: 730px;
+        align-items: center;
+        margin-top: 80px;
+    }
+
+
+    &__text {
+        display: flex;
+        flex-direction: column;
+
+        max-width: 400px;
+
+        &__badge {
+            padding: 0 8px;
+            border-radius: 4px;
+            background: rgba(0, 235, 176, 0.10);
+            height: 19px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background-color: color-mix(in srgb, currentColor 10%, transparent);
+
+            width: fit-content;
+
+            font-family: var(--font-funnel-sans);
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 300;
+            line-height: normal;
+            text-transform: uppercase;
+        }
+
+        h3 {
+            color: #D9F1E9;
+            font-family: var(--font-funnel-display);
+            font-size: 36px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+
+        }
+
+        p {
+            color: #889697;
+            font-family: var(--font-funnel-sans);
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 300;
+            line-height: 30px;
+            margin-bottom: 48px;
+            margin-top: 16px;
+            height: 90px;
+        }
+    }
+
+    a {
+        z-index: 30;
+    }
+
+    &__image {
+        position: absolute;
+        inset: 0;
+        //  background-color: red;
+        display: flex;
+        align-items: center;
+        border-radius: 1000px;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    &__circles {
+        display: flex;
+        position: relative;
+        // margin: 0 auto;
+        margin-right: 50px;
+
+    }
+}
+
+.hover-circle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+}
+
+
+.stakeholder-badge {
+    display: flex;
+    padding: 0 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.10);
+    height: 15px;
+    position: absolute;
+
+    color: #FFF;
+    text-align: center;
+    font-family: var(--font-funnel-sans);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    text-transform: uppercase;
+
+    transition: all .2s ease-in-out;
+    opacity: 0;
+    background-color: color-mix(in srgb, currentColor 10%, transparent);
+
+
+
+
+
+
+    &--visible {
+        opacity: .5;
+    }
+
+    &--active {
+        opacity: 1;
+    }
+
+
+    &__relay {
+        top: 41.51px;
+        right: -1.61px;
+    }
+
+    &__moonpay {
+        top: 99.51px;
+        right: -71.61px;
+    }
+
+    &__privy {
+        top: 178.51px;
+        right: -31.61px;
+        transform: translateX(100%);
+    }
+
+    &__geckoterminal {
+        bottom: 74px;
+        right: -96.61px;
+        // transform: translateX(100%);
+    }
+
+    &__dexscreener {
+        bottom: 22px;
+        right: -26.61px;
+        // transform: translateX(100%);
+    }
+
+    &__farcasterin {
+        bottom: -13px;
+        right: 57.39px;
+        transform: translateY(100%);
+        //
+    }
+
+    &__warpcast {
+        bottom: -21px;
+        left: 103.49px;
+        transform: translateY(100%);
+    }
+
+    &__nexus {
+        bottom: 12px;
+        right: 442px;
+
+    }
+
+    &__sim {
+        bottom: 110px;
+        left: -8.51px;
+        transform: translateX(-100%);
+    }
+
+    &__dune {
+        bottom: 217px;
+        left: -33.51px;
+        transform: translateX(-100%);
+    }
+
+    &__balancer {
+        top: 83.51px;
+        right: 508.39px;
+    }
+
+    &__uniswap {
+        top: 22.51px;
+        right: 452.39px;
+    }
+
+    &__pancakeswap {
+        top: -13.49px;
+        left: 53.49px;
+        transform: translateY(-100%);
+    }
+
+    &__base {
+        top: -20.49px;
+        right: 146.39px;
+        transform: translateY(-100%);
+    }
+}
+
+.stakeholders-circle {
+    path {
+        transition: all .2s ease-out;
+    }
+
+    &__featured {
+
+        // green arc
+        &__base {
+            // green small circle
+
+            position: relative;
+
+            &::before {
+                content: "";
+                width: 100px;
+                height: 100px;
+                background-color: red;
+            }
+        }
+    }
+
+}
