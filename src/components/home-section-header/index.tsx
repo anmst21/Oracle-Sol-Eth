@@ -1,13 +1,31 @@
 import React from "react";
 import { HomeSectionCross, LinkBlog } from "../icons";
-import {
-  HomePageAbout,
-  HomePageStats,
-  HomePageBlog,
-  HomePagePlaceholder,
-} from "@/components/icons/home-page";
+// import {
+//   HomePageAbout,
+//   HomePageStats,
+//   HomePageBlog,
+//   HomePagePlaceholder,
+// } from "@/components/icons/home-page";
 import Link from "next/link";
 import { HomeHeaderType } from "@/types/home-page";
+
+import {
+  EverythingIcon,
+  FeaturesIcon,
+  SeeTheMoveIcon,
+  SocialTradingIcon,
+  StakeholdersIcon,
+  DashboardIcon,
+} from "@/components/icons/landing-pack/index";
+import {
+  everythingAnimation,
+  featuresAnimation,
+  seeTheMoveAnimation,
+  socialTradingAnimation,
+  stakeholdersAnimation,
+  dashboardAnimation,
+} from "@/components/icons/landing-pack/index";
+import HeaderIcon from "./header-icon";
 
 type Props = {
   type: HomeHeaderType;
@@ -19,7 +37,8 @@ const HomePageHeader = ({ type }: Props) => {
     "A multichain synthesiser for cross-chain asset routing, execution, and settlement.";
   let btnContent = "Visit Swap";
   let uri = "/swap";
-  let icon = <HomePagePlaceholder />;
+  let icon = <FeaturesIcon />;
+  let animation: unknown = featuresAnimation;
 
   switch (type) {
     case HomeHeaderType.About:
@@ -28,7 +47,8 @@ const HomePageHeader = ({ type }: Props) => {
         "A multichain synthesiser for cross-chain asset routing, execution, and settlement.";
       btnContent = "Visit Swap";
       uri = "/swap";
-      icon = <HomePageAbout />;
+      icon = <FeaturesIcon />;
+      animation = featuresAnimation;
       break;
 
     case HomeHeaderType.Stats:
@@ -37,7 +57,8 @@ const HomePageHeader = ({ type }: Props) => {
         "Oracle runs on Relay — a production payments protocol that moves value across chains in seconds.";
       btnContent = "Visit Relay";
       uri = "https://relay.link";
-      icon = <HomePageStats />;
+      icon = <StakeholdersIcon />;
+      animation = stakeholdersAnimation;
       break;
 
     case HomeHeaderType.Blog:
@@ -46,8 +67,8 @@ const HomePageHeader = ({ type }: Props) => {
         "Oracle brings swaps, bridging, buying, and context into one fast, composable surface.";
       btnContent = "Visit Blog";
       uri = "/blog";
-      icon = <HomePageBlog />;
-
+      animation = everythingAnimation;
+      icon = <EverythingIcon />;
       break;
 
     case HomeHeaderType.Stakeholders:
@@ -56,8 +77,8 @@ const HomePageHeader = ({ type }: Props) => {
         "Protocols, networks, and tools that power Oracle's speed, performance, and data.";
       btnContent = "Visit Nexus";
       uri = "https://n3xus.nyc/";
-      icon = <HomePagePlaceholder />;
-
+      icon = <SeeTheMoveIcon />;
+      animation = seeTheMoveAnimation;
       break;
 
     case HomeHeaderType.Chart:
@@ -66,7 +87,9 @@ const HomePageHeader = ({ type }: Props) => {
         "Portable charting with live OHLCV—built for fast, informed swaps.";
       btnContent = "Visit Chart";
       uri = "/chart";
-      icon = <HomePagePlaceholder />;
+      icon = <DashboardIcon />;
+      animation = dashboardAnimation;
+      // icon = <SeeTheMoveIcon />;
 
       break;
 
@@ -76,7 +99,9 @@ const HomePageHeader = ({ type }: Props) => {
         "A personalized feed from your Farcaster graph + top DEX activity.";
       btnContent = "Visit Feed";
       uri = "/chart";
-      icon = <HomePagePlaceholder />;
+      animation = socialTradingAnimation;
+      icon = <SocialTradingIcon />;
+      // icon = <FeedIcon />;
 
       break;
 
@@ -86,7 +111,7 @@ const HomePageHeader = ({ type }: Props) => {
   return (
     <div className="home-page-header">
       <div className="home-page-header__title">
-        <div className="home-page-header__title__icon">{icon}</div>
+        <HeaderIcon animation={animation} icon={icon} />
         <h2>{header}</h2>
         <p>{subheader}</p>
       </div>

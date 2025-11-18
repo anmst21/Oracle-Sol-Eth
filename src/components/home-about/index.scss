@@ -1,0 +1,133 @@
+.home-about {
+    display: flex;
+    flex-direction: column;
+
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        padding: 0 100px;
+        margin-top: 94px;
+    }
+}
+
+
+.home-about-icon {
+    display: flex;
+    // height: 571px;
+    position: relative;
+
+
+
+    --container-border: 1px solid #889697;
+
+    &__cross {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #000;
+
+        &--1 {
+            left: 0.5px;
+            top: 0.5px;
+            transform: translate(-50%, -50%);
+        }
+
+        &--2 {
+            right: 0.5px;
+            top: 0.5px;
+            transform: translate(50%, -50%);
+        }
+
+        &--3 {
+            top: 0.5px;
+            left: calc(50% - 0.5px);
+            transform: translate(-50%, -50%);
+        }
+
+        &--4 {
+            bottom: 0.5px;
+            left: 0.5px;
+            transform: translate(-50%, 50%);
+        }
+
+        &--5 {
+            bottom: 0.5px;
+            left: calc(50% - 0.5px);
+            transform: translate(-50%, 50%);
+        }
+
+        &--6 {
+            bottom: 0.5px;
+            right: 0.5px;
+            transform: translate(50%, 50%);
+        }
+    }
+
+
+    &:last-child {
+
+        .home-about-icon__info,
+        .home-about-icon__animation {
+
+            border-bottom: var(--container-border);
+
+        }
+    }
+
+
+    &__info,
+    &__animation {
+        display: flex;
+        flex: 1;
+        border-right: var(--container-border);
+        border-top: var(--container-border);
+        padding: 44px;
+        aspect-ratio: 1.33333;
+    }
+
+    &__info,
+    &__animation {
+
+        flex-direction: column;
+        border-left: var(--container-border);
+
+
+        h3 {
+            color: #D9F1E9;
+            font-family: var(--font-funnel-display);
+            font-size: 36px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            margin-bottom: 12px;
+        }
+
+        p {
+            color: #889697;
+            font-family: var(--font-funnel-sans);
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 300;
+            line-height: 36px;
+        }
+
+
+    }
+
+    &__animation {
+        border-left: var(--container-border);
+        //    border-color: transparent;
+        border-left-color: transparent;
+    }
+
+    // &--swap {}
+
+
+    // &--bridge {}
+
+    // &--send {}
+}
