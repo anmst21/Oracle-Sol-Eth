@@ -1,11 +1,5 @@
 import React from "react";
 import { HomeSectionCross, LinkBlog } from "../icons";
-// import {
-//   HomePageAbout,
-//   HomePageStats,
-//   HomePageBlog,
-//   HomePagePlaceholder,
-// } from "@/components/icons/home-page";
 import Link from "next/link";
 import { HomeHeaderType } from "@/types/home-page";
 
@@ -57,8 +51,8 @@ const HomePageHeader = ({ type }: Props) => {
         "Oracle runs on Relay — a production payments protocol that moves value across chains in seconds.";
       btnContent = "Visit Relay";
       uri = "https://relay.link";
-      icon = <StakeholdersIcon />;
-      animation = stakeholdersAnimation;
+      icon = <DashboardIcon />;
+      animation = dashboardAnimation;
       break;
 
     case HomeHeaderType.Blog:
@@ -77,8 +71,8 @@ const HomePageHeader = ({ type }: Props) => {
         "Protocols, networks, and tools that power Oracle's speed, performance, and data.";
       btnContent = "Visit Nexus";
       uri = "https://n3xus.nyc/";
-      icon = <SeeTheMoveIcon />;
-      animation = seeTheMoveAnimation;
+      icon = <StakeholdersIcon />;
+      animation = stakeholdersAnimation;
       break;
 
     case HomeHeaderType.Chart:
@@ -87,9 +81,8 @@ const HomePageHeader = ({ type }: Props) => {
         "Portable charting with live OHLCV—built for fast, informed swaps.";
       btnContent = "Visit Chart";
       uri = "/chart";
-      icon = <DashboardIcon />;
-      animation = dashboardAnimation;
-      // icon = <SeeTheMoveIcon />;
+      icon = <SeeTheMoveIcon />;
+      animation = seeTheMoveAnimation;
 
       break;
 
@@ -101,7 +94,6 @@ const HomePageHeader = ({ type }: Props) => {
       uri = "/chart";
       animation = socialTradingAnimation;
       icon = <SocialTradingIcon />;
-      // icon = <FeedIcon />;
 
       break;
 

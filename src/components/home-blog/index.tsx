@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
 
 import { LinkBlog, HomeSectionCross } from "../icons";
@@ -16,6 +16,7 @@ const HomeBlog = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false }, [
     Autoplay({ playOnInit: true, delay: ANIMATION_TIME }),
   ]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -44,12 +45,30 @@ const HomeBlog = () => {
     },
     [emblaApi]
   );
+
+  // useEffect(() => {
+  //   // console.log({ emblaRef: emblaRef.current, emblaApi });
+  //   if (!emblaApi) {
+  //     return;
+  //   }
+  //   console.log({
+  //     containerRef: containerRef.current,
+  //     progress: emblaApi?.scrollProgress(),
+  //   });
+
+  //   emblaApi.on("scroll", () => {
+  //     console.log({
+  //       containerRef: containerRef.current,
+  //       progress: emblaApi?.scrollProgress(),
+  //     });
+  //   });
+  // }, [emblaRef, emblaApi]);
   return (
     <div className="home-blog">
       <HomeSectionHeader type={HomeHeaderType.Blog} />
 
       <div className="home-blog__viewport" ref={emblaRef}>
-        <div className="home-blog__container">
+        <div ref={containerRef} className="home-blog__container">
           {homeBlogPosts.map((post, i) => (
             <Link
               className={`home-blog-post home-blog-post--phone home-blog-post--${i + 1}`}

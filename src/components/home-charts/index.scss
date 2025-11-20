@@ -1,0 +1,20 @@
+.home-charts,
+.home-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 94px;
+    align-items: center;
+
+    &__wrapper {
+        max-width: 1528px;
+        display: flex;
+        padding: 0 140px;
+        margin-bottom: 94px;
+    }
+}
+
+.section-grid-bottom {
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
