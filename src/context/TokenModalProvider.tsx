@@ -104,7 +104,7 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
 
   const [sellToken, setSellToken] = useState<UnifiedToken | null>(null);
   const [buyToken, setBuyToken] = useState<UnifiedToken | null>(null);
-  console.log("sellToken buyToken", sellToken, buyToken);
+  // console.log("sellToken buyToken", sellToken, buyToken);
   const [modalMode, setModalMode] = useState<ModalMode>(null);
 
   useEffect(() => {

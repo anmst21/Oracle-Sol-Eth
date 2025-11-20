@@ -1,11 +1,12 @@
+"use client";
+
 import {
   TotalRequests,
   TotalUsers,
   TotalVolume,
-  ChartIconFilled,
+  greenEq,
 } from "@/components/icons/dashboard";
-
-import React from "react";
+import Lottie from "lottie-react";
 
 type Props = {
   type: "users" | "volume" | "requests";
@@ -32,7 +33,7 @@ const TopCell = ({ type }: Props) => {
 
     case "requests":
       header = "Requests";
-      subheader = "Cross-chain requests";
+      subheader = "Cross-chain";
       icon = <TotalRequests />;
       break;
 
@@ -55,7 +56,15 @@ const TopCell = ({ type }: Props) => {
       </div>
       <div className="dashboard-top-cell__bottom">
         <div className="dashboard-top-cell__bottom__icon">
-          <ChartIconFilled />
+          <Lottie
+            animationData={greenEq}
+            loop={true}
+            autoplay={true}
+            style={{
+              width: 36,
+              height: 12,
+            }}
+          />
         </div>
         <div className="dashboard-top-cell__bottom__subheader">
           {subheader + " "} <span>total</span>

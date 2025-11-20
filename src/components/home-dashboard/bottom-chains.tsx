@@ -1,6 +1,66 @@
-import React from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useChainsData } from "@/hooks/useChains";
+import classNames from "classnames";
+import { getIconUri } from "@/helpers/get-icon-uri";
+import ChainSkeleton from "../modal/chain-skeleton";
+import { HexChain } from "../icons";
 
-const DashboardBottomChains = () => {
+const DashboardBottomChains = ({
+  chainId,
+  setChainId,
+}: {
+  chainId: number;
+  setChainId: Dispatch<SetStateAction<number>>;
+}) => {
+  const [isShowAll, setIsShowAll] = useState(false);
+
+  const {
+    isLoading: isLoadingChains,
+    isLoaded: isLoadedChains,
+    error: chainsError,
+    // chains,
+    featuredChains,
+    otherChains,
+    solanaChain,
+    baseChain,
+    loadChains,
+    // ethereumChain,
+  } = useChainsData();
+
+  useEffect(() => {
+    loadChains();
+  }, [loadChains]);
+
+  console.log({
+    isLoadingChains,
+    isLoadedChains,
+    chainsError,
+    featuredChains,
+    otherChains,
+  });
+
+  const allChains = useMemo(() => {
+    if (
+      !baseChain ||
+      !solanaChain ||
+      featuredChains.length === 0 ||
+      otherChains.length === 0
+    )
+      return [];
+
+    const filteredFeatured = featuredChains.filter(
+      (c) => c.id !== baseChain.id && c.id !== solanaChain.id
+    );
+
+    return [baseChain, solanaChain, ...filteredFeatured, ...otherChains];
+  }, [baseChain, solanaChain, featuredChains, otherChains]);
+
   return (
     <div className="dashboard-bottom-chains">
       <div className="dashboard-bottom-chart__header">
@@ -13,7 +73,32 @@ const DashboardBottomChains = () => {
         Analyze chain-level liquidity flow and transaction volume. Select a
         network to break down how its USD activity evolves over time.
       </p>
-      <div className="dashboard-bottom-chains__list"></div>
+      <div className="dashboard-bottom-chains__list">
+        {allChains.length > 0 && !isLoadingChains
+          ? (isShowAll ? allChains : allChains.slice(0, 18)).map((chain) => {
+              if (!chain.id) return;
+              return (
+                <button
+                  disabled={isLoadingChains}
+                  key={chain.id}
+                  className={classNames("chain-sidebar", {
+                    "chain-sidebar--active": chainId === chain.id,
+                  })}
+                  onClick={() => setChainId(chain?.id || 8453)}
+                >
+                  <HexChain uri={getIconUri(chain.id)} />
+                  <span>{chain.displayName}</span>
+                </button>
+              );
+            })
+          : Array.from({ length: 30 }, (_, idx) => <ChainSkeleton key={idx} />)}
+        <button
+          onClick={() => setIsShowAll(!isShowAll)}
+          className="dashboard-bottom-chains__all"
+        >
+          {!isShowAll ? "Show All" : "Show Less"}
+        </button>
+      </div>
     </div>
   );
 };

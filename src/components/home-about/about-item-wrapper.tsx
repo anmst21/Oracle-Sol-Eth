@@ -1,15 +1,15 @@
 import { HomeSectionCross } from "../icons";
 
 type Props = {
-  key: string;
+  keyString: string;
   length: number;
   index: number;
   children: React.ReactNode;
 };
 
-const AboutItemWrapper = ({ key, length, index, children }: Props) => {
+const AboutItemWrapper = ({ keyString, length, index, children }: Props) => {
   return (
-    <div className={`home-about-icon home-about-icon--${key}`}>
+    <div className={`home-about-icon home-about-icon--${keyString}`}>
       <div className="home-about-icon__cross home-about-icon__cross--1">
         <HomeSectionCross />
       </div>

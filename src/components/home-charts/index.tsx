@@ -11,14 +11,7 @@ const HomeCharts = () => {
     <div className="home-charts">
       <HomePageHeader type={HomeHeaderType.Chart} />
       <div className="home-charts__wrapper">
-        <AboutItemWrapper key="charts" length={1} index={0}>
-          <div className="home-about-icon__info">
-            <ItemText
-              header="See the move. Make the move."
-              paragraph="Our dedicated Chart page brings GeckoTerminal market data into a clean, portable view. Scan momentum, switch pools, and route a swap without leaving the chart."
-              animation={portableAnimation}
-            />
-          </div>
+        <AboutItemWrapper keyString="charts" length={1} index={0}>
           <div className={"home-about-icon__animation section-grid-bottom"}>
             <Image
               src={"/landing/charts.png"}
@@ -29,6 +22,13 @@ const HomeCharts = () => {
                 width: "100%",
                 height: "auto",
               }}
+            />
+          </div>
+          <div className="home-about-icon__info">
+            <ItemText
+              header="See the move. Make the move."
+              paragraph="Our dedicated Chart page brings GeckoTerminal market data into a clean, portable view. Scan momentum, switch pools, and route a swap without leaving the chart."
+              animation={portableAnimation}
             />
           </div>
         </AboutItemWrapper>

@@ -11,24 +11,24 @@ const HomeFeed = () => {
     <div className="home-feed">
       <HomePageHeader type={HomeHeaderType.Feed} />
       <div className="home-feed__wrapper">
-        <AboutItemWrapper key="feed" length={1} index={0}>
-          <div className="home-about-icon__info section-grid-bottom">
-            <Image
-              src={"/landing/feed.png"}
-              alt="Feed mockup"
-              width={1094}
-              height={730}
-              style={{
-                width: "100%",
-                height: "auto",
-              }}
-            />
-          </div>
+        <AboutItemWrapper keyString="feed" length={1} index={0}>
           <div className="home-about-icon__animation">
             <ItemText
               header="Social trading, verified on-chain"
               paragraph="Oracle associates Farcaster accounts with their verified wallet addresses and ingests DEX swap transactions via Sim.io."
               animation={feedAnimation}
+            />
+          </div>
+          <div className="home-about-icon__info section-grid-bottom">
+            <Image
+              src={"/landing/feed.png"}
+              alt="Feed mockup"
+              width={1094}
+              height={637}
+              style={{
+                width: "100%",
+                height: "auto",
+              }}
             />
           </div>
         </AboutItemWrapper>

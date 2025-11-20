@@ -13,7 +13,54 @@
     }
 
 
-    &__list {}
+    &__all {
+        height: 38px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-funnel-display);
+        color: #889697;
+        font-size: 12px;
+        transition: all .2s ease-out;
+
+        &:hover {
+            color: #D9F1E9;
+            text-decoration: underline;
+        }
+    }
+
+
+    &__list {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        // flex: 0 0 50%;
+        overflow-y: scroll;
+        max-height: 416px;
+        margin-top: auto;
+
+        &::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        scrollbar-width: none;
+
+        -ms-overflow-style: none;
+
+        .chain-sidebar {
+            flex: 0 0 calc(50% - 2px);
+
+            span {
+                max-width: 8ch;
+                /* 10 characters */
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
 }
 
 
@@ -211,7 +258,7 @@
     &__value {
         color: #D9F1E9;
         font-family: var(--font-funnel-display);
-        font-size: 48px;
+        font-size: 40px;
         font-style: normal;
         font-weight: 500;
         line-height: 75%;
@@ -225,7 +272,7 @@
     &__bot {
         color: #889697;
         font-family: var(--font-funnel-sans);
-        font-size: 16px;
+        font-size: 14px;
         font-style: normal;
         font-weight: 300;
         line-height: normal;
@@ -263,7 +310,7 @@
     &__container {
         display: flex;
         flex: 1;
-        padding: 0 100px;
+        padding: 0 140px;
     }
 
     &__wrapper {
@@ -272,6 +319,12 @@
         grid-template-rows: repeat(3, auto); // 3 rows
         gap: 40px;
         padding: 40px;
+
+        @include down(xl) {
+            gap: 20px;
+            padding: 20px;
+        }
+
         width: 100%;
         border: 1px solid #889697;
         position: relative;
@@ -331,6 +384,12 @@
     border: 1px solid rgba(136, 150, 151, 0.20);
     background: rgba(136, 150, 151, 0.05);
     padding: 40px;
+
+    @include down(xl) {
+        // gap: 20px;
+        padding: 20px;
+    }
+
     display: flex;
     flex-direction: column;
 }

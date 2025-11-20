@@ -33,7 +33,7 @@ const AboutItem = ({
   const isNormal = itemKey === "swap" || itemKey === "bridge";
   const isInverted = itemKey === "buy" || itemKey === "send";
   return (
-    <AboutItemWrapper key={itemKey} length={length} index={index}>
+    <AboutItemWrapper keyString={itemKey} length={length} index={index}>
       <div
         className={classNames("home-about-icon__info", {
           "info-no-padding": isInverted,

@@ -1,12 +1,12 @@
 import React from "react";
 import { HomeSectionCross } from "../icons";
 import TopCell from "./top-cell";
-import DashboardBottomChains from "./bottom-chains";
-import DashboardBottomCharts from "./bottom-chart";
+
 import Image from "next/image";
 import MidCell from "./mid-cell";
 import { HomeHeaderType } from "@/types/home-page";
 import HomePageHeader from "../home-section-header";
+import DashboardChart from "./dashboard-chart";
 
 const HomeDashboard = () => {
   return (
@@ -39,8 +39,7 @@ const HomeDashboard = () => {
               height={100}
             />
           </div>
-          <DashboardBottomCharts />
-          <DashboardBottomChains />
+          <DashboardChart />
         </div>
       </div>
     </div>
