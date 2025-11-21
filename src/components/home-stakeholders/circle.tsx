@@ -6,9 +6,10 @@ import { ActiveItem, StakeholderType } from "./types";
 type Props = {
   activeType: StakeholderType;
   activeItem: ActiveItem;
+  rotation: number;
 };
 
-const Circle = ({ activeType, activeItem }: Props) => {
+const Circle = ({ activeType, activeItem, rotation }: Props) => {
   //   const handleTypeClick = (type: StakeholderType) => {
   //     setActiveType(type);
 
@@ -29,6 +30,9 @@ const Circle = ({ activeType, activeItem }: Props) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className="stakeholders-circle"
+      style={{
+        transform: `rotate(${rotation}deg)`,
+      }}
     >
       {/* {featured} */}
       <path

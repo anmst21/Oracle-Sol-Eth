@@ -5,7 +5,7 @@
     margin: 0 20px;
     // height: calc(1vh - 300px);
     // height: 1vh;
-    min-height: calc(100vh - 300px);
+
 
     @include down(md) {
         min-height: auto;

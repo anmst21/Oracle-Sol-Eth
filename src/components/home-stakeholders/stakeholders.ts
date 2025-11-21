@@ -32,8 +32,8 @@ export const stakeholdersList = [
       "The engine behind Oracle's swap, bridge, and send. Relay moves value between blockchains quickly and at low cost, so transfers feel simple and instant.",
     type: "swap",
     icon: "/carousel-logos/relay-logo.svg",
-    width: 312,
-    height: 70,
+    width: 120,
+    height: 82,
   },
   {
     header: "MoonPay",
@@ -45,8 +45,8 @@ export const stakeholdersList = [
     type: "swap",
 
     icon: "/carousel-logos/moonpay-logo.svg",
-    width: 312,
-    height: 69,
+    width: 120,
+    height: 120,
   },
   {
     header: "Privy",
@@ -57,8 +57,8 @@ export const stakeholdersList = [
       "Sign-in and wallet management. Connect an existing wallet or create a new self-custodial one, with a smooth, secure experience.",
     type: "swap",
     icon: "/carousel-logos/privy-logo.svg",
-    width: 309,
-    height: 70,
+    width: 100,
+    height: 130,
   },
   {
     header: "GeckoTerminal",
@@ -177,7 +177,7 @@ export const stakeholdersList = [
       "Popular DEX on multiple networks. Public swaps are surfaced in the feed with links for quick review.",
     type: "protocol",
     icon: "/carousel-logos/pancake-swap-logo.svg",
-    width: 312,
-    height: 48,
+    width: 120,
+    height: 125,
   },
 ];

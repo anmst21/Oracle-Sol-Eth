@@ -46,23 +46,6 @@ const HomeBlog = () => {
     [emblaApi]
   );
 
-  // useEffect(() => {
-  //   // console.log({ emblaRef: emblaRef.current, emblaApi });
-  //   if (!emblaApi) {
-  //     return;
-  //   }
-  //   console.log({
-  //     containerRef: containerRef.current,
-  //     progress: emblaApi?.scrollProgress(),
-  //   });
-
-  //   emblaApi.on("scroll", () => {
-  //     console.log({
-  //       containerRef: containerRef.current,
-  //       progress: emblaApi?.scrollProgress(),
-  //     });
-  //   });
-  // }, [emblaRef, emblaApi]);
   return (
     <div className="home-blog">
       <HomeSectionHeader type={HomeHeaderType.Blog} />

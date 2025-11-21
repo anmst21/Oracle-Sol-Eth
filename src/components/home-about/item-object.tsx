@@ -55,7 +55,8 @@ const ItemObject = ({
         // pointer cursor on hover
         cursor
         // starting rotation (same as your prop, but you can hardcode too)
-        //rotation={rotation as [number, number, number]}
+        rotation={rotation as [number, number, number]}
+        position={position as [number, number, number]}
         // how far user can tilt vertically
         // config={{ mass: 1, tension: 170, friction: 26 }}
         polar={[-Math.PI / 6, Math.PI / 4]}
@@ -74,7 +75,7 @@ const ItemObject = ({
               }
               //   rotation={rotation as [x: number, y: number, z: number]}
               //   position={position as [x: number, y: number, z: number]}
-              scale={2.5}
+              scale={3.5}
               castShadow
               receiveShadow
             >
@@ -83,9 +84,9 @@ const ItemObject = ({
           </Float>
         </Center>
       </PresentationControls>
-      {/* <EffectComposer>
+      <EffectComposer>
         <ASCII />
-      </EffectComposer> */}
+      </EffectComposer>
       {/* </PresentationControls> */}
     </Canvas>
   );

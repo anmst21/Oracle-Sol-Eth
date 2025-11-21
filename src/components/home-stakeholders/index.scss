@@ -1,3 +1,31 @@
+.mobile-carousel {
+    //  background-color: red;
+    position: absolute;
+    inset: 0;
+    z-index: 9999;
+    //  overflow: hidden;
+
+    &__container {
+        display: flex;
+        touch-action: pan-y pinch-zoom;
+        //background-color: blue;
+        height: 100%;
+        //
+    }
+
+
+    .mobile-carousel-item {
+        // background-color: red;
+        transform: translate3d(0, 0, 0);
+        flex: 0 0 100%;
+        min-width: 0;
+        //   background-color: green;
+        height: 100%;
+        display: flex;
+        // padding-left: var(--slide-spacing);
+    }
+}
+
 .home-stakeholders {
     display: flex;
     //  height: 700px;
@@ -16,6 +44,13 @@
         align-items: center;
         margin-top: 80px;
 
+        @include down(md) {
+            justify-content: center;
+            padding: 0;
+            height: auto;
+            margin-top: 45px;
+        }
+
     }
 
 
@@ -24,6 +59,22 @@
         flex-direction: column;
 
         max-width: 400px;
+
+        @include down(md) {
+            max-width: 362px;
+            position: absolute;
+            z-index: 100;
+            left: 50%;
+            transform: translateX(-50%) translateY(-70px);
+            width: 100%;
+            padding: 0 20px;
+
+            .home-stakeholders__text__badge {
+                position: absolute;
+                right: -10px;
+                bottom: -20px;
+            }
+        }
 
         &__badge {
             padding: 0 8px;
@@ -54,6 +105,11 @@
             font-weight: 500;
             line-height: normal;
 
+            @include down(md) {
+                font-size: 24px;
+                text-align: center;
+            }
+
         }
 
         p {
@@ -66,6 +122,14 @@
             margin-bottom: 48px;
             margin-top: 16px;
             height: 90px;
+
+            @include down(md) {
+                margin-bottom: 0;
+                font-size: 16px;
+                line-height: 24px;
+                text-align: center;
+                margin-top: 8px;
+            }
         }
     }
 
@@ -82,6 +146,27 @@
         border-radius: 1000px;
         justify-content: center;
         overflow: hidden;
+
+        @include down(md) {
+            border-radius: 0;
+            transform: translateY(-180px);
+
+            img {
+                scale: 0.55;
+            }
+        }
+
+        // &::before {
+        //     content: "";
+        //     width: 7px;
+        //     top: 0;
+        //     bottom: 0;
+        //     left: 50%;
+        //     transform: translateX(-50%);
+        //     position: absolute;
+        //     z-index: 1000;
+        //     background-color: red;
+        // }
     }
 
     &__circles {
@@ -89,6 +174,28 @@
         position: relative;
         // margin: 0 auto;
         margin-right: 50px;
+
+        @include down(md) {
+            margin: 0;
+        }
+
+        &::before {
+            @include down(md) {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 75%;
+                // top: 0;
+                right: 0;
+                background: linear-gradient(to top,
+                        rgba(0, 0, 0, 1) 25%,
+                        rgba(0, 0, 0, 0.85) 55%,
+                        rgba(0, 0, 0, 0.5) 75%,
+                        rgba(0, 0, 0, 0) 100%);
+                z-index: 1;
+            }
+        }
 
     }
 }
@@ -99,6 +206,10 @@
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 20;
+
+    @include down(md) {
+        display: none;
+    }
 }
 
 
@@ -124,7 +235,9 @@
     background-color: color-mix(in srgb, currentColor 10%, transparent);
 
 
-
+    @include down(md) {
+        display: none;
+    }
 
 
 
@@ -224,6 +337,13 @@
         transition: all .2s ease-out;
     }
 
+    // transition: all .2s ease-out;
+
+
+
+    position: relative;
+
+
     &__featured {
 
         // green arc
@@ -232,12 +352,12 @@
 
             position: relative;
 
-            &::before {
-                content: "";
-                width: 100px;
-                height: 100px;
-                background-color: red;
-            }
+            // &::before {
+            //     content: "";
+            //     width: 100px;
+            //     height: 100px;
+            //     background-color: red;
+            // }
         }
     }
 

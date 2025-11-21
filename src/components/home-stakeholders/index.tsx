@@ -11,8 +11,21 @@ import { motion, AnimatePresence } from "motion/react";
 import HomeSectionHeader from "../home-section-header";
 import { HomeHeaderType } from "@/types/home-page";
 import Link from "next/link";
+import MobileCarousel from "./carousel";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
+import {
+  sectionColors,
+  ROTATIONS,
+  ITEMS_COUNT,
+  smoothAnimation,
+  textAnimation,
+} from "./helpers";
 
 const HomeStakeholders = () => {
+  const isDesktop = useIsDesktop();
+
   const [activeType, setActiveType] = useState<StakeholderType>("featured");
   const [activeItem, setActiveItem] = useState<ActiveItem>({
     type: "featured",
@@ -29,40 +42,10 @@ const HomeStakeholders = () => {
     [setActiveType, setActiveItem]
   );
 
-  const sectionColors: Record<StakeholderType, string> = {
-    featured: "#afe900",
-    swap: "#00B0EB",
-    coins: "#00EBB0",
-    social: "#FFFFFF",
-    creator: "#EB00B0",
-    data: "#EB8900",
-    protocol: "#EB003B",
-  };
-
   const activeImage = useMemo(
     () => stakeholdersList.find((item) => item.key === activeItem?.id),
     [activeItem]
   );
-
-  const smoothAnimation = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-    transition: { duration: 0.2, ease: "easeInOut" },
-  } as const;
-
-  const textAnimation = {
-    initial: { opacity: 0, x: 10 },
-    animate: {
-      opacity: 1,
-      x: 0,
-    },
-    transition: { duration: 0.2, ease: "easeInOut" },
-    exit: {
-      opacity: 0,
-      x: 10,
-    },
-  } as const;
 
   const getNextItem = (current: ActiveItem): ActiveItem => {
     const currentIndex = stakeholderItems.findIndex(
@@ -89,6 +72,7 @@ const HomeStakeholders = () => {
   };
 
   useEffect(() => {
+    if (!isDesktop) return;
     const timer = setTimeout(() => {
       const active = getNextItem(activeItem);
       setActiveItem(active);
@@ -96,7 +80,100 @@ const HomeStakeholders = () => {
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, [activeItem]);
+  }, [activeItem, isDesktop]);
+  //1024px
+
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
+    Autoplay({ playOnInit: true, delay: 5000 }),
+  ]);
+  // console.log({ scrollProgress });
+
+  useEffect(() => {
+    if (!emblaApi || isDesktop) return;
+
+    let frameId: number;
+
+    const loop = () => {
+      const progress = emblaApi.scrollProgress(); // 0 → 1
+      setScrollProgress(progress);
+      frameId = requestAnimationFrame(loop);
+    };
+
+    frameId = requestAnimationFrame(loop);
+
+    return () => cancelAnimationFrame(frameId);
+  }, [emblaApi, isDesktop]);
+
+  const wheelRotation = useMemo(() => {
+    // keep it in [0, 1)
+    const p = ((scrollProgress % 1) + 1) % 1;
+
+    // each item takes equal share of progress
+    const step = 1 / ITEMS_COUNT; // ~ 0.071428...
+
+    // 0..13.999
+    const idxFloat = p / step;
+
+    // current "from" index
+    const fromIndex = Math.floor(idxFloat); // 0..13
+
+    // local progress between fromIndex and next index
+    const t = idxFloat - fromIndex; // 0..1
+
+    const toIndex = (fromIndex + 1) % ITEMS_COUNT;
+
+    const fromAngle = ROTATIONS[fromIndex];
+    const toAngle = ROTATIONS[toIndex];
+
+    // linear interpolation between the two angle stops
+    return fromAngle + (toAngle - fromAngle) * t;
+  }, [scrollProgress]);
+
+  useEffect(() => {
+    if (!emblaApi || isDesktop) return;
+
+    const handleSelect = () => {
+      const index = emblaApi.selectedScrollSnap(); // 0..N-1
+
+      const item = stakeholderItems[index];
+      if (!item) return;
+
+      setActiveItem({
+        type: item.category as StakeholderType,
+        id: item.key,
+      });
+      setActiveType(item.category as StakeholderType);
+    };
+
+    // Run once on mount so state matches initial slide
+    handleSelect();
+
+    emblaApi.on("select", handleSelect);
+    emblaApi.on("reInit", handleSelect);
+
+    return () => {
+      emblaApi.off("select", handleSelect);
+      emblaApi.off("reInit", handleSelect);
+    };
+  }, [emblaApi, isDesktop]);
+
+  useEffect(() => {
+    if (!emblaApi || isDesktop) return;
+
+    const autoplay = emblaApi.plugins()?.autoplay;
+    if (!autoplay) return;
+
+    const scheduleRestart = () => {
+      autoplay.play();
+    };
+
+    emblaApi.on("pointerUp", scheduleRestart);
+
+    return () => {
+      emblaApi.on("pointerUp", scheduleRestart);
+    };
+  }, [emblaApi, isDesktop]);
 
   return (
     <div className="home-stakeholders">
@@ -131,6 +208,10 @@ const HomeStakeholders = () => {
         </div>
 
         <div className="home-stakeholders__circles">
+          {!isDesktop && (
+            <MobileCarousel stakeholders={stakeholdersList} ref={emblaRef} />
+          )}
+
           <AnimatePresence mode="sync">
             {activeImage && (
               <motion.div
@@ -153,7 +234,11 @@ const HomeStakeholders = () => {
               </motion.div>
             )}
           </AnimatePresence>
-          <Circle activeType={activeType} activeItem={activeItem} />
+          <Circle
+            rotation={isDesktop ? 0 : wheelRotation}
+            activeType={activeType}
+            activeItem={activeItem}
+          />
           <HoverCircle handleItemClick={handleItemClick} />
 
           {stakeholdersList.map((stakeholderBadge, i) => {
