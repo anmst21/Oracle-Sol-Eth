@@ -171,7 +171,7 @@ const HomeStakeholders = () => {
     emblaApi.on("pointerUp", scheduleRestart);
 
     return () => {
-      emblaApi.on("pointerUp", scheduleRestart);
+      emblaApi.off("pointerUp", scheduleRestart);
     };
   }, [emblaApi, isDesktop]);
 

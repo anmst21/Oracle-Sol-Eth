@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
-
+import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { LinkBlog, HomeSectionCross } from "../icons";
 import HomeSectionHeader from "../home-section-header";
 import { HomeHeaderType } from "@/types/home-page";
@@ -10,42 +10,86 @@ import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 // import { motion, useAnimationControls } from "motion/react";
 import { homeBlogPosts } from "@/helpers/home-blog-posts";
-const ANIMATION_TIME = 3000;
+const ANIMATION_TIME = 5000;
 
 const HomeBlog = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false }, [
-    Autoplay({ playOnInit: true, delay: ANIMATION_TIME }),
-  ]);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: false,
+      align: "center",
+      containScroll: false,
+    },
+    [Autoplay({ playOnInit: true, delay: ANIMATION_TIME })]
+  );
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  const isDesktop = useIsDesktop();
+
   useEffect(() => {
-    if (!emblaApi) return;
-    const autoplay = emblaApi?.plugins()?.autoplay;
+    if (!emblaApi || isDesktop) return;
 
-    emblaApi.on("scroll", () => {
+    let frameId: number;
+
+    const loop = () => {
+      const progress = emblaApi.scrollProgress(); // 0 → 1
+      setScrollProgress(progress);
+      frameId = requestAnimationFrame(loop);
+    };
+
+    frameId = requestAnimationFrame(loop);
+
+    return () => cancelAnimationFrame(frameId);
+  }, [emblaApi, isDesktop]);
+
+  useEffect(() => {
+    if (!emblaApi || isDesktop) return;
+
+    const autoplay = emblaApi.plugins()?.autoplay;
+    if (!autoplay) return;
+
+    const scheduleRestart = () => {
       autoplay.play();
-    });
+    };
 
-    emblaApi.on("select", () => {
-      const lastIndex = emblaApi.slideNodes().length - 1;
-      if (autoplay.isPlaying()) autoplay.stop();
-      if (emblaApi.selectedScrollSnap() === lastIndex) {
-        setTimeout(() => {
-          emblaApi.scrollTo(0);
-          autoplay.play();
-        }, ANIMATION_TIME); // wait for delay before resetting
-      }
-    });
-  }, [emblaApi]);
+    emblaApi.on("pointerUp", scheduleRestart);
+
+    return () => {
+      emblaApi.off("pointerUp", scheduleRestart);
+    };
+  }, [emblaApi, isDesktop]);
 
   const onButtonClick = useCallback(
     (index: number) => {
       if (!emblaApi) return;
+
+      const autoplay = emblaApi.plugins()?.autoplay;
+      autoplay.reset();
+
       emblaApi.scrollTo(index);
+      // autoplay.play();
     },
     [emblaApi]
   );
 
+  const getSegmentProgress = (
+    globalProgress: number,
+    index: number,
+    total: number
+  ) => {
+    if (total <= 0) return 0;
+
+    const segmentSize = 1 / total;
+    const start = index * segmentSize;
+    const end = start + segmentSize;
+
+    // Map global [start, end] → local [0, 1]
+    const raw = (globalProgress - start) / segmentSize;
+
+    // Clamp to [0, 1]
+    return Math.min(Math.max(raw, 0), 1);
+  };
   return (
     <div className="home-blog">
       <HomeSectionHeader type={HomeHeaderType.Blog} />
@@ -92,6 +136,12 @@ const HomeBlog = () => {
       </div>
       <div className="home-blog__status">
         {homeBlogPosts.map((_, i) => {
+          const segmentProgress = getSegmentProgress(
+            scrollProgress,
+            i - 1,
+            homeBlogPosts.length - 1
+          );
+
           return (
             <div
               onClick={() => onButtonClick(i)}
@@ -99,7 +149,10 @@ const HomeBlog = () => {
               key={i}
             >
               <div className="animated-status">
-                <div className="animated-status--animated" />
+                <div
+                  style={{ width: `${segmentProgress * 100}%` }}
+                  className="animated-status--animated"
+                />
               </div>
             </div>
           );

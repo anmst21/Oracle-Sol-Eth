@@ -13,12 +13,15 @@ export default function Page() {
       {/* <HomeHero />
       <HomeAbout />
       <HomeDashboard />
-      <HomeBlog />
+      
       */}
       <HomeStakeholders />
+      <HomeBlog />
+      <HomeCta />
+      {/* */}
       {/* <HomeCharts /> */}
       {/* <HomeFeed />
-      <HomeCta /> */}
+  > */}
     </div>
   );
 }
