@@ -13,7 +13,7 @@ export const fetchCommunityCoins = async (): Promise<UnifiedToken[] | null> => {
       throw new Error(`Failed to fetch coins: ${response.statusText}`);
     }
     const data: FetchedCoin[] = await response.json();
-    console.log("dddope", data);
+    // console.log("dddope", data);
     // Format the data before returning
     const formattedData: FormattedCoin[] = data.map((coin) => ({
       address: coin.tokenAddress,

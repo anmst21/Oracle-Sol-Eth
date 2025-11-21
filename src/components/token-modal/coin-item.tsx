@@ -61,7 +61,7 @@ const CoinItem = ({ type, coin, chain }: Props) => {
           isNative = checkIfNative(
             geckoCoin.meta?.base?.attributes.address as Address
           );
-          console.log("gecko", geckoCoin);
+          // console.log("gecko", geckoCoin);
         }
         if (type === "community") {
           geckoCoin = coin as FormattedCoin;
@@ -71,7 +71,7 @@ const CoinItem = ({ type, coin, chain }: Props) => {
             ? communityChains(coin.chainId as number)
             : undefined;
           isNative = checkIfNative(geckoCoin.address as Address);
-          console.log("gecko", geckoCoin);
+          // console.log("gecko", geckoCoin);
         }
         if (type === "relay") {
           geckoCoin = coin as Token;
@@ -79,7 +79,7 @@ const CoinItem = ({ type, coin, chain }: Props) => {
           isNative =
             geckoCoin.metadata?.isNative ||
             checkIfNative(geckoCoin.address as Address);
-          console.log("relay", geckoCoin);
+          // console.log("relay", geckoCoin);
         }
 
         if (!tokenAddress) return;
@@ -101,7 +101,7 @@ const CoinItem = ({ type, coin, chain }: Props) => {
       } else if (type === "solana") {
         try {
           const solCoin = coin as DexScreenerTokenMeta;
-          console.log("solCoin", solCoin);
+          // console.log("solCoin", solCoin);
           const solanaAddress = solCoin.baseToken.address;
           if (!solanaAddress) return;
 
@@ -191,7 +191,7 @@ const CoinItem = ({ type, coin, chain }: Props) => {
   }
   if (type === "community") {
     const communityCoin = coin as FormattedCoin;
-    console.log("communityCoin");
+    // console.log("communityCoin");
     return (
       <button className="coin-item" key={communityCoin.symbol}>
         {communityCoin.metadata.logoURI && (

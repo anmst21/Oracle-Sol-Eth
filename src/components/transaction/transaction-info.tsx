@@ -69,7 +69,7 @@ const TransactionInfo = ({
   const ammount = ammountNumber > 1 ? ammountNumber.toFixed(2) : ammountNumber;
 
   const [int, dec] = String(ammount).split(".");
-  console.log("explorerUri", explorerUri);
+  // console.log("explorerUri", explorerUri);
 
   const isLoading =
     status === "pending" || status === "waiting" || status === "delayed";

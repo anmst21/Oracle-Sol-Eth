@@ -13,7 +13,6 @@ const HeaderLogo = ({ isRedirect }: { isRedirect?: boolean }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const { activeCategory } = useCategory();
 
-  console.log("isAnimating", isAnimating);
   const handlePlay = () => {
     if (lottieRef.current) {
       setIsAnimating(true);

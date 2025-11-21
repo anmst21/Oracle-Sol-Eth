@@ -9,8 +9,6 @@ import {
 } from "@reservoir0x/relay-sdk";
 import { useTokenModal } from "./TokenModalProvider";
 
-import { ReactNode } from "react";
-
 // createClient({
 //   baseApiUrl: MAINNET_RELAY_API,
 //   source: "YOUR.SOURCE",
@@ -23,7 +21,7 @@ export function RelayKitProviderWrapper({
   children: React.ReactNode;
 }) {
   const { chains } = useTokenModal();
-  console.log("chains", chains);
+  // console.log("chains", chains);
   const options = {
     appName: "Oracl3",
     appFees: [
@@ -39,7 +37,9 @@ export function RelayKitProviderWrapper({
 
   return (
     <RelayKitProvider options={options}>
-      {children as unknown as ReactNode}
+      {
+        children as import("/Users/raging_incel/Desktop/code/hellcat/oracle/node_modules/@reservoir0x/relay-kit-ui/node_modules/@types/react/index").ReactNode
+      }
     </RelayKitProvider>
   );
 }

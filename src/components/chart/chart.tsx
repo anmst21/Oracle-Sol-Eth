@@ -134,7 +134,7 @@ const ChartComponent = () => {
       })),
     [normalized]
   );
-  console.log({ lineData, candleData });
+  // console.log({ lineData, candleData });
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);

@@ -26,7 +26,6 @@ const categoryIcons = [
   <DropdownVision key={2} />,
 ];
 const DropdownBlog = ({ blogposts, categories }: Props) => {
-  console.log({ blogposts });
   return (
     <motion.div
       initial={{ opacity: 0 }}

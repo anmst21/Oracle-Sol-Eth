@@ -54,11 +54,11 @@ const Transaction = async ({
       }, 0)
     : undefined;
 
-  console.log(
-    "fromChainData",
-    transaction.data?.fees?.gas,
-    fromChainData?.currency?.decimals
-  );
+  // console.log(
+  //   "fromChainData",
+  //   transaction.data?.fees?.gas,
+  //   fromChainData?.currency?.decimals
+  // );
 
   const isLoading =
     transaction.status === "pending" ||

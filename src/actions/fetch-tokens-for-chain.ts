@@ -44,7 +44,7 @@ export async function fetchTokensForChain(
         },
       };
     });
-    console.log("dm", mergedData);
+    // console.log("dm", mergedData);
     const uniquePoolsByBaseSymbol = mergedData.filter((pool, index, self) => {
       if (pool.meta.base) {
         const baseSymbol = pool.meta.base.attributes.symbol;

@@ -70,7 +70,7 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
 
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
-  console.log("isAddressModalOpen", isAddressModalOpen);
+  // console.log("isAddressModalOpen", isAddressModalOpen);
 
   // helper to sort so user address is first
   function sortByUserFirst<T extends { address?: string }>(

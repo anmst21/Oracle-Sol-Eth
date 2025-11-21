@@ -32,7 +32,7 @@ const HomeStakeholders = () => {
     id: "base",
   });
 
-  console.log({ activeItem });
+  // console.log({ activeItem });
 
   const handleItemClick = useCallback(
     (type: StakeholderType, id: string) => {

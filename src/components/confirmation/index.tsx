@@ -102,8 +102,6 @@ function Confirmation({
     }
   }, [elapsedSecs]);
 
-  console.log("elapsed", elapsedSecs, showElapsed);
-
   const relayTxHash = useMemo(
     () =>
       steps.find(

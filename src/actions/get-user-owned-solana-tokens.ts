@@ -143,6 +143,6 @@ export async function getTokenAccountsWithMetadata({
     name: t.metadata.name,
     decimals: 9,
   }));
-  console.log("fetched tokens + metadata + prices", enriched);
+  // console.log("fetched tokens + metadata + prices", enriched);
   return generalized;
 }

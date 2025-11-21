@@ -203,7 +203,7 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
     nativeSolBalance,
   ]);
 
-  console.log({ nativeSolBalance, userEthTokens, activeWallet });
+  // console.log({ nativeSolBalance, userEthTokens, activeWallet });
 
   const pathname = usePathname();
   const searchParams = useSearchParams();

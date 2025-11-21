@@ -70,16 +70,16 @@ const History = () => {
       setError(null);
 
       try {
-        console.log({
-          user: activeWallet.address,
-          chainId: String(activeChainId),
-          limit: "20",
-          ...(cont ? { continuation: cont } : {}),
-        });
+        // console.log({
+        //   user: activeWallet.address,
+        //   chainId: String(activeChainId),
+        //   limit: "20",
+        //   ...(cont ? { continuation: cont } : {}),
+        // });
         const res = await queryRequests("https://api.relay.link", {
           user: activeWallet.address,
           chainId: activeChainId === 0 ? undefined : String(activeChainId),
-          limit: "20",
+          limit: 20,
           ...(cont ? { continuation: cont } : {}),
         });
         setTransactions((prev) =>

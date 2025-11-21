@@ -32,16 +32,7 @@ const PoolItem = ({
 }: Props) => {
   const [fromTicker, _, toTicker] = item.attributes.name.split(" ");
 
-  console.log({ fromTicker, toTicker, activeToken, item, _ });
-
-  console.log({
-    1: item.attributes.price_change_percentage.m5,
-    2: item.attributes.price_change_percentage.h1,
-    3: item.attributes.price_change_percentage.h6,
-    4: item.attributes.price_change_percentage.h24,
-  });
-
-  //
+  console.log({ _ });
 
   const fdvUsd = splitCompact(Number(item.attributes.fdv_usd) || 0);
   const liquidity = splitCompact(Number(item.attributes.reserve_in_usd) || 0);

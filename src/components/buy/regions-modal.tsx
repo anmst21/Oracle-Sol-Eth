@@ -18,7 +18,7 @@ type Props = {
 };
 
 const RegionsModal = ({ closeModal, countries, moonpayIp }: Props) => {
-  console.log({ moonpayIp, countries });
+  // console.log({ moonpayIp, countries });
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
   const [currentPage, setCurrentPage] = useState(1);

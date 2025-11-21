@@ -91,7 +91,7 @@ const TokenModal: React.FC<TokenModalProps> = ({
     fetchTokens();
   }, [chain]);
 
-  console.log("tokens", tokens);
+  // console.log("tokens", tokens);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -120,7 +120,7 @@ const TokenModal: React.FC<TokenModalProps> = ({
       router.push(pathname);
     }
   };
-  console.log("ethNetworks", geckoNetworks, ethNetworks);
+  // console.log("ethNetworks", geckoNetworks, ethNetworks);
 
   return (
     <div className="token-modal">

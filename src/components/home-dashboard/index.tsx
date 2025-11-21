@@ -1,12 +1,11 @@
 import React from "react";
 import { HomeSectionCross } from "../icons";
 import TopCell from "./top-cell";
-
-import Image from "next/image";
 import MidCell from "./mid-cell";
 import { HomeHeaderType } from "@/types/home-page";
 import HomePageHeader from "../home-section-header";
 import DashboardChart from "./dashboard-chart";
+import Animation from "./animation";
 
 const HomeDashboard = () => {
   return (
@@ -31,14 +30,7 @@ const HomeDashboard = () => {
           <TopCell type="requests" />
           <MidCell type="base" />
           <MidCell type="solana" />
-          <div className="home-dashboard__animation">
-            <Image
-              src={"/landing/dashboard.png"}
-              alt="Dashboard placeholder"
-              width={100}
-              height={100}
-            />
-          </div>
+          <Animation />
           <DashboardChart />
         </div>
       </div>

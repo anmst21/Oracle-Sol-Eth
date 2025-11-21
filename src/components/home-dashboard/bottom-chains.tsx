@@ -22,8 +22,8 @@ const DashboardBottomChains = ({
 
   const {
     isLoading: isLoadingChains,
-    isLoaded: isLoadedChains,
-    error: chainsError,
+    // isLoaded: isLoadedChains,
+    // error: chainsError,
     // chains,
     featuredChains,
     otherChains,
@@ -37,13 +37,13 @@ const DashboardBottomChains = ({
     loadChains();
   }, [loadChains]);
 
-  console.log({
-    isLoadingChains,
-    isLoadedChains,
-    chainsError,
-    featuredChains,
-    otherChains,
-  });
+  // console.log({
+  //   isLoadingChains,
+  //   isLoadedChains,
+  //   chainsError,
+  //   featuredChains,
+  //   otherChains,
+  // });
 
   const allChains = useMemo(() => {
     if (

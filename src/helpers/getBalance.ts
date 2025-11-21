@@ -30,7 +30,7 @@ export async function getNativeBalance(
     chain: chainSwitch(chain),
     transport: http(rpcSwitch(chain)),
   });
-  console.log(tokenAddress);
+  // console.log(tokenAddress);
   const balance = await client.getBalance({ address: userAddress });
   // Format balance by converting from wei using your preferred method
   return balance;

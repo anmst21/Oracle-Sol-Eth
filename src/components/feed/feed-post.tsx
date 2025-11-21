@@ -35,7 +35,7 @@ const FeedPost = ({
   farcasterUser,
   chainItem,
 }: Props) => {
-  console.log({ item, fromMeta, toMeta, farcasterUser, chainItem });
+  // console.log({ item, fromMeta, toMeta, farcasterUser, chainItem });
 
   const { push } = useRouter();
 
@@ -81,8 +81,8 @@ const FeedPost = ({
     fromDisplayType === "fiat"
       ? fromTokenUsdAmount
       : fromTokenAmount > 1
-      ? fromTokenAmount.toFixed(2)
-      : fromTokenAmount.toFixed(6);
+        ? fromTokenAmount.toFixed(2)
+        : fromTokenAmount.toFixed(6);
 
   const [fromInt, fromDec] = fromDisplayAmount.split(".");
   const [toInt, toDec] = toTokenAmountDisplay.split(".");

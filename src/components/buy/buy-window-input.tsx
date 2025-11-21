@@ -5,7 +5,7 @@ import { UnifiedToken } from "@/types/coin-types";
 import { InputType, OracleRouteType } from "./types";
 import {
   BuySwitch,
-  BuySwitchLg,
+  // BuySwitchLg,
   HexChain,
   BuyChev,
   BuyDirect,
@@ -17,7 +17,7 @@ import Image from "next/image";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { useTokenModal } from "@/context/TokenModalProvider";
 import { splitCompact } from "@/helpers/compact-formatter";
-import { AnimatePresence } from "motion/react";
+// import { AnimatePresence } from "motion/react";
 import classNames from "classnames";
 import BuyInfoModal from "./buy-info-modal";
 import { useRouter } from "next/navigation";
@@ -43,14 +43,14 @@ type Props = {
 const presets = [5, 12.5, 25, 50];
 
 const BuyWindowInput = ({
-  fiatCurrencies,
-  setFiatCurrency,
+  // fiatCurrencies,
+  // setFiatCurrency,
   fiatCurrency,
   setValue,
   value,
   activeToken,
   setActiveToken,
-  isBuyAllowed,
+  // isBuyAllowed,
   routeType,
   inputType,
   switchInputType,
@@ -58,7 +58,7 @@ const BuyWindowInput = ({
   isError,
   countryName,
 }: Props) => {
-  console.log("fiatCurrencies", fiatCurrencies);
+  // console.log("fiatCurrencies", fiatCurrencies);
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { openTokenModal } = useTokenModal();

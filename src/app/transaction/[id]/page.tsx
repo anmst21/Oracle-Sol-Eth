@@ -27,7 +27,7 @@ export default async function Page({ params }: PageProps) {
     // no transaction found → 404
     return notFound();
   }
-  console.log("transaction", data);
+  // console.log("transaction", data);
   return (
     <div className="transaction-page">
       <Transaction transaction={tx} />

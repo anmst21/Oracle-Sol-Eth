@@ -93,7 +93,7 @@ const Modal: React.FC<ModalProps> = ({
     }
   );
 
-  console.log("suggested", suggestedTokens);
+  // console.log("suggested", suggestedTokens);
 
   useEffect(() => {
     if (!isLoadedChains && !isLoadingChains && !chainsError) {

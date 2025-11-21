@@ -57,13 +57,12 @@ const FooterForm = () => {
   }, [isError]);
 
   const errorsArray = useMemo(() => Object.entries(errors), [errors]);
-  console.log({ showSuccessMessage, isCaptchaError, errorsArray });
 
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleReCaptchaVerify = useCallback(async () => {
     if (!executeRecaptcha) {
-      console.log("Execute recaptcha not yet available");
+      console.warn("Execute recaptcha not yet available");
       return;
     }
 
@@ -95,9 +94,11 @@ const FooterForm = () => {
       }
       reset();
     } catch (err) {
-      setIsError(true);
-      reset();
-      console.log("err", err);
+      if (err instanceof Error) {
+        setIsError(true);
+        reset();
+      }
+      // console.log("err", err);
     } finally {
       setIsSubmitting(false);
     }

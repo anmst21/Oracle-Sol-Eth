@@ -31,42 +31,42 @@ import StatsItem from "./stats-item";
 
 const ChartHeader = () => {
   const {
-    tokenPools,
     isLoadingPools,
     isErrorPools,
-    chartData,
-    isLoadingChart,
-    isErrorChart,
-    sortType,
-    setSortType,
-    chartType,
-    setChartType,
-    isOpenPools,
-    setIsOpenPools,
     requestChain,
-    //  tokenMeta,
     activePool,
     relayChain,
-    // isOpenTrades,
     setIsOpenTrades,
     activeToken,
     setActiveToken,
+    // tokenPools,
+    // chartData,
+    // isLoadingChart,
+    // isErrorChart,
+    // sortType,
+    // setSortType,
+    // chartType,
+    // setChartType,
+    // isOpenPools,
+    // setIsOpenPools,
+    // isOpenTrades,
+    //  tokenMeta,
   } = useChart();
 
-  console.log("context", {
-    tokenPools,
-    isLoadingPools,
-    isErrorPools,
-    chartData,
-    isLoadingChart,
-    isErrorChart,
-    sortType,
-    setSortType,
-    chartType,
-    setChartType,
-    isOpenPools,
-    setIsOpenPools,
-  });
+  // console.log("context", {
+  //   tokenPools,
+  //   isLoadingPools,
+  //   isErrorPools,
+  //   chartData,
+  //   isLoadingChart,
+  //   isErrorChart,
+  //   sortType,
+  //   setSortType,
+  //   chartType,
+  //   setChartType,
+  //   isOpenPools,
+  //   setIsOpenPools,
+  // });
 
   const priceChangeDay =
     Number(activePool?.attributes.price_change_percentage.h24) || 0;

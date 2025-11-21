@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 
 const ModalInput = () => {
   const { value, setValue, isDragging, setIsDragging } = useSlippage();
-  console.log("isDragging", isDragging);
+  // console.log("isDragging", isDragging);
 
   const splittedValue = value.toString().split(".");
 

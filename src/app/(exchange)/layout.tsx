@@ -15,7 +15,7 @@ export default async function ExchangeLayout({
   const raw = await fs.readFile(filePath, "utf-8");
   const geckoChains: GeckoChain[] = JSON.parse(raw);
 
-  console.log("geckoChains", geckoChains);
+  // console.log("geckoChains", geckoChains);
   return (
     <div className="exchange-layout">
       <ChartProvider geckoChains={geckoChains}>

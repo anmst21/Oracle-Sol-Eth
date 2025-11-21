@@ -25,7 +25,7 @@ const ModalPagination = ({
 }: Props) => {
   const setPage = useCallback(
     (value: number) => {
-      console.log("set value", value);
+      // console.log("set value", value);
       setCurrentPage(value);
     },
     [setCurrentPage]

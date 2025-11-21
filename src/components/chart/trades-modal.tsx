@@ -23,7 +23,6 @@ const PoolsModal = ({ closeModal }: Props) => {
   const [isErrorTrades, setIsErrorTrades] = useState(false);
 
   const { requestChain, activePool } = useChart();
-  console.log("trades", trades, isLoadingTrades, isErrorTrades);
 
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
@@ -38,8 +37,6 @@ const PoolsModal = ({ closeModal }: Props) => {
       ),
     [trades, currentPage, itemsPerPage]
   );
-
-  console.log("paginatedTrades", paginatedTrades);
 
   const getTrades = useCallback(async () => {
     setIsErrorTrades(false);

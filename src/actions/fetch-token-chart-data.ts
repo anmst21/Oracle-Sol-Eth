@@ -33,7 +33,7 @@ export const getTokenHistoricalData = async (
     }
 
     const url = `${endpoint}?${params.toString()}`;
-    console.log("fetching OHLCV →", url);
+    // console.log("fetching OHLCV →", url);
 
     const res = await fetch(url, { cache: "no-store" });
 
@@ -44,7 +44,7 @@ export const getTokenHistoricalData = async (
     }
 
     const result: OHLCVResponse = await res.json();
-    console.log("resres", result);
+    // console.log("resres", result);
 
     return result.data.attributes.ohlcv_list;
   } catch (err) {

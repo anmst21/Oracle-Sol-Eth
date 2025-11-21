@@ -16,23 +16,23 @@ import {
 } from "@reservoir0x/relay-sdk";
 import { TradeType } from "./types";
 import {
-  convertViemChainToRelayChain,
+  // convertViemChainToRelayChain,
   MAINNET_RELAY_API,
   createClient,
 } from "@reservoir0x/relay-sdk";
-import { base, mainnet } from "viem/chains";
+// import { base, mainnet } from "viem/chains";
 import { parseUnits } from "viem/utils";
 import { queryTokenList, useRelayChains } from "@reservoir0x/relay-kit-hooks";
 import { useSlippage } from "@/context/SlippageContext";
 import BuyBtn from "./buy-btn";
-import { usePrivy } from "@privy-io/react-auth";
-import { SendTransactionError } from "@solana/web3.js";
-import { connection } from "../connects";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+// import { usePrivy } from "@privy-io/react-auth";
+// import { SendTransactionError } from "@solana/web3.js";
+// import { connection } from "../connects";
+// import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Confirmation from "../confirmation";
 import { AnimatePresence } from "motion/react";
-import DeepLink from "../deep-link";
-import DynamicNotification from "../dynamic-notification";
+// import DeepLink from "../deep-link";
+// import DynamicNotification from "../dynamic-notification";
 
 // createClient({
 //   baseApiUrl: MAINNET_RELAY_API,
@@ -98,7 +98,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
     [userEthTokens, userSolanaTokens, nativeSolBalance]
   );
 
-  console.log("activeWallet", activeWallet);
+  // console.log("activeWallet", activeWallet);
 
   useEffect(() => {
     if (activeWallet && !activeBuyWallet) {
@@ -218,7 +218,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   const [isSwitching, setIsSwitching] = useState(false);
   const [tradeType, setTradeType] = useState<TradeType>(TradeType.EXACT_INPUT);
 
-  console.log("quote", quote, error, tradeType);
+  // console.log("quote", quote, error, tradeType);
 
   const handleTokenSwitch = useCallback(() => {
     if (isLoading) return;
@@ -308,7 +308,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
     }
   }, [quote]);
 
-  console.log("quote active", activeBuyWallet, buyToken);
+  // console.log("quote active", activeBuyWallet, buyToken);
   const { chains } = useRelayChains();
   const client = useMemo(
     () =>
@@ -374,16 +374,16 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         tradeType === TradeType.EXACT_INPUT ? sellInputValue : buyInputValue,
         decimals
       );
-      console.log("quote props", {
-        chainId: sellToken.chainId as number,
-        toChainId: buyToken.chainId as number,
-        currency: sellToken.address,
-        toCurrency: buyToken.address,
-        amount: amountWei.toString(),
-        wallet: adaptedWallet,
-        recipient: activeBuyWallet.address,
-        tradeType,
-      });
+      // console.log("quote props", {
+      //   chainId: sellToken.chainId as number,
+      //   toChainId: buyToken.chainId as number,
+      //   currency: sellToken.address,
+      //   toCurrency: buyToken.address,
+      //   amount: amountWei.toString(),
+      //   wallet: adaptedWallet,
+      //   recipient: activeBuyWallet.address,
+      //   tradeType,
+      // });
 
       const q = await client.actions.getQuote({
         chainId: sellToken.chainId as number,
@@ -495,13 +495,13 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
           wallet: adaptedWallet,
           onProgress: (progress) => setProgress(progress),
         });
-      } catch (err: any) {
-        setProgress(null);
+      } catch (err) {
+        if (err instanceof Error) setProgress(null);
       }
     }
   }, [adaptedWallet, quote, sellToken?.chainId]);
 
-  console.log("progress", progress, quote, adaptedWallet);
+  // console.log("progress", progress, quote, adaptedWallet);
 
   ////// url deeplinking logic
 

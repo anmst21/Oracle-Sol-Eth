@@ -52,15 +52,15 @@ function HistoryItem({
 
   const dateArray = parseDateHistory(timestamp);
 
-  console.log({
-    status,
-    txAdderss,
-    fromChainData,
-    toChainData,
-    dateArray,
-    currencyIn,
-    currencyOut,
-  });
+  // console.log({
+  //   status,
+  //   txAdderss,
+  //   fromChainData,
+  //   toChainData,
+  //   dateArray,
+  //   currencyIn,
+  //   currencyOut,
+  // });
 
   const [intIn, decIn] = (currencyIn?.amountFormatted || "0.0")?.split(".");
   const [intOut, decOut] = (currencyOut?.amountFormatted || "0.0")?.split(".");

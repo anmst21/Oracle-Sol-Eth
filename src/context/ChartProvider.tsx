@@ -87,7 +87,7 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
   }, [activeToken]);
 
   const [activePool, setActivePool] = useState<PoolItem | null>(null);
-  console.log("activeToken", activeToken);
+  // console.log("activeToken", activeToken);
   const [chartData, setChartData] = useState<number[][] | null>(null);
   const [isLoadingChart, setIsLoadingChart] = useState<boolean>(false);
   const [isErrorChart, setIsErrorChart] = useState<boolean>(false);

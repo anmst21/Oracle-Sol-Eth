@@ -41,7 +41,7 @@ const AnimatedSquares: React.FC = () => {
     [cols]
   );
 
-  console.log({ containerWidthPx });
+  // console.log({ containerWidthPx });
   useLayoutEffect(() => {
     const el = rootRef.current;
     if (!el) return;
