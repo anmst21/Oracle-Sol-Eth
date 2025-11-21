@@ -22,7 +22,12 @@ const Footer = () => {
           <div className="footer-main__left">
             <h2>Sign up for the latest news</h2>
             <FooterForm />
-            <AnimatedDots />
+            <div className="footer-main__dots">
+              <Link className="privacy-statement" href={"/privacy#statement"}>
+                Privacy
+              </Link>
+              <AnimatedDots />
+            </div>
             <div className="footer-main__bottom">
               <h4>© 2025 Oracle</h4>
               <Link href={"/privacy#terms"}>Terms of service</Link>
@@ -31,26 +36,28 @@ const Footer = () => {
           </div>
           <div className="footer-main__right">
             <div className="footer-main__right__landing">
-              <Link href={"/#hero"}>Hero</Link>
+              <Link href={"/#hero"} className="blog-heading">
+                Hero
+              </Link>
+              {/* <Link href={"/#hero"}>Hero</Link> */}
               <Link href={"/#about"}>About</Link>
               <Link href={"/#stats"}>Stats</Link>
               <Link href={"/#features"}>Features</Link>
+              <Link href={"/#stakeholders"}>Stakeholders</Link>
               <Link href={"/#chart"}>Chart</Link>
               <Link href={"/#feed"}>Feed</Link>
-              <Link href={"/#stakeholders"}>Stakeholders</Link>
-              <Link href={"/#values"}>Values</Link>
+              {/* <Link href={"/#values"}>Values</Link> */}
             </div>
             <div className="footer-main__right__sitemap">
-              <div className="footer-main__right__sitemap__container">
-                <Link href={"/swap"}>Swap</Link>
-                <Link href={"/buy"}>Buy</Link>
-                <Link href={"/chart"}>Chart</Link>
-                <Link href={"/feed"}>Feed</Link>
-                <Link href={"/coins"}>Coins</Link>
-              </div>
-              <Link className="footer-main__contacts" href={"/contacts"}>
-                Contact us
+              <Link href={"/swap"} className="blog-heading">
+                Swap
               </Link>
+              <Link href={"/buy"}>Buy</Link>
+              <Link href={"/chart"}>Chart</Link>
+              <Link href={"/feed"}>Feed</Link>
+              <Link href={"/coins"}>Coins</Link>
+              <Link href={"/blog"}>Blog</Link>
+              <Link href={"/contacts"}>Contact us</Link>
             </div>
           </div>
         </div>

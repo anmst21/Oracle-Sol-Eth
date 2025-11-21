@@ -8,7 +8,6 @@ import HomeSectionHeader from "../home-section-header";
 import { HomeHeaderType } from "@/types/home-page";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
-// import { motion, useAnimationControls } from "motion/react";
 import { homeBlogPosts } from "@/helpers/home-blog-posts";
 const ANIMATION_TIME = 5000;
 
@@ -82,7 +81,7 @@ const HomeBlog = () => {
 
     const segmentSize = 1 / total;
     const start = index * segmentSize;
-    const end = start + segmentSize;
+    // const end = start + segmentSize;
 
     // Map global [start, end] → local [0, 1]
     const raw = (globalProgress - start) / segmentSize;
@@ -91,7 +90,7 @@ const HomeBlog = () => {
     return Math.min(Math.max(raw, 0), 1);
   };
   return (
-    <div className="home-blog">
+    <div id="features" className="home-blog">
       <HomeSectionHeader type={HomeHeaderType.Blog} />
 
       <div className="home-blog__viewport" ref={emblaRef}>

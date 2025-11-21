@@ -8,7 +8,7 @@ import Image from "next/image";
 
 const HomeFeed = () => {
   return (
-    <div className="home-feed">
+    <div id="feed" className="home-feed">
       <HomePageHeader type={HomeHeaderType.Feed} />
       <div className="home-feed__wrapper">
         <AboutItemWrapper keyString="feed" length={1} index={0}>

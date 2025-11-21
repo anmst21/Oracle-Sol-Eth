@@ -176,7 +176,7 @@ const HomeStakeholders = () => {
   }, [emblaApi, isDesktop]);
 
   return (
-    <div className="home-stakeholders">
+    <div id="stakeholders" className="home-stakeholders">
       <HomeSectionHeader type={HomeHeaderType.Stakeholders} />
 
       <div className="home-stakeholders__container">

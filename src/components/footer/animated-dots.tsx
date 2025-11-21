@@ -2,15 +2,18 @@
 
 import { motion, useAnimation, useInView } from "motion/react";
 import React, { useEffect, useRef } from "react";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
 
 const AnimatedDots = () => {
   const circlesRef = useRef<HTMLDivElement | null>(null);
   const inView = useInView(circlesRef, { margin: "0px 0px" });
   const controls = useAnimation();
 
+  const isDesktop = useIsDesktop();
+
   useEffect(() => {
-    const circleWidth = 32;
-    const gap = 24;
+    const circleWidth = isDesktop ? 32 : 24;
+    const gap = isDesktop ? 24 : 16;
     const step = circleWidth + gap;
 
     const sequence = [0, 1, 2, 1];

@@ -9,7 +9,7 @@ import Animation from "./animation";
 
 const HomeDashboard = () => {
   return (
-    <div className="home-dashboard">
+    <div id="stats" className="home-dashboard">
       <HomePageHeader type={HomeHeaderType.Stats} />
       <div className="home-dashboard__container">
         <div className="home-dashboard__wrapper">
@@ -25,11 +25,11 @@ const HomeDashboard = () => {
           <div className="home-dashboard__cross home-dashboard__cross--4">
             <HomeSectionCross />
           </div>
-          <TopCell type="users" />
-          <TopCell type="volume" />
-          <TopCell type="requests" />
-          <MidCell type="base" />
-          <MidCell type="solana" />
+          <TopCell type="users" index={0} />
+          <TopCell type="volume" index={1} />
+          <TopCell type="requests" index={2} />
+          <MidCell type="base" index={0} />
+          <MidCell type="solana" index={1} />
           <Animation />
           <DashboardChart />
         </div>

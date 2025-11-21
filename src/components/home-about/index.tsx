@@ -92,7 +92,7 @@ const aboutList = [
 
 const HomeAbout = () => {
   return (
-    <div className="home-about">
+    <div id="about" className="home-about">
       <HomeSectionHeader type={HomeHeaderType.About} />
       <div className="home-about__container">
         {aboutList.map((item, i) => {

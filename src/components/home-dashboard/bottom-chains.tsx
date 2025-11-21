@@ -30,7 +30,7 @@ const DashboardBottomChains = ({
     solanaChain,
     baseChain,
     loadChains,
-    // ethereumChain,
+    ethereumChain,
   } = useChainsData();
 
   useEffect(() => {
@@ -61,6 +61,14 @@ const DashboardBottomChains = ({
     return [baseChain, solanaChain, ...filteredFeatured, ...otherChains];
   }, [baseChain, solanaChain, featuredChains, otherChains]);
 
+  const allChainIds = useMemo(
+    () =>
+      [solanaChain?.id, baseChain?.id, ethereumChain?.id].filter(
+        Boolean
+      ) as number[],
+    [solanaChain, baseChain, ethereumChain]
+  );
+
   return (
     <div className="dashboard-bottom-chains">
       <div className="dashboard-bottom-chart__header">
@@ -74,8 +82,28 @@ const DashboardBottomChains = ({
         network to break down how its USD activity evolves over time.
       </p>
       <div className="dashboard-bottom-chains__list">
+        <button
+          className={classNames("chain-sidebar", {
+            "chain-sidebar--active": chainId === 0,
+          })}
+          onClick={() => setChainId(0)}
+        >
+          <div className="all-chains-icon">
+            {allChainIds.map((id, i) => (
+              <HexChain
+                key={id}
+                strokeWidth={2}
+                width={12}
+                uri={getIconUri(id)}
+                className={`all-chains-icon__${i + 1}`}
+              />
+            ))}
+          </div>
+
+          <span>Show All</span>
+        </button>
         {allChains.length > 0 && !isLoadingChains
-          ? (isShowAll ? allChains : allChains.slice(0, 18)).map((chain) => {
+          ? (isShowAll ? allChains : allChains.slice(0, 17)).map((chain) => {
               if (!chain.id) return;
               return (
                 <button

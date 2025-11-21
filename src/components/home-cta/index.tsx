@@ -7,7 +7,7 @@ const bgImage =
 
 const HomeCta = () => {
   return (
-    <div className="home-cta">
+    <div id="values" className="home-cta">
       <div className="home-cta__text">
         <h2>Move Value the Way It Should Be</h2>
         <span>

@@ -5,7 +5,7 @@ import HeroSwapHeader from "./hero-swap-header";
 
 const HomeHero = () => {
   return (
-    <div className="home-hero">
+    <div id="hero" className="home-hero">
       <div className="home-hero__main">
         <HeroCarousel />
         <div className="home-hero__swap">

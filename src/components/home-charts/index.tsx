@@ -8,7 +8,7 @@ import { portableAnimation } from "@/components/icons/landing-pack/index";
 
 const HomeCharts = () => {
   return (
-    <div className="home-charts">
+    <div id="chart" className="home-charts">
       <HomePageHeader type={HomeHeaderType.Chart} />
       <div className="home-charts__wrapper">
         <AboutItemWrapper keyString="charts" length={1} index={0}>
