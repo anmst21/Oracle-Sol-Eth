@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   Center,
@@ -8,9 +8,11 @@ import {
   useGLTF,
   Float,
 } from "@react-three/drei";
-import { EffectComposer, ASCII } from "@react-three/postprocessing";
+// import { EffectComposer, ASCII } from "@react-three/postprocessing";
 
 import * as THREE from "three";
+
+const material = new THREE.MeshToonMaterial({ color: "white" });
 
 type Props = {
   objectUri: string;
@@ -24,10 +26,21 @@ const ItemObject = ({
   objectUri,
   colorTop,
   colorBottom,
-  rotation,
-  position,
+  // rotation,
+  // position,
 }: Props) => {
-  const object = useGLTF(objectUri);
+  const { scene } = useGLTF(objectUri);
+
+  useEffect(() => {
+    scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        mesh.material = material;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+      }
+    });
+  }, [scene]);
 
   return (
     <Canvas
@@ -41,6 +54,7 @@ const ItemObject = ({
       style={{
         width: "100%",
         height: "100%",
+        zIndex: 50,
       }}
     >
       {/* <color args={["#fff"]} attach="background" /> */}
@@ -68,20 +82,7 @@ const ItemObject = ({
       >
         <Center>
           <Float rotationIntensity={1}>
-            <mesh
-              rotation={rotation as [number, number, number]}
-              position={position as [number, number, number]}
-              geometry={
-                object.scene.children[0].geometry as THREE.BufferGeometry
-              }
-              //   rotation={rotation as [x: number, y: number, z: number]}
-              //   position={position as [x: number, y: number, z: number]}
-              scale={3.5}
-              castShadow
-              receiveShadow
-            >
-              <meshToonMaterial color="white" />
-            </mesh>
+            <primitive object={scene} scale={2.5} castShadow receiveShadow />
           </Float>
         </Center>
       </PresentationControls>

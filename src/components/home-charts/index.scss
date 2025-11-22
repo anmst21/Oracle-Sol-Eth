@@ -5,15 +5,34 @@
     gap: 94px;
     align-items: center;
 
+    @include down(md) {
+        gap: 40px
+    }
+
     &__wrapper {
         max-width: 1528px;
         display: flex;
         padding: 0 140px;
         margin-bottom: 94px;
 
+
         .home-about-icon__animation {
+
             border-right: none;
             border-left: 1px solid #889697;
+        }
+
+
+        @include down(md) {
+            padding: 0 30px;
+
+            .home-about-icon__animation {
+                border-right: 1px solid #889697;
+            }
+
+            h3 {
+                margin-right: 48px
+            }
         }
     }
 }
@@ -22,4 +41,35 @@
     align-items: center;
     justify-content: center;
     padding: 40px;
+
+    @include down(md) {
+        padding: 20px;
+    }
+
+}
+
+.home-charts {
+    @include down(md) {
+
+        .home-about-icon__animation {
+
+            border-top: none;
+        }
+
+        .home-about-icon__info {
+            order: -1;
+
+        }
+    }
+}
+
+.home-feed {
+    @include down(md) {
+
+
+        .home-about-icon__info {
+            border-top: none;
+
+        }
+    }
 }

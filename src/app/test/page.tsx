@@ -10,14 +10,15 @@ import HomeStakeholders from "@/components/home-stakeholders";
 export default function Page() {
   return (
     <div className="landing-test">
-      <HomeHero />
+      {/* <HomeHero /> */}
       <HomeAbout />
-      <HomeDashboard />
-      <HomeStakeholders />
-      <HomeBlog />
       <HomeCharts />
       <HomeFeed />
-      <HomeCta />
+      {/* <HomeDashboard />
+      <HomeStakeholders />
+      <HomeBlog />
+
+      <HomeCta /> */}
     </div>
   );
 }
