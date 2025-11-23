@@ -1,4 +1,4 @@
-.landing-test {
+.landing {
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -18,7 +18,7 @@
 
     @include down(md) {
         padding: 0 20px;
-        margin-top: 77px;
+        margin-top: 113px;
     }
 
     &__cross {

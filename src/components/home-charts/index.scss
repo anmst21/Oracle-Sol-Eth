@@ -4,6 +4,7 @@
     flex-direction: column;
     gap: 94px;
     align-items: center;
+    z-index: 0;
 
     @include down(md) {
         gap: 40px
@@ -15,6 +16,9 @@
         padding: 0 140px;
         margin-bottom: 94px;
 
+        @include down(md) {
+            margin-bottom: 36px;
+        }
 
         .home-about-icon__animation {
 
@@ -49,6 +53,11 @@
 }
 
 .home-charts {
+
+    .home-page-header {
+        margin-top: 0;
+    }
+
     @include down(md) {
 
         .home-about-icon__animation {

@@ -93,14 +93,25 @@
     align-items: center;
     min-height: calc(100dvh - 60px);
     justify-content: center;
+    padding: 0 20px;
+
+    @include down(xxl) {
+        margin-bottom: 250px;
+    }
 
     &__text {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        margin-top: 194px;
+        // margin-top: 194px;
         max-width: 1137px;
         width: 100%;
+        position: absolute;
+        bottom: -300px;
+
+        @include down(md) {
+            gap: 6px;
+        }
 
         h1 {
             text-align: center;
@@ -109,6 +120,11 @@
             font-style: normal;
             font-weight: 500;
             line-height: 56px;
+
+            @include down(md) {
+                font-size: 24px;
+                line-height: 32px;
+            }
         }
 
         p {
@@ -119,6 +135,11 @@
             font-style: normal;
             font-weight: 300;
             line-height: 38px;
+
+            @include down(md) {
+                font-size: 14px;
+                line-height: 34px;
+            }
         }
 
 
@@ -141,6 +162,12 @@
         display: flex;
         position: relative;
         width: 100%;
+        transform: translateY(-120px);
+
+        @include down(xxl) {
+            // margin-top: 40px;
+            transform: none;
+        }
     }
 
 
@@ -150,6 +177,8 @@
         gap: 8px;
         z-index: 10;
         max-width: 500px;
+
+
     }
 }
 

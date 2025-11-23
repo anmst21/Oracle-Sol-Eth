@@ -8,9 +8,10 @@ import Lottie, { LottieRefCurrentProps } from "lottie-react";
 type Props = {
   type: "base" | "solana";
   index?: number; // for staggered offsets
+  value: string;
 };
 
-const MidCell = ({ type, index = 0 }: Props) => {
+const MidCell = ({ type, index = 0, value }: Props) => {
   const isBase = type === "base";
   const lottieRef = useRef<LottieRefCurrentProps>(null);
 
@@ -29,7 +30,7 @@ const MidCell = ({ type, index = 0 }: Props) => {
   }, [index]);
 
   return (
-    <div className="dashboard-mid-cell">
+    <div className={`dashboard-mid-cell  dashboard-mid-cell--${type}`}>
       <div className="dashboard-mid-cell__top">
         <span>{isBase ? "Base" : "Solana"}</span>
         {isBase ? <NavigationEthereum /> : <NavigationSolana />}
@@ -43,12 +44,12 @@ const MidCell = ({ type, index = 0 }: Props) => {
 
       <div className="dashboard-mid-cell__value">
         <span>{"$ "}</span>
-        {"300 412"}
+        {value}
       </div>
 
       <div className="dashboard-mid-cell__bot">
         <span>
-          Volume Over Last <span>7 Days</span>
+          Volume Over Last <span>30 Days</span>
         </span>
         <Lottie
           lottieRef={lottieRef}

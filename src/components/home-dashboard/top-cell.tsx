@@ -13,9 +13,10 @@ type Props = {
   type: "users" | "volume" | "requests";
   value?: number;
   index?: number; // <— add index to apply offsets
+  values: string[];
 };
 
-const TopCell = ({ type, index = 0 }: Props) => {
+const TopCell = ({ type, index = 0, values }: Props) => {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
 
   let header = "Users";
@@ -59,7 +60,7 @@ const TopCell = ({ type, index = 0 }: Props) => {
   }, [index]);
 
   return (
-    <div className="dashboard-top-cell">
+    <div className={`dashboard-top-cell  dashboard-top-cell--${type}`}>
       <div className="dashboard-top-cell__top">
         <div className="dashboard-top-cell__top__header">{header}</div>
         <div className="dashboard-top-cell__top__icon">{icon}</div>
@@ -67,10 +68,11 @@ const TopCell = ({ type, index = 0 }: Props) => {
 
       <div className="dashboard-top-cell__center">
         <div className="dashboard-top-cell__center__mil">
-          <span>XX</span>6
+          <span>{values[0]}</span>
+          {values[1]}
         </div>
-        <div className="dashboard-top-cell__center__gran">369</div>
-        <div className="dashboard-top-cell__center__num">705</div>
+        <div className="dashboard-top-cell__center__gran">{values[2]}</div>
+        <div className="dashboard-top-cell__center__num">{values[3]}</div>
       </div>
 
       <div className="dashboard-top-cell__bottom">

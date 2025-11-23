@@ -64,6 +64,11 @@
     .wallet-header__address__value {
         flex: 1;
         height: 32px;
+
+        @include down(sm) {
+            font-size: 14px;
+            line-height: normal;
+        }
     }
 
     .dropdown-routes__wrapper {

@@ -229,6 +229,8 @@
             gap: 4px;
             font-family: var(--font-handjet);
 
+
+
             &__mode {
                 border-radius: 6px;
                 border: 1px solid #889697;
@@ -256,6 +258,11 @@
                 flex: 1;
                 justify-content: flex-end;
 
+                @include down(md) {
+                    span {
+                        display: none;
+                    }
+                }
             }
 
             &__value {

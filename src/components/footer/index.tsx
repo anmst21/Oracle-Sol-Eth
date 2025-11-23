@@ -4,12 +4,12 @@ import HeaderLogo from "../header/header-logo";
 import FooterForm from "./footer-form";
 import AnimatedDots from "./animated-dots";
 import Link from "next/link";
-import HeaderFooter from "./header-footer";
+// import HeaderFooter from "./header-footer";
 
 const Footer = () => {
   return (
     <>
-      <HeaderFooter />
+      {/* <HeaderFooter /> */}
       <div className="footer">
         <div className="footer__animation">
           <div className="footer__animation__header">

@@ -25,11 +25,15 @@ const HomeDashboard = () => {
           <div className="home-dashboard__cross home-dashboard__cross--4">
             <HomeSectionCross />
           </div>
-          <TopCell type="users" index={0} />
-          <TopCell type="volume" index={1} />
-          <TopCell type="requests" index={2} />
-          <MidCell type="base" index={0} />
-          <MidCell type="solana" index={1} />
+          <TopCell values={["XX", "3", "692", "869"]} type="users" index={0} />
+          <TopCell values={[">", "7T", "000", "000"]} type="volume" index={1} />
+          <TopCell
+            values={["X", "21", "418", "757"]}
+            type="requests"
+            index={2}
+          />
+          <MidCell value="1 796 500" type="base" index={0} />
+          <MidCell value="222 200" type="solana" index={1} />
           <Animation />
           <DashboardChart />
         </div>

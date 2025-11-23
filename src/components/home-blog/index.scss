@@ -6,6 +6,7 @@
 
     @include down(lg) {
         align-items: center;
+        margin-bottom: 36px;
     }
 
     &__status {

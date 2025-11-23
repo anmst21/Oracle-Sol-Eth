@@ -502,7 +502,11 @@
 
     @include down(md) {
         padding: 0 20px;
+
+        margin-top: 149px;
     }
+
+
 
     &__animation {
         display: flex;

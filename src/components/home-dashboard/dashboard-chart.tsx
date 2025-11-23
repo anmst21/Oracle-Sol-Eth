@@ -5,11 +5,14 @@ import DashboardBottomChains from "./bottom-chains";
 import DashboardBottomCharts from "./bottom-chart";
 
 const DashboardChart = () => {
-  const [activeChainId, setActiveChainId] = useState(8453);
+  const [activeChainId, setActiveChainId] = useState(0);
 
   return (
     <>
-      <DashboardBottomCharts />
+      <DashboardBottomCharts
+        chainId={activeChainId}
+        setChainId={setActiveChainId}
+      />
       <DashboardBottomChains
         chainId={activeChainId}
         setChainId={setActiveChainId}
