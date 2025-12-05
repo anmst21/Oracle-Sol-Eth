@@ -26,7 +26,7 @@ const HomeDashboard = () => {
             <HomeSectionCross />
           </div>
           <TopCell values={["XX", "3", "692", "869"]} type="users" index={0} />
-          <TopCell values={[">", "7T", "000", "000"]} type="volume" index={1} />
+          <TopCell values={["<", "7T", "000", "000"]} type="volume" index={1} />
           <TopCell
             values={["X", "21", "418", "757"]}
             type="requests"
