@@ -5,9 +5,6 @@ import React, {
   useContext,
   useState,
   ReactNode,
-  useEffect,
-  useMemo,
-  useCallback,
 } from "react";
 
 export interface OnRampContextType {

@@ -1,8 +1,5 @@
 "use client";
 
-import ChartError from "@/components/chart/chart-error";
-import ModalPagination from "@/components/chart/modal-pagination";
-
 export default function Page() {
   return (
     <div className="community-coins">

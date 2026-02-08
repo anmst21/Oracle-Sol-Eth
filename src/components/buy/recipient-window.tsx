@@ -2,11 +2,9 @@ import React from "react";
 import { truncateAddress } from "@/helpers/truncate-address";
 import { RecipientWallet, PaymentMethod, CoinFade, ArrowSmall } from "../icons";
 
-type Props = {};
-
 const address = "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce";
 
-const RecipientWindow = (props: Props) => {
+const RecipientWindow = () => {
   return (
     <div className="recipient-window">
       <div className="recipient-window__recipient">

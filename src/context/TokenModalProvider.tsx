@@ -12,6 +12,7 @@ import React, {
   useMemo,
   useCallback,
   useRef,
+  Suspense,
 } from "react";
 import { useCommunityCoins } from "./FarcasterCommunityTokensProvider";
 import { useSolanaCoins } from "./DexScreenerTrendingSolataTokensProvider";
@@ -205,107 +206,6 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
 
   // console.log({ nativeSolBalance, userEthTokens, activeWallet });
 
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const sellTokenChain = searchParams.get("sellTokenChain");
-  const sellTokenAddress = searchParams.get("sellTokenAddress");
-  const buyTokenChain = searchParams.get("buyTokenChain");
-  const buyTokenAddress = searchParams.get("buyTokenAddress");
-
-  useEffect(() => {
-    if (!sellToken && !buyToken) return;
-
-    const params = new URLSearchParams();
-    if (sellToken) {
-      params.set("sellTokenChain", (sellToken.chainId as number).toString());
-      params.set("sellTokenAddress", sellToken.address);
-    }
-    if (buyToken) {
-      params.set("buyTokenChain", (buyToken.chainId as number).toString());
-      params.set("buyTokenAddress", buyToken.address);
-    }
-
-    // This just rewrites the URL in-place, no Next.js navigation
-    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-  }, [sellToken, buyToken]);
-
-  const getToken = useCallback(
-    async (address: string, chainId: string, mode: "sell" | "buy") => {
-      const [raw] = await queryTokenList("https://api.relay.link", {
-        limit: 1,
-        chainIds: [Number(chainId)],
-        address,
-      });
-
-      if (raw) {
-        const unified: UnifiedToken = {
-          chainId: raw.chainId!,
-          address: raw.address!,
-          symbol: raw.symbol!,
-          name: raw.name!,
-          //  decimals: raw.decimals!,
-          source: "relay",
-          logo: raw.metadata?.logoURI,
-        };
-        if (mode === "sell") {
-          setSellToken(unified);
-        } else {
-          setBuyToken(unified);
-        }
-      } else {
-        // clear the URL params…
-        const params = new URLSearchParams(searchParams);
-        if (mode === "sell") {
-          params.delete("sellTokenChain");
-          params.delete("sellTokenAddress");
-        } else {
-          params.delete("buyTokenChain");
-          params.delete("buyTokenAddress");
-        }
-        window.history.replaceState(null, "", `${pathname}?${params}`);
-      }
-    },
-    [pathname, searchParams]
-  );
-
-  useEffect(() => {
-    if (!sellTokenChain || !sellTokenAddress) return;
-    if (
-      (sellTokenChain && !sellTokenAddress) ||
-      (!sellTokenChain && sellTokenAddress) ||
-      (Number(sellTokenChain) === 792703809 &&
-        !isValidSolanaAddress(sellTokenAddress)) ||
-      (Number(sellTokenChain) !== 792703809 && !isAddress(sellTokenAddress))
-    ) {
-      const params = new URLSearchParams(searchParams);
-      params.delete("sellTokenChain");
-      params.delete("sellTokenAddress");
-      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-    }
-    if (sellTokenChain && sellTokenAddress) {
-      getToken(sellTokenAddress, sellTokenChain, "sell");
-    }
-  }, [sellTokenAddress, sellTokenChain]);
-
-  useEffect(() => {
-    if (!buyTokenChain || !buyTokenAddress) return;
-    if (
-      (buyTokenChain && !buyTokenAddress) ||
-      (!buyTokenChain && buyTokenAddress) ||
-      (Number(buyTokenChain) === 792703809 &&
-        !isValidSolanaAddress(buyTokenAddress)) ||
-      (Number(buyTokenChain) !== 792703809 && !isAddress(buyTokenAddress))
-    ) {
-      const params = new URLSearchParams(searchParams);
-      params.delete("buyTokenChain");
-      params.delete("buyTokenAddress");
-      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-    }
-    if (buyTokenChain && buyTokenAddress) {
-      getToken(buyTokenAddress, buyTokenChain, "buy");
-    }
-  }, [buyTokenAddress, buyTokenChain]);
   //Number(chainId.split(":")[1])
   return (
     <TokenModalContext.Provider
@@ -329,6 +229,14 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
         selectToken,
       }}
     >
+      <Suspense>
+        <SearchParamsSync
+          sellToken={sellToken}
+          buyToken={buyToken}
+          setSellToken={setSellToken}
+          setBuyToken={setBuyToken}
+        />
+      </Suspense>
       {children}
       <AnimatePresence mode="wait">
         {isOpen && (
@@ -368,6 +276,119 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
     </TokenModalContext.Provider>
   );
 };
+
+function SearchParamsSync({
+  sellToken,
+  buyToken,
+  setSellToken,
+  setBuyToken,
+}: {
+  sellToken: UnifiedToken | null;
+  buyToken: UnifiedToken | null;
+  setSellToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+  setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
+}) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const sellTokenChain = searchParams.get("sellTokenChain");
+  const sellTokenAddress = searchParams.get("sellTokenAddress");
+  const buyTokenChain = searchParams.get("buyTokenChain");
+  const buyTokenAddress = searchParams.get("buyTokenAddress");
+
+  useEffect(() => {
+    if (!sellToken && !buyToken) return;
+
+    const params = new URLSearchParams();
+    if (sellToken) {
+      params.set("sellTokenChain", (sellToken.chainId as number).toString());
+      params.set("sellTokenAddress", sellToken.address);
+    }
+    if (buyToken) {
+      params.set("buyTokenChain", (buyToken.chainId as number).toString());
+      params.set("buyTokenAddress", buyToken.address);
+    }
+
+    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
+  }, [sellToken, buyToken, pathname]);
+
+  const getToken = useCallback(
+    async (address: string, chainId: string, mode: "sell" | "buy") => {
+      const [raw] = await queryTokenList("https://api.relay.link", {
+        limit: 1,
+        chainIds: [Number(chainId)],
+        address,
+      });
+
+      if (raw) {
+        const unified: UnifiedToken = {
+          chainId: raw.chainId!,
+          address: raw.address!,
+          symbol: raw.symbol!,
+          name: raw.name!,
+          source: "relay",
+          logo: raw.metadata?.logoURI,
+        };
+        if (mode === "sell") {
+          setSellToken(unified);
+        } else {
+          setBuyToken(unified);
+        }
+      } else {
+        const params = new URLSearchParams(searchParams);
+        if (mode === "sell") {
+          params.delete("sellTokenChain");
+          params.delete("sellTokenAddress");
+        } else {
+          params.delete("buyTokenChain");
+          params.delete("buyTokenAddress");
+        }
+        window.history.replaceState(null, "", `${pathname}?${params}`);
+      }
+    },
+    [pathname, searchParams, setSellToken, setBuyToken]
+  );
+
+  useEffect(() => {
+    if (!sellTokenChain || !sellTokenAddress) return;
+    if (
+      (sellTokenChain && !sellTokenAddress) ||
+      (!sellTokenChain && sellTokenAddress) ||
+      (Number(sellTokenChain) === 792703809 &&
+        !isValidSolanaAddress(sellTokenAddress)) ||
+      (Number(sellTokenChain) !== 792703809 && !isAddress(sellTokenAddress))
+    ) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("sellTokenChain");
+      params.delete("sellTokenAddress");
+      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
+    }
+    if (sellTokenChain && sellTokenAddress) {
+      getToken(sellTokenAddress, sellTokenChain, "sell");
+    }
+  }, [sellTokenAddress, sellTokenChain, getToken, pathname, searchParams]);
+
+  useEffect(() => {
+    if (!buyTokenChain || !buyTokenAddress) return;
+    if (
+      (buyTokenChain && !buyTokenAddress) ||
+      (!buyTokenChain && buyTokenAddress) ||
+      (Number(buyTokenChain) === 792703809 &&
+        !isValidSolanaAddress(buyTokenAddress)) ||
+      (Number(buyTokenChain) !== 792703809 && !isAddress(buyTokenAddress))
+    ) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("buyTokenChain");
+      params.delete("buyTokenAddress");
+      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
+    }
+    if (buyTokenChain && buyTokenAddress) {
+      getToken(buyTokenAddress, buyTokenChain, "buy");
+    }
+  }, [buyTokenAddress, buyTokenChain, getToken, pathname, searchParams]);
+
+  return null;
+}
 
 export function useTokenModal(): TokenModalContextValue {
   const context = useContext(TokenModalContext);

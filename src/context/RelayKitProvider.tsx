@@ -37,9 +37,8 @@ export function RelayKitProviderWrapper({
 
   return (
     <RelayKitProvider options={options}>
-      {
-        children as import("/Users/raging_incel/Desktop/code/hellcat/oracle/node_modules/@reservoir0x/relay-kit-ui/node_modules/@types/react/index").ReactNode
-      }
+      {/* @ts-expect-error relay-kit-ui bundles its own @types/react */}
+      {children}
     </RelayKitProvider>
   );
 }

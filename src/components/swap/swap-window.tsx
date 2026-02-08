@@ -18,16 +18,16 @@ import WalletButton from "../universals/wallet-button";
 import TokenButton from "../universals/token-button";
 
 const containerVariants = {
-  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" } },
+  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" as const } },
   exit: {
     opacity: 0,
-    transition: { duration: 0.2, ease: "easeInOut" },
+    transition: { duration: 0.2, ease: "easeInOut" as const },
   },
 };
 
 const buttonVariants = {
-  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" } },
-  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeInOut" } },
+  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" as const } },
+  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeInOut" as const } },
 };
 
 type Props = {

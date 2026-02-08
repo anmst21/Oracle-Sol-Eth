@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 // import type { Metadata } from "next";
 import {
   Fira_Code,
@@ -66,7 +67,9 @@ export default async function RootLayout({
       <body
         className={`${firaCode.variable} ${handjet.variable} ${funnelDisplay.variable} ${funnelSans.variable}`}
       >
-        <FaviconAnimator />
+        <Suspense>
+          <FaviconAnimator />
+        </Suspense>
         <CapchaProvider>
           <QueryClientProvider>
             <PrivyProvider>

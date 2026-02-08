@@ -1,7 +1,6 @@
 "use client";
 
 import { fetchFeedEnriched } from "@/actions/fetch-feed-enriched";
-import { DexEntry } from "@/types/feed-api-response";
 import {
   EnrichedDexEntry,
   MetaByKey,
@@ -13,7 +12,6 @@ import React, {
   useState,
   ReactNode,
   useEffect,
-  useMemo,
   useCallback,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";

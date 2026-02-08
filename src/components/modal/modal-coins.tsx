@@ -67,12 +67,12 @@ const ModalCoins = ({
 Props) => {
   const [searchTerm, setSearchTerm] = useState(""); // raw input
   const [searchTokens, setSearchTokens] = useState<RelayToken[]>([]); // fetched results
-  const [loadingSearchList, setLoadingSearchList] = useState(false);
-  const [errorSearching, setErrorSearching] = useState<string | null>(null);
+  const [, setLoadingSearchList] = useState(false);
+  const [, setErrorSearching] = useState<string | null>(null);
   // console.log("searchTokens", searchTokens);
   const debouncedTerm = useDebounce(searchTerm, 500);
 
-  const { chains, isLoading } = useRelayChains();
+  const { chains } = useRelayChains();
 
   const chainIds = useMemo(() => chains?.map((chain) => chain.id), [chains]);
 

@@ -2,7 +2,6 @@
 
 import {
   MoonpayCountriesResponse,
-  MoonpayCryptoCurrency,
   MoonpayFiatCurrency,
   MoonpayIpResponse,
 } from "@/types/moonpay-api";
@@ -22,14 +21,12 @@ import BuyWindowCta from "./buy-window-cta";
 
 type Props = {
   moonpayIp: MoonpayIpResponse;
-  cryptoCurrencies: MoonpayCryptoCurrency[];
   fiatCurrencies: MoonpayFiatCurrency[];
   countries: MoonpayCountriesResponse;
 };
 
 const BuyWindow = ({
   moonpayIp,
-  cryptoCurrencies,
   fiatCurrencies,
   countries,
 }: Props) => {
@@ -44,7 +41,7 @@ const BuyWindow = ({
 
   const [isOpenCurrencies, setIsOpenCurrencies] = useState(false);
 
-  const [routeType, setRouteType] = useState<OracleRouteType>(
+  const [routeType] = useState<OracleRouteType>(
     OracleRouteType.ORACLE
   );
   // fiatCurrency.maxBuyAmount

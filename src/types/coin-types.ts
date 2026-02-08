@@ -4,7 +4,7 @@ export type RelayToken = {
   symbol?: string;
   name?: string;
   decimals?: number;
-  vmType?: "bvm" | "evm" | "svm" | "tvm" | "tonvm" | "suivm";
+  vmType?: "bvm" | "evm" | "svm" | "tvm" | "tonvm" | "suivm" | "hypevm";
   metadata?: {
     logoURI?: string;
     verified?: boolean;

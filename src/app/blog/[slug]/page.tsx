@@ -19,11 +19,12 @@ export async function generateStaticParams() {
 }
 
 type Slug = {
-  params: { slug: string };
-  searchParams?: { category: string };
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ category: string }>;
 };
 
-export async function generateMetadata({ params: { slug } }: Slug) {
+export async function generateMetadata({ params }: Slug) {
+  const { slug } = await params;
   const project = await getBlogpost(slug);
   const postUrl = `https://oracleswap.app/blog/${slug}`;
   const imageUrl = project.image; // Ensure this is an absolute URL
@@ -60,10 +61,11 @@ function getRandomPosts(posts: Blogpost[], count = 3): Blogpost[] {
 }
 
 export default async function Page({
-  params: { slug },
+  params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
   const postData = await getBlogpost(slug);
 
   if (!postData || Object.keys(postData).length === 0) {

@@ -14,11 +14,6 @@ const DeepLink = () => {
     ? `${oracleUri}${pathname}?${queryString}`
     : oracleUri + pathname + "?";
 
-  const entries = useMemo(
-    () => Array.from(searchParams.entries()),
-    [searchParams]
-  );
-
   return (
     <div className="deep-link">
       <div className="deep-link__header">

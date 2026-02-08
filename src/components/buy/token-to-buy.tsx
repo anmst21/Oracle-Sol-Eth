@@ -1,11 +1,9 @@
 import React from "react";
 import { HexChain, SwapArrow, UserQuestion } from "../icons";
 
-type Props = {};
-
 const presetAmountValues = [20, 100, 300, 1000];
 
-const TokenToBuy = (props: Props) => {
+const TokenToBuy = () => {
   return (
     <div className="token-to-buy">
       <div className="token-to-buy__token">

@@ -3,9 +3,9 @@ import { RelayTransaction } from "@/types/relay-transaction";
 import { queryRequests } from "@reservoir0x/relay-kit-hooks";
 import { notFound } from "next/navigation";
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function Page({ params }: PageProps) {

@@ -11,7 +11,7 @@ export type FarcasterUser = {
   username: string;
   display_name: string;
   custody_address: HexAddress;
-  pro: ProInfo;
+  pro?: ProInfo;
   pfp_url: string;
   profile: Profile;
   follower_count: number;
@@ -22,8 +22,9 @@ export type FarcasterUser = {
   verified_accounts: VerifiedAccount[];
   power_badge: boolean;
   experimental: ExperimentalInfo;
-  viewer_context: ViewerContext;
+  viewer_context?: ViewerContext;
   score: number;
+  url?: string;
 };
 
 export type ProInfo = {
@@ -34,16 +35,16 @@ export type ProInfo = {
 
 export type Profile = {
   bio: Bio;
-  location: Location;
-  banner: { url: string };
+  location?: Location;
+  banner?: { url: string };
 };
 
 export type Bio = {
   text: string;
-  mentioned_profiles: DehydratedUser[];
-  mentioned_profiles_ranges: Range[];
-  mentioned_channels: DehydratedChannel[];
-  mentioned_channels_ranges: Range[];
+  mentioned_profiles?: DehydratedUser[];
+  mentioned_profiles_ranges?: Range[];
+  mentioned_channels?: DehydratedChannel[];
+  mentioned_channels_ranges?: Range[];
 };
 
 export type DehydratedUser = {
@@ -53,7 +54,7 @@ export type DehydratedUser = {
   display_name: string;
   pfp_url: string;
   custody_address: HexAddress;
-  score: number;
+  score?: number;
 };
 
 export type DehydratedChannel = {
@@ -61,7 +62,7 @@ export type DehydratedChannel = {
   name: string;
   object: "channel_dehydrated";
   image_url: string;
-  viewer_context: {
+  viewer_context?: {
     following: boolean;
     role: string; // e.g., "member"
   };
@@ -78,11 +79,11 @@ export type Location = {
   address: {
     city: string;
     state: string;
-    state_code: string;
+    state_code?: string;
     country: string;
     country_code: string;
   };
-  radius: number;
+  radius?: number;
 };
 
 export type AuthAddress = {
@@ -90,11 +91,11 @@ export type AuthAddress = {
   app: {
     object: "user_dehydrated";
     fid: number;
-    username: string;
-    display_name: string;
-    pfp_url: string;
-    custody_address: HexAddress;
-    score: number;
+    username?: string;
+    display_name?: string;
+    pfp_url?: string;
+    custody_address?: HexAddress;
+    score?: number;
   };
 };
 

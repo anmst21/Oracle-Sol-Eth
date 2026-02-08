@@ -10,7 +10,7 @@ import { useCategory } from "@/hooks/useCategory";
 
 const HeaderLogo = ({ isRedirect }: { isRedirect?: boolean }) => {
   const lottieRef = useRef<LottieRefCurrentProps | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [, setIsAnimating] = useState(false);
   const { activeCategory } = useCategory();
 
   const handlePlay = () => {
