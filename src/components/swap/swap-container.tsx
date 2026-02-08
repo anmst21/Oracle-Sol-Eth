@@ -389,10 +389,10 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         chainId: sellToken.chainId as number,
         toChainId: buyToken.chainId as number,
         currency: sellToken.address,
-
         toCurrency: buyToken.address,
         amount: amountWei.toString(),
         wallet: adaptedWallet,
+        user: activeWallet.address,
         recipient: activeBuyWallet.address,
         tradeType,
         options: {

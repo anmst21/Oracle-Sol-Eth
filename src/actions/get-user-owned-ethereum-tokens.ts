@@ -78,7 +78,7 @@ export async function getTokenAccountsWithMetadata({
     chainId: t.chain_id,
     address: t.address === "native" ? zeroAddress : t.address,
     symbol: t.symbol,
-    logo: t.token_metadata.logo,
+    logo: t.token_metadata?.logo ?? "",
     priceUsd: t.price_usd,
     balance: Number(applyDecimals(t.amount, t.decimals)),
     name: t.name,
