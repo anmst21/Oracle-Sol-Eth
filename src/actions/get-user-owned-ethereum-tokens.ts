@@ -36,7 +36,7 @@ export async function getTokenAccountsWithMetadata({
     throw new Error("Missing DUNE_API_KEY");
   }
 
-  const base = `https://api.dune.com/api/echo/v1/balances/evm/${address}`;
+  const base = `https://api.sim.dune.com/v1/evm/balances/${address}`;
 
   // build chain_ids default or override
   const chainIds = chainId
@@ -45,7 +45,7 @@ export async function getTokenAccountsWithMetadata({
 
   const params = new URLSearchParams({ chain_ids: chainIds });
 
-  params.set("exclude_spam_tokens", "exclude_spam_tokens");
+  params.set("exclude_spam_tokens", "true");
 
   params.set("metadata", "logo");
 
@@ -62,7 +62,7 @@ export async function getTokenAccountsWithMetadata({
     cache: "force-cache",
     next: { revalidate: 60 * 60 },
     headers: {
-      "X-Dune-Api-Key": apiKey,
+      "X-Sim-Api-Key": apiKey,
       Accept: "application/json",
     },
   });
