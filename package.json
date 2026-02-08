@@ -10,7 +10,7 @@
     "dev": "next dev --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "heroku-postbuild": "next build && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/",
+    "heroku-postbuild": "next build && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/ && rm -rf node_modules && mkdir node_modules && rm -rf .next/cache",
     "lint": "next lint",
     "email": "email dev --dir src/emails"
   },
