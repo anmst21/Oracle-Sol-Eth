@@ -4,7 +4,7 @@ import { duneEthChains } from "@/helpers/dune-eth-chains";
 import { UnifiedToken } from "@/types/coin-types";
 import { zeroAddress } from "viem";
 
-const apiKey = process.env.DUNE_API_KEY;
+const apiKey = process.env.SIM_API_KEY;
 
 interface TokenMetadata {
   logo: string;
