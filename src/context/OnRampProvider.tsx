@@ -1,5 +1,6 @@
 "use client";
 
+import { MoonpayCryptoCurrency } from "@/types/moonpay-api";
 import React, {
   createContext,
   useContext,
@@ -10,6 +11,10 @@ import React, {
 export interface OnRampContextType {
   isOpenRegions: boolean;
   setIsOpenRegions: React.Dispatch<React.SetStateAction<boolean>>;
+  moonpayCryptos: MoonpayCryptoCurrency[];
+  setMoonpayCryptos: React.Dispatch<
+    React.SetStateAction<MoonpayCryptoCurrency[]>
+  >;
 }
 
 const OnRampContext = createContext<OnRampContextType | undefined>(undefined);
@@ -20,14 +25,15 @@ export interface OnRampProviderProps {
 
 export const OnRampProvider: React.FC<OnRampProviderProps> = ({ children }) => {
   const [isOpenRegions, setIsOpenRegions] = useState(false);
+  const [moonpayCryptos, setMoonpayCryptos] = useState<
+    MoonpayCryptoCurrency[]
+  >([]);
 
   return (
-    <OnRampContext.Provider value={{ isOpenRegions, setIsOpenRegions }}>
+    <OnRampContext.Provider
+      value={{ isOpenRegions, setIsOpenRegions, moonpayCryptos, setMoonpayCryptos }}
+    >
       {children}
-      {/* <AnimatePresence mode="wait">
-        {isOpenPools && <PoolsModal closeModal={() => setIsOpenPools(false)} />}
-      </AnimatePresence>
-     */}
     </OnRampContext.Provider>
   );
 };

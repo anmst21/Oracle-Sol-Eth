@@ -5,6 +5,7 @@ const config = {
   projectId: "a07lokcb",
   dataset: "production",
   apiVersion: "2023-03-04",
+  useCdn: false,
 };
 
 const categoriesQuery = groq`

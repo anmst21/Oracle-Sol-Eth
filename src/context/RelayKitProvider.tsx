@@ -11,7 +11,7 @@ import { useTokenModal } from "./TokenModalProvider";
 
 // createClient({
 //   baseApiUrl: MAINNET_RELAY_API,
-//   source: "YOUR.SOURCE",
+//   source: "oracleswap.app",
 //   //  chains: chains as RelayChain[],
 // });
 
@@ -24,6 +24,7 @@ export function RelayKitProviderWrapper({
   // console.log("chains", chains);
   const options = {
     appName: "Oracl3",
+    source: "oracleswap.app",
     appFees: [
       {
         recipient: "0x0000000000000000000000000000000000000000",

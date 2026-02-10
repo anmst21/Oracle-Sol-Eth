@@ -185,6 +185,7 @@ const SwapWindow = ({
               height={18}
               width={48.95}
               isLoading={isLoadingQuote}
+              enableLayout
             >
               <GreenDot int={intBalancePart} dec={decBalancePart} />
             </SkeletonLoaderWrapper>
@@ -198,6 +199,7 @@ const SwapWindow = ({
             width={"auto"}
             isLoading={isLoading}
             flex
+            enableLayout
           >
             <input
               type="number"
@@ -217,6 +219,7 @@ const SwapWindow = ({
               height={18}
               width={30}
               isLoading={isLoadingQuote}
+              enableLayout
             >
               <GreenDot int={intUsdPart} dec={decUsdPart} />
             </SkeletonLoaderWrapper>
@@ -280,6 +283,7 @@ const SwapWindow = ({
           isLoading={!ready || isSwitching}
           activeWallet={activeWallet}
           setIsOpenCallback={isOpenCallback}
+          enableLayout
         >
           <AnimatePresence mode="wait">
             {isOpenAddressModal && (

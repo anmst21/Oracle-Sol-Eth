@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InputCross } from "../icons";
 import { modalAnimation } from "./animation";
 import {
@@ -38,26 +38,33 @@ const PoolsModal = ({ closeModal }: Props) => {
     [trades, currentPage, itemsPerPage]
   );
 
+  const abortRef = useRef<AbortController | null>(null);
+
   const getTrades = useCallback(async () => {
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
+
     setIsErrorTrades(false);
     setIsLoadingTrades(true);
 
     try {
-      // build URL + query string
       const url =
         geckoTerminalBaseUri +
         `/networks/${requestChain?.name}/pools/${activePool?.attributes.address}/trades`;
 
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: ac.signal });
       if (!res.ok) throw new Error(res.statusText);
 
       const json = (await res.json()) as TradesResponse;
+      if (ac.signal.aborted) return;
       setTrades(json.data);
     } catch (err) {
+      if (ac.signal.aborted) return;
       console.error("fetch trades failed", err);
       setIsErrorTrades(true);
     } finally {
-      setIsLoadingTrades(false);
+      if (!ac.signal.aborted) setIsLoadingTrades(false);
     }
   }, [activePool, requestChain]);
 
@@ -65,6 +72,7 @@ const PoolsModal = ({ closeModal }: Props) => {
     if (requestChain && activePool) {
       getTrades();
     }
+    return () => abortRef.current?.abort();
   }, [activePool, requestChain, getTrades]);
 
   const { relayChain } = useChart();

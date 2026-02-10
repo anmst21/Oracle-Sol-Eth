@@ -30,8 +30,9 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
     quote?.details?.totalImpact?.usd || "0.00"
   ).toFixed(2);
 
-  const swapImpactUsd =
-    Number(quote?.details?.swapImpact?.usd).toFixed(2) || "0.00";
+  const swapImpactUsd = Number(
+    quote?.details?.swapImpact?.usd ?? "0.00"
+  ).toFixed(2);
 
   const gasCurrencyName = quote?.fees?.gas?.currency?.name || "Unknown";
   const gasValueUsd = Number(quote?.fees?.gas?.amountUsd).toFixed(2);
@@ -99,9 +100,9 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
 
   const [reverseInOut, setReverseInOut] = useState(false);
 
-  const inPerOut = inAmmount / outAmmount;
+  const inPerOut = outAmmount !== 0 ? inAmmount / outAmmount : 0;
 
-  const outPerIn = outAmmount / inAmmount;
+  const outPerIn = inAmmount !== 0 ? outAmmount / inAmmount : 0;
 
   const getTicker = (
     currencyOneSymbol: string | undefined,
@@ -169,6 +170,7 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
               height={22}
               width={"50%"}
               isLoading={isLoading}
+              enableLayout
             >
               <button
                 onClick={() => setReverseInOut(!reverseInOut)}
@@ -228,6 +230,7 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
                           height={16}
                           width={"50%"}
                           isLoading={isLoading}
+                          enableLayout
                         >
                           <>
                             {item.key === "estimation" && <ClockInfo />}

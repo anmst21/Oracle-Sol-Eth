@@ -17,7 +17,7 @@ import Image from "next/image";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { useTokenModal } from "@/context/TokenModalProvider";
 import { splitCompact } from "@/helpers/compact-formatter";
-// import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import classNames from "classnames";
 import BuyInfoModal from "./buy-info-modal";
 import { useRouter } from "next/navigation";
@@ -122,14 +122,23 @@ const BuyWindowInput = ({
               )}
             </div>
           </div>
-          <div className="buy-window-input__top__token">
-            <span className="buy-window-input__top__name">
-              {activeToken.symbol}
-            </span>
-            <span className="buy-window-input__top__symbol">
-              {activeToken.name}
-            </span>
-          </div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={activeToken.symbol}
+              className="buy-window-input__top__token"
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: "auto" }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <span className="buy-window-input__top__name">
+                {activeToken.symbol}
+              </span>
+              <span className="buy-window-input__top__symbol">
+                {activeToken.name}
+              </span>
+            </motion.div>
+          </AnimatePresence>
           <BuyChev />
         </button>
         <div

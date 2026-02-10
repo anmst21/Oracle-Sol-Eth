@@ -151,33 +151,43 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
   const solNativeBalance = useCallback(
     async (address: string) => {
       setIsLoadingNativeSolBalance(true);
-      const balance = await getSolBalance(address);
-      setNativeSolBalance(balance);
-      setIsLoadingNativeSolBalance(false);
+      try {
+        const balance = await getSolBalance(address);
+        setNativeSolBalance(balance);
+      } catch (e) {
+        console.error("Failed to fetch SOL balance:", e);
+      } finally {
+        setIsLoadingNativeSolBalance(false);
+      }
     },
-    [setNativeSolBalance]
+    []
   );
 
   const ethCoins = useCallback(
     async (address: string) => {
       setIsLoadingUserEthTokens(true);
-      const tokens = await getUserEthTokens({
-        address,
-      });
-      setUserEthTokens(tokens);
-      setIsLoadingUserEthTokens(false);
+      try {
+        const tokens = await getUserEthTokens({ address });
+        setUserEthTokens(tokens);
+      } catch (e) {
+        console.error("Failed to fetch ETH tokens:", e);
+      } finally {
+        setIsLoadingUserEthTokens(false);
+      }
     },
-    [setUserEthTokens]
+    []
   );
 
   const solCoins = useCallback(
     async (address: string) => {
-      const tokens = await getUserSolTokens({
-        address,
-      });
-      setUserSolanaTokens(tokens);
+      try {
+        const tokens = await getUserSolTokens({ address });
+        setUserSolanaTokens(tokens);
+      } catch (e) {
+        console.error("Failed to fetch Solana tokens:", e);
+      }
     },
-    [setUserSolanaTokens]
+    []
   );
 
   const { activeWallet } = useActiveWallet();
@@ -291,37 +301,45 @@ function SearchParamsSync({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const sellTokenChain = searchParams.get("sellTokenChain");
-  const sellTokenAddress = searchParams.get("sellTokenAddress");
-  const buyTokenChain = searchParams.get("buyTokenChain");
-  const buyTokenAddress = searchParams.get("buyTokenAddress");
+  // Capture initial URL params once (ref avoids stale closure issues)
+  const initialParams = useRef({
+    sellChain: searchParams.get("sellTokenChain"),
+    sellAddr: searchParams.get("sellTokenAddress"),
+    buyChain: searchParams.get("buyTokenChain"),
+    buyAddr: searchParams.get("buyTokenAddress"),
+  });
 
+  // Gate: block state→URL writes until the initial URL→State load finishes
+  const [urlLoaded, setUrlLoaded] = useState(false);
+
+  // ── URL → State (once on mount) ───────────────────────────────
   useEffect(() => {
-    if (!sellToken && !buyToken) return;
+    const { sellChain, sellAddr, buyChain, buyAddr } = initialParams.current;
 
-    const params = new URLSearchParams();
-    if (sellToken) {
-      params.set("sellTokenChain", (sellToken.chainId as number).toString());
-      params.set("sellTokenAddress", sellToken.address);
-    }
-    if (buyToken) {
-      params.set("buyTokenChain", (buyToken.chainId as number).toString());
-      params.set("buyTokenAddress", buyToken.address);
+    // Nothing to restore from URL
+    if (!sellChain && !sellAddr && !buyChain && !buyAddr) {
+      setUrlLoaded(true);
+      return;
     }
 
-    window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-  }, [sellToken, buyToken, pathname]);
+    const isValid = (address: string, chainId: number) =>
+      chainId === 792703809
+        ? isValidSolanaAddress(address)
+        : isAddress(address);
 
-  const getToken = useCallback(
-    async (address: string, chainId: string, mode: "sell" | "buy") => {
-      const [raw] = await queryTokenList("https://api.relay.link", {
-        limit: 1,
-        chainIds: [Number(chainId)],
-        address,
-      });
-
-      if (raw) {
-        const unified: UnifiedToken = {
+    const fetchOne = async (
+      address: string,
+      chainId: number
+    ): Promise<UnifiedToken | null> => {
+      if (!isValid(address, chainId)) return null;
+      try {
+        const [raw] = await queryTokenList("https://api.relay.link", {
+          limit: 1,
+          chainIds: [chainId],
+          address,
+        });
+        if (!raw) return null;
+        return {
           chainId: raw.chainId!,
           address: raw.address!,
           symbol: raw.symbol!,
@@ -329,63 +347,53 @@ function SearchParamsSync({
           source: "relay",
           logo: raw.metadata?.logoURI,
         };
-        if (mode === "sell") {
-          setSellToken(unified);
-        } else {
-          setBuyToken(unified);
-        }
-      } else {
-        const params = new URLSearchParams(searchParams);
-        if (mode === "sell") {
-          params.delete("sellTokenChain");
-          params.delete("sellTokenAddress");
-        } else {
-          params.delete("buyTokenChain");
-          params.delete("buyTokenAddress");
-        }
-        window.history.replaceState(null, "", `${pathname}?${params}`);
+      } catch {
+        return null;
       }
-    },
-    [pathname, searchParams, setSellToken, setBuyToken]
-  );
+    };
 
-  useEffect(() => {
-    if (!sellTokenChain || !sellTokenAddress) return;
-    if (
-      (sellTokenChain && !sellTokenAddress) ||
-      (!sellTokenChain && sellTokenAddress) ||
-      (Number(sellTokenChain) === 792703809 &&
-        !isValidSolanaAddress(sellTokenAddress)) ||
-      (Number(sellTokenChain) !== 792703809 && !isAddress(sellTokenAddress))
-    ) {
-      const params = new URLSearchParams(searchParams);
-      params.delete("sellTokenChain");
-      params.delete("sellTokenAddress");
-      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
-    }
-    if (sellTokenChain && sellTokenAddress) {
-      getToken(sellTokenAddress, sellTokenChain, "sell");
-    }
-  }, [sellTokenAddress, sellTokenChain, getToken, pathname, searchParams]);
+    (async () => {
+      const [sellResult, buyResult] = await Promise.allSettled([
+        sellChain && sellAddr
+          ? fetchOne(sellAddr, Number(sellChain))
+          : Promise.resolve(null),
+        buyChain && buyAddr
+          ? fetchOne(buyAddr, Number(buyChain))
+          : Promise.resolve(null),
+      ]);
 
+      const sell =
+        sellResult.status === "fulfilled" ? sellResult.value : null;
+      const buy =
+        buyResult.status === "fulfilled" ? buyResult.value : null;
+
+      // Set whatever resolved; failed/missing tokens stay null
+      if (sell) setSellToken(sell);
+      if (buy) setBuyToken(buy);
+
+      // Ungate state→URL sync — the next effect will clean up
+      // any URL params for tokens that failed to fetch
+      setUrlLoaded(true);
+    })();
+  }, [setSellToken, setBuyToken]);
+
+  // ── State → URL (syncs after initial load completes) ──────────
   useEffect(() => {
-    if (!buyTokenChain || !buyTokenAddress) return;
-    if (
-      (buyTokenChain && !buyTokenAddress) ||
-      (!buyTokenChain && buyTokenAddress) ||
-      (Number(buyTokenChain) === 792703809 &&
-        !isValidSolanaAddress(buyTokenAddress)) ||
-      (Number(buyTokenChain) !== 792703809 && !isAddress(buyTokenAddress))
-    ) {
-      const params = new URLSearchParams(searchParams);
-      params.delete("buyTokenChain");
-      params.delete("buyTokenAddress");
-      window.history.replaceState(null, "", `${pathname}?${params.toString()}`);
+    if (!urlLoaded) return;
+
+    const params = new URLSearchParams();
+    if (sellToken) {
+      params.set("sellTokenChain", String(sellToken.chainId));
+      params.set("sellTokenAddress", sellToken.address);
     }
-    if (buyTokenChain && buyTokenAddress) {
-      getToken(buyTokenAddress, buyTokenChain, "buy");
+    if (buyToken) {
+      params.set("buyTokenChain", String(buyToken.chainId));
+      params.set("buyTokenAddress", buyToken.address);
     }
-  }, [buyTokenAddress, buyTokenChain, getToken, pathname, searchParams]);
+
+    const qs = params.toString();
+    window.history.replaceState(null, "", qs ? `${pathname}?${qs}` : pathname);
+  }, [sellToken, buyToken, pathname, urlLoaded]);
 
   return null;
 }

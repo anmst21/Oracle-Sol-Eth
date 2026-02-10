@@ -10,6 +10,7 @@ type Props = {
   radius?: number;
   flex?: boolean;
   children?: React.ReactNode;
+  enableLayout?: boolean;
 };
 
 const fade = {
@@ -25,6 +26,7 @@ export default function SkeletonLoaderWrapper({
   radius = 2,
   flex,
   children,
+  enableLayout,
 }: Props) {
   const [showLoader, setShowLoader] = useState(isLoading);
 
@@ -50,7 +52,7 @@ export default function SkeletonLoaderWrapper({
     <motion.div
       className="wrapper"
       style={style}
-      //  layout
+      layout={enableLayout || false}
       transition={{ type: "tween", duration: 0.2 }}
     >
       <AnimatePresence initial={false} mode="popLayout">
@@ -69,7 +71,7 @@ export default function SkeletonLoaderWrapper({
             className="to-gap"
             style={{ display: "flex" }}
             key="content"
-            //  layout
+            layout={enableLayout || false}
           >
             {children}
           </motion.div>

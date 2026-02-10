@@ -5,6 +5,10 @@ import { RelayChain } from "@/types/relay-query-chain-type";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import SkeletonLoaderWrapper from "../skeleton";
 import ChainSkeleton from "./chain-skeleton";
+import { ModalMode } from "@/types/modal-mode";
+
+export const MOONPAY_CHAIN_ID = -1;
+
 type Props = {
   activeChainId: number;
   setActiveChainId: (value: number) => void;
@@ -17,6 +21,7 @@ type Props = {
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   searchTerm: string;
   disableSearch?: boolean;
+  modalMode?: ModalMode;
 };
 
 const ModalChains = ({
@@ -31,6 +36,7 @@ const ModalChains = ({
   setSearchTerm,
   searchTerm,
   disableSearch,
+  modalMode,
 }: Props) => {
   // Combine your “all‐chain” icons
   const allChainIds = useMemo(
@@ -94,7 +100,22 @@ const ModalChains = ({
         </div>
       )}
       <div className="modal-chains__scroll">
-        {/* “All Chains” button */}
+        {/* MoonPay button — only in onramp mode */}
+        {modalMode === "onramp" && (
+          <div className="chain-sidebar__contianer">
+            <button
+              className={classNames("chain-sidebar", {
+                "chain-sidebar--active": activeChainId === MOONPAY_CHAIN_ID,
+              })}
+              onClick={() => setActiveChainId(MOONPAY_CHAIN_ID)}
+            >
+              <HexChain uri="https://cryptoiconsstorage.blob.core.windows.net/crypto-icons/moonpay-logo-lg.png" />
+              <span>MoonPay</span>
+            </button>
+          </div>
+        )}
+
+        {/* "All Chains" button */}
         <div className="chain-sidebar__contianer">
           <button
             className={classNames("chain-sidebar", {

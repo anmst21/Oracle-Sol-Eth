@@ -29,6 +29,7 @@ export default async function Page() {
       <BuyWindow
         countries={countries}
         fiatCurrencies={moonpayCurrencies.fiat}
+        cryptoCurrencies={moonpayCurrencies.crypto}
         moonpayIp={moonpayIp}
       />
       {/* <div className="buy-widget">

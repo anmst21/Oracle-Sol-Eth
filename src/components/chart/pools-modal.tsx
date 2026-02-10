@@ -60,7 +60,7 @@ const PoolsModal = ({ closeModal }: Props) => {
     if (!chunk && !isLoadingMorePools && !isNoMorePools) {
       fetchMorePoolsForToken(currentPage);
     }
-  }, [currentPage]);
+  }, [currentPage, tokenPools2D, isLoadingMorePools, isNoMorePools, fetchMorePoolsForToken]);
 
   useEffect(() => {
     if (isNoMorePools && tokenPools && tokenPools?.length > 0) {
@@ -202,7 +202,7 @@ const PoolsModal = ({ closeModal }: Props) => {
                       index={i + 1}
                       item={item}
                       activeToken={activeToken}
-                      key={i}
+                      key={item.attributes.address}
                     />
                   );
                 })}

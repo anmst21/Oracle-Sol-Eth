@@ -251,7 +251,7 @@ const ChartComponent = () => {
       >
         {isErrorChart && (
           <ChartError
-            btnLeftCallback={() => fetchPools()}
+            btnLeftCallback={() => fetchChart()}
             btnLeftHeader={"Reload Data"}
             btnRightCallback={() => openPools()}
             btnRightHeader={"Select Pool"}
@@ -263,7 +263,7 @@ const ChartComponent = () => {
         )}
         {isErrorPools && (
           <ChartError
-            btnLeftCallback={() => fetchChart()}
+            btnLeftCallback={() => fetchPools()}
             btnLeftHeader={"Reload Data"}
             btnRightCallback={() =>
               openTokenModal({ mode: "chart", onSelect: setActiveToken })

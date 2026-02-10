@@ -35,7 +35,7 @@ export const getTokenHistoricalData = async (
     const url = `${endpoint}?${params.toString()}`;
     // console.log("fetching OHLCV →", url);
 
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { next: { revalidate: 30 } });
 
     if (!res.ok) {
       const body = await res.text();
@@ -49,6 +49,6 @@ export const getTokenHistoricalData = async (
     return result.data.attributes.ohlcv_list;
   } catch (err) {
     console.error("getTokenHistoricalData error:", err);
-    return null; // or throw err if you want the caller to handle it
+    throw err;
   }
 };

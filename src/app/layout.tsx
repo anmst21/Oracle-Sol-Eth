@@ -134,9 +134,9 @@ export default async function RootLayout({
                   <GeckoTokensProvider>
                     <MoonPayContextProvider>
                       <ActiveWalletProvider>
-                        <TokenModalProvider>
-                          <RelayKitProvider>
-                            <OnRampProvider>
+                        <OnRampProvider>
+                          <TokenModalProvider>
+                            <RelayKitProvider>
                               <FeedProvider>
                                 <SlippageProvider>
                                   <Header
@@ -155,9 +155,9 @@ export default async function RootLayout({
                                   {/* <HeaderFooter /> */}
                                 </SlippageProvider>
                               </FeedProvider>
-                            </OnRampProvider>
-                          </RelayKitProvider>
-                        </TokenModalProvider>
+                            </RelayKitProvider>
+                          </TokenModalProvider>
+                        </OnRampProvider>
                       </ActiveWalletProvider>
                     </MoonPayContextProvider>
                   </GeckoTokensProvider>

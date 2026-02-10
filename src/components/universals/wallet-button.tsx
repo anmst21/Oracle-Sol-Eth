@@ -16,6 +16,7 @@ type Props = {
   children: ReactNode;
   activeWallet: ConnectedWallet | ConnectedSolanaWallet | SwapWallet | null;
   setIsOpenCallback: (value: boolean) => void;
+  enableLayout?: boolean;
 };
 
 const WalletButton = ({
@@ -24,6 +25,7 @@ const WalletButton = ({
   children,
   activeWallet,
   setIsOpenCallback,
+  enableLayout,
 }: Props) => {
   return (
     <div
@@ -33,7 +35,7 @@ const WalletButton = ({
         "swap-window__token__wallet--error": isWalletError,
       })}
     >
-      <SkeletonLoaderWrapper width={20} height={20} isLoading={isLoading}>
+      <SkeletonLoaderWrapper width={20} height={20} isLoading={isLoading} enableLayout={enableLayout}>
         <div className="swap-window__token__wallet__pfp">
           {!activeWallet ? (
             <HexChain width={20} question />
@@ -49,7 +51,7 @@ const WalletButton = ({
           )}
         </div>
       </SkeletonLoaderWrapper>
-      <SkeletonLoaderWrapper width={92.5} height={20} isLoading={isLoading}>
+      <SkeletonLoaderWrapper width={92.5} height={20} isLoading={isLoading} enableLayout={enableLayout}>
         <AnimatePresence initial={false} mode="popLayout">
           <motion.span
             key={activeWallet?.address ?? "placeholder"}

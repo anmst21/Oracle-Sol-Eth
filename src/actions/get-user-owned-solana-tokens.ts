@@ -101,8 +101,13 @@ export async function getTokenAccountsWithMetadata({
   };
 
   // 3) for each token, fetch its price from Fluxbeam and combine
-  const enriched: EnrichedToken[] = await Promise.all(
+  const enrichedResults = await Promise.allSettled(
     tokens.map(async (tk, idx) => {
+      const meta = metadataBatch?.[idx];
+      if (!meta?.content?.files?.[0]?.uri || !meta?.content?.metadata) {
+        return null;
+      }
+
       // default to null if price lookup fails
       let priceUsd: number | null = null;
       try {
@@ -125,12 +130,18 @@ export async function getTokenAccountsWithMetadata({
         pubkey: tk.pubkey,
         mint: tk.mint.toBase58(),
         amount: tk.amount,
-        imgUri: metadataBatch[idx].content.files[0].uri,
-        metadata: metadataBatch[idx].content.metadata,
+        imgUri: meta.content.files[0].uri,
+        metadata: meta.content.metadata,
         priceUsd,
       };
     })
   );
+  const enriched = enrichedResults
+    .filter(
+      (r): r is PromiseFulfilledResult<EnrichedToken> =>
+        r.status === "fulfilled" && r.value !== null
+    )
+    .map((r) => r.value);
   const generalized = enriched.map((t) => ({
     source: "sol" as const,
     chainId: 792703809,

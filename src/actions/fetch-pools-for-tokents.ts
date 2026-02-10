@@ -9,18 +9,18 @@ export const getPoolsForToken = async (
 ) => {
   try {
     const res = await fetch(
-      `${geckoTerminalBaseUri}/networks/${chainName}/tokens/${address}/pools?page=${page}`
+      `${geckoTerminalBaseUri}/networks/${chainName}/tokens/${address}/pools?page=${page}`,
+      { next: { revalidate: 30 } }
     );
 
     if (!res.ok) {
-      console.error("Error fetching token pools: HTTP " + res.status);
-      return null;
+      throw new Error("Error fetching token pools: HTTP " + res.status);
     }
 
     const json: PoolResponse = await res.json();
     return json.data;
   } catch (err) {
     console.error("Error fetching token pools:", err);
-    return null;
+    throw err;
   }
 };

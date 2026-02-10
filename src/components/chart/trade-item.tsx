@@ -114,23 +114,37 @@ function TradeItem({ index, item, explorerUrl }: Props) {
         </div>
       </td>
       <td className="trade-item__from">
-        <Link
-          href={explorerUrl + "/address/" + item.attributes.tx_from_address}
-          target="_blank"
-          className="trade-item__from__wrapper"
-        >
-          <span className="trade-item__from__value">
-            {item.attributes.tx_from_address.slice(0, 8)}
+        {explorerUrl ? (
+          <Link
+            href={explorerUrl + "/address/" + item.attributes.tx_from_address}
+            target="_blank"
+            className="trade-item__from__wrapper"
+          >
+            <span className="trade-item__from__value">
+              {item.attributes.tx_from_address.slice(0, 8)}
+            </span>
+          </Link>
+        ) : (
+          <span className="trade-item__from__wrapper">
+            <span className="trade-item__from__value">
+              {item.attributes.tx_from_address.slice(0, 8)}
+            </span>
           </span>
-        </Link>
+        )}
       </td>
       <td className="trade-item__transaction">
-        <Link
-          href={explorerUrl + "/tx/" + item.attributes.tx_hash}
-          target="_blank"
-        >
-          <LinkIconChart />
-        </Link>
+        {explorerUrl ? (
+          <Link
+            href={explorerUrl + "/tx/" + item.attributes.tx_hash}
+            target="_blank"
+          >
+            <LinkIconChart />
+          </Link>
+        ) : (
+          <span>
+            <LinkIconChart />
+          </span>
+        )}
       </td>
     </tr>
   );

@@ -82,14 +82,16 @@ const Modal: React.FC<ModalProps> = ({
   userSolanaTokens,
   setUserSolanaTokens,
 }) => {
-  const [activeChainId, setActiveChainId] = useState(0);
+  const [activeChainId, setActiveChainId] = useState(
+    modalMode === "onramp" ? -1 : 0
+  );
 
   const { data: suggestedTokens, isLoading: isLoadingSuggested } = useTokenList(
     "https://api.relay.link",
     {
       limit: 10,
       term: "",
-      chainIds: activeChainId === 0 ? [1, 8453, 792703809] : [activeChainId],
+      chainIds: activeChainId <= 0 ? [1, 8453, 792703809] : [activeChainId],
     }
   );
 
@@ -154,7 +156,7 @@ const Modal: React.FC<ModalProps> = ({
 
                 return (
                   <FeaturedCoinItem
-                    key={i}
+                    key={`${token.chainId}-${token.address}`}
                     coinSymbol={token.symbol}
                     chainSrc={
                       token.chainId ? getIconUri(token.chainId) : undefined
@@ -183,6 +185,7 @@ const Modal: React.FC<ModalProps> = ({
             solanaChain={solanaChain}
             ethereumChain={ethereumChain}
             isLoadingChains={isLoadingChains}
+            modalMode={modalMode}
           />
 
           <ModalCoins

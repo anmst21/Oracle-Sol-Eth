@@ -13,6 +13,7 @@ import React, {
   ReactNode,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { usePrivy } from "@privy-io/react-auth";
@@ -55,6 +56,9 @@ export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
     null
   );
   const [uniqueKeys, setUniqueKeys] = useState<TokenKey[] | null>(null);
+  const uniqueKeysRef = useRef<TokenKey[] | null>(null);
+  // Keep ref in sync so loadFeaturedFeed always has latest keys
+  uniqueKeysRef.current = uniqueKeys;
   const [metaByKey, setMetaByKey] = useState<MetaByKey>({});
   const [cursor, setCursor] = useState<string | null>(null);
   const [isLoadingFeaturedFeed, setIsLoadingFeaturedFeed] = useState(false);
@@ -96,7 +100,7 @@ export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
           nextCursor,
         } = await fetchFeedEnriched({
           cursor: opts?.cursor,
-          alreadyFetchedKeys: uniqueKeys ?? [],
+          alreadyFetchedKeys: uniqueKeysRef.current ?? [],
         });
 
         // Merge cursor
@@ -131,7 +135,7 @@ export const FeedProvider: React.FC<FeedProviderProps> = ({ children }) => {
         else setIsLoadingFeaturedFeed(false);
       }
     },
-    [uniqueKeys]
+    []
   );
 
   return (

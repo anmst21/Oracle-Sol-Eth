@@ -36,7 +36,7 @@ import { AnimatePresence } from "motion/react";
 
 // createClient({
 //   baseApiUrl: MAINNET_RELAY_API,
-//   source: "YOUR.SOURCE",
+//   source: "oracleswap.app",
 //   chains: [
 //     convertViemChainToRelayChain(mainnet),
 //     convertViemChainToRelayChain(base),
@@ -84,14 +84,14 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         } else {
           return (
             userSolanaTokens?.find((token) => token.address === address)
-              ?.balance || 0
+              ?.balance ?? 0
           ).toFixed(6);
         }
       } else {
         return (
           userEthTokens?.find(
             (token) => token.address === address && token.chainId === chainId
-          )?.balance || 0
+          )?.balance ?? 0
         ).toFixed(6);
       }
     },
@@ -113,14 +113,14 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
           type: activeWallet.type,
         });
       } else {
-        if (buyToken && buyToken.chainId === 792703809) {
+        if (buyToken && buyToken.chainId === 792703809 && solLinked[0]) {
           setActiveBuyWallet({
             chainId: solanaChain.id,
             address: solLinked[0].address,
-            type: "ethereum",
+            type: "solana",
           });
         }
-        if (buyToken && buyToken.chainId !== 792703809) {
+        if (buyToken && buyToken.chainId !== 792703809 && ethLinked[0]) {
           setActiveWallet(ethLinked[0]);
         }
       }
@@ -169,23 +169,25 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
     ) {
       setBuyToken(solanaToken);
     }
-  }, [activeBuyWallet, setBuyToken]);
+  }, [activeBuyWallet, setBuyToken, buyToken]);
 
   useEffect(() => {
     if (
       activeWallet?.type === "ethereum" &&
-      sellToken?.chainId === solanaChain.id
+      sellToken?.chainId === solanaChain.id &&
+      solLinked[0]
     ) {
       setActiveWallet(solLinked[0]);
     }
 
     if (
       activeWallet?.type === "solana" &&
-      sellToken?.chainId !== solanaChain.id
+      sellToken?.chainId !== solanaChain.id &&
+      ethLinked[0]
     ) {
       setActiveWallet(ethLinked[0]);
     }
-  }, [sellToken, setActiveWallet]);
+  }, [sellToken, setActiveWallet, activeWallet, solLinked, ethLinked]);
 
   // useEffect(() => {
   //   if (
@@ -252,8 +254,8 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       });
     }
 
-    setSellToken(buyToken!);
-    setBuyToken(sellToken!);
+    if (buyToken) setSellToken(buyToken);
+    if (sellToken) setBuyToken(sellToken);
 
     // 3. swap input values based on tradeType
     if (tradeType === TradeType.EXACT_INPUT) {
@@ -314,7 +316,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
     () =>
       createClient({
         baseApiUrl: MAINNET_RELAY_API,
-        source: "YOUR.SOURCE",
+        source: "oracleswap.app",
 
         chains: chains as RelayChain[],
       }),
@@ -408,7 +410,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         },
       });
 
-      if (error) setError(null);
+      setError(null);
       setQuote(q);
       setIsLoading(false);
     } catch (e: unknown) {
@@ -448,7 +450,6 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
     adaptedWallet,
     buyInputValue,
     buyToken,
-    error,
     // client,
     isSwitching,
     sellInputValue,
@@ -564,7 +565,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       </div>
       <BuyBtn
         isInsuficientBalance={
-          Number(sellTokenBalance) <=
+          Number(sellTokenBalance) <
           Number(quote?.details?.currencyIn?.amountFormatted)
         }
         isNoInputData={
@@ -595,7 +596,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         {progress && (
           <Confirmation
             isInsuficientBalance={
-              Number(sellTokenBalance) <=
+              Number(sellTokenBalance) <
               Number(quote?.details?.currencyIn?.amountFormatted)
             }
             clearProgressState={clearProgressState}

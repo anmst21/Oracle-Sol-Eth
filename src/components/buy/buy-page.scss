@@ -227,9 +227,13 @@
 
     &__token {
         flex: 1;
+        overflow: hidden;
+        gap: 0;
+        padding: 0 8px;
 
         .token-to-buy__token__icon {
             height: 24px;
+            flex-shrink: 0;
         }
     }
 
@@ -272,6 +276,7 @@
             font-weight: 600;
             font-style: normal;
             line-height: normal;
+            white-space: nowrap;
         }
 
         &__symbol {
@@ -280,6 +285,9 @@
             font-style: normal;
             font-weight: 500;
             line-height: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .token-to-buy__token__icon {
@@ -290,11 +298,14 @@
         &__token {
             display: flex;
             gap: 2px;
+            overflow: hidden;
+            min-width: 0;
         }
     }
 
 
     &__preset {
+        @include buy-button-hover();
         display: flex;
         align-items: center;
         justify-content: center;
@@ -303,6 +314,7 @@
         background: rgba(217, 241, 233, 0.05);
         flex: 1;
         height: 40px;
+        cursor: pointer;
 
 
         color: rgba(217, 241, 233, 0.60);
