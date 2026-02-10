@@ -7,7 +7,9 @@ import { PastedWallet } from "../swap/types";
 import { motion } from "motion/react";
 import ConnectedWallets from "./connected-wallets";
 import { useAddressModal } from "@/hooks/useAdddressModal";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 const AddressModal = () => {
+  useBodyScrollLock();
   const { setActiveBuyWallet, setIsAddressModalOpen, activeBuyWallet } =
     useActiveWallet();
 

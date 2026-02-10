@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import React, { useState } from "react";
 import { InputCross, ModalInfo as Info } from "../icons";
 import ModalInfo from "../slippage-modal/modal-info";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 type Props = {
   closeModal: () => void;
@@ -19,6 +20,7 @@ const HistoryModalWrapper = ({
   info,
   modalCenter,
 }: Props) => {
+  useBodyScrollLock();
   const [isOpenInfo, setIsOpenInfo] = useState(false);
   return (
     <div

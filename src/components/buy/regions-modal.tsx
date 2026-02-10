@@ -10,6 +10,7 @@ import {
 import ChartError from "../chart/chart-error";
 import ModalPagination from "../chart/modal-pagination";
 import RegionItem from "./region-item";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 type Props = {
   closeModal: () => void;
@@ -18,6 +19,7 @@ type Props = {
 };
 
 const RegionsModal = ({ closeModal, countries, moonpayIp }: Props) => {
+  useBodyScrollLock();
   // console.log({ moonpayIp, countries });
   const [itemsPerPage, setItemsPerPage] = useState(12);
 

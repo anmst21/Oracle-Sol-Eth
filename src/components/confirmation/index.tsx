@@ -22,6 +22,7 @@ import classNames from "classnames";
 import { iconProps } from "./animation";
 import { slidingTextAnimation } from "../swap/animation";
 import WalletItem from "./wallet-item";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 type Props = {
   progress: ProgressData;
@@ -38,6 +39,7 @@ function Confirmation({
   sellTokenLogo,
   clearProgressState,
 }: Props) {
+  useBodyScrollLock();
   const { details, steps, currentStep, currentStepItem, txHashes } = progress;
 
   const { chains } = useRelayChains();

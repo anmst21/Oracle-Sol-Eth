@@ -12,6 +12,7 @@ import { ModalMode } from "@/types/modal-mode";
 import { motion } from "motion/react";
 import FeaturedSkeleton from "./featured-skeleton";
 import { useTokenModal } from "@/context/TokenModalProvider";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 interface ModalProps {
   loadChains: () => Promise<void>;
@@ -82,6 +83,7 @@ const Modal: React.FC<ModalProps> = ({
   userSolanaTokens,
   setUserSolanaTokens,
 }) => {
+  useBodyScrollLock();
   const [activeChainId, setActiveChainId] = useState(
     modalMode === "onramp" ? -1 : 0
   );

@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InputCross } from "../icons";
 import { modalAnimation } from "./animation";
 import { useChart } from "@/context/ChartProvider";
@@ -8,6 +8,7 @@ import { PoolItem as PoolItemType } from "@/types/token-pools";
 import ModalPagination from "./modal-pagination";
 import PoolItemSkeleton from "./pool-item-skeleton";
 import ChartError from "./chart-error";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 type Props = {
   closeModal: () => void;
@@ -43,8 +44,12 @@ const PoolsModal = ({ closeModal }: Props) => {
     setIsNoMorePools,
   } = useChart();
 
+  useBodyScrollLock();
+  const fetchedPages = useRef(new Set<number>());
+
   useEffect(() => {
     setTotalPages(10);
+    fetchedPages.current = new Set();
   }, [activeToken]);
 
   const tokenPools2D = useMemo(() => chunkArray(tokenPools, 20), [tokenPools]);
@@ -57,10 +62,17 @@ const PoolsModal = ({ closeModal }: Props) => {
   useEffect(() => {
     const chunk = tokenPools2D[currentPage - 1];
 
-    if (!chunk && !isLoadingMorePools && !isNoMorePools) {
+    if (
+      !chunk &&
+      !isLoadingMorePools &&
+      !isNoMorePools &&
+      !fetchedPages.current.has(currentPage)
+    ) {
+      fetchedPages.current.add(currentPage);
       fetchMorePoolsForToken(currentPage);
     }
-  }, [currentPage, tokenPools2D, isLoadingMorePools, isNoMorePools, fetchMorePoolsForToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, tokenPools2D, isLoadingMorePools, isNoMorePools]);
 
   useEffect(() => {
     if (isNoMorePools && tokenPools && tokenPools?.length > 0) {
@@ -73,6 +85,8 @@ const PoolsModal = ({ closeModal }: Props) => {
   const goBack = useCallback(() => {
     setIsErrorMorePools(false);
     setIsNoMorePools(true);
+    fetchedPages.current.delete(currentPage);
+    setTotalPages(currentPage - 1);
     setCurrentPage(currentPage - 1);
   }, [setCurrentPage, setIsNoMorePools, setIsErrorMorePools, currentPage]);
 
@@ -101,7 +115,7 @@ const PoolsModal = ({ closeModal }: Props) => {
           </div>
         </div>
         <div className="modal-table">
-          {isErrorMorePools && (
+          {isErrorMorePools && !tokenPools2D[currentPage - 1] && (
             <ChartError
               btnLeftCallback={goBack}
               btnLeftHeader={"Go Back"}

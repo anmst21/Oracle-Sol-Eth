@@ -12,12 +12,14 @@ import TradeItem from "./trade-item";
 import ModalPagination from "./modal-pagination";
 import TradeItemSkeleton from "./trade-item-skeleton";
 import ChartError from "./chart-error";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 type Props = {
   closeModal: () => void;
 };
 
 const PoolsModal = ({ closeModal }: Props) => {
+  useBodyScrollLock();
   const [trades, setTrades] = useState<TradeItemType[]>([]);
   const [isLoadingTrades, setIsLoadingTrades] = useState(false);
   const [isErrorTrades, setIsErrorTrades] = useState(false);

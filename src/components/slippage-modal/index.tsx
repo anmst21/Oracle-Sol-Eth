@@ -6,12 +6,14 @@ import { Portal } from "./portal";
 import ModalInput from "./modal-input";
 import { useSlippage } from "@/context/SlippageContext";
 import { AnimatePresence, motion } from "motion/react";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 type Props = {
   closeModal: () => void;
 };
 
 const SlippageModal = ({ closeModal }: Props) => {
+  useBodyScrollLock();
   const { isCustomSlippage, setIsCustomSlippage } = useSlippage();
   const [isOpenInfo, setIsOpenInfo] = useState(false);
 

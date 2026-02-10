@@ -153,12 +153,15 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
     return () => poolsAbortRef.current?.abort();
   }, [requestChain, activeToken]);
 
+  const loadingMoreRef = useRef(false);
+
   const fetchMorePoolsForToken = useCallback(
     async (page: number) => {
-      if (!activeToken?.address || !requestChain?.name || isLoadingMorePools)
+      if (!activeToken?.address || !requestChain?.name || loadingMoreRef.current)
         return;
 
       try {
+        loadingMoreRef.current = true;
         setIsLoadingMorePools(true);
         setIsErrorMorePools(false);
 
@@ -178,13 +181,13 @@ export const ChartProvider: React.FC<ChartProviderProps> = ({
         console.error(err);
         setIsErrorMorePools(true);
       } finally {
+        loadingMoreRef.current = false;
         setIsLoadingMorePools(false);
       }
     },
     [
-      activeToken?.address, // the only pieces we actually read
+      activeToken?.address,
       requestChain?.name,
-      isLoadingMorePools, // guard against concurrent calls
       setTokenPools,
       setIsErrorMorePools,
       setIsLoadingMorePools,

@@ -6,7 +6,7 @@ import { useEffect, useState, useTransition } from "react";
 
 export default function EthereumCoinsLoader() {
   const [data, setData] = useState<MergedToken[] | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   useEffect(() => {
     startTransition(async () => {
