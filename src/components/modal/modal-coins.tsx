@@ -105,8 +105,10 @@ Props) => {
       const chainId = getMoonpayChainId(crypto.metadata.networkCode);
       if (!chainId) return;
 
-      const addr = String(crypto.metadata.contractAddress);
-      const key = `${chainId}:${addr.toLowerCase()}`;
+      const raw = crypto.metadata.contractAddress;
+      const addr = raw != null ? String(raw) : "";
+      const isNative = !addr || addr === "0";
+      const key = `${chainId}:${isNative ? "native" : addr.toLowerCase()}`;
       if (seen.has(key)) return;
       seen.add(key);
 
@@ -114,7 +116,7 @@ Props) => {
         const [relayToken] = await queryTokenList("https://api.relay.link", {
           limit: 1,
           chainIds: [chainId],
-          ...(addr !== "0" && addr !== ""
+          ...(!isNative
             ? { address: addr }
             : { term: crypto.code.split("_")[0] }),
         });
@@ -122,10 +124,10 @@ Props) => {
         // cross-reference user balances + prices
         let balance: number | undefined;
         let priceUsd: number | undefined;
-        const resolvedAddr = relayToken?.address || (addr === "0" ? "0x0000000000000000000000000000000000000000" : addr);
+        const resolvedAddr = relayToken?.address || (isNative ? zeroAddress : addr);
 
         if (chainId === 792703809) {
-          if ((addr === "0" || addr === "") && nativeSolBalance) {
+          if (isNative && nativeSolBalance) {
             balance = nativeSolBalance.balance;
             priceUsd = nativeSolBalance.solUsdPrice;
           } else {
@@ -152,18 +154,18 @@ Props) => {
         tokens.push({
           source: "moonpay",
           chainId,
-          address: relayToken?.address || (addr === "0" ? "0x0000000000000000000000000000000000000000" : addr),
+          address: relayToken?.address || (isNative ? zeroAddress : addr),
           symbol: relayToken?.symbol || crypto.code.split("_")[0].toUpperCase(),
           name: relayToken?.name || crypto.name,
           logo: relayToken?.metadata?.logoURI || crypto.icon,
           balance: balance ?? 0,
-          priceUsd,
+          priceUsd: priceUsd ?? undefined,
         });
       } catch {
         tokens.push({
           source: "moonpay",
           chainId,
-          address: addr === "0" ? "0x0000000000000000000000000000000000000000" : addr,
+          address: isNative ? zeroAddress : addr,
           symbol: crypto.code.split("_")[0].toUpperCase(),
           name: crypto.name,
           logo: crypto.icon,
