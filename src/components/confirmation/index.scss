@@ -579,7 +579,7 @@
 
 .confirm-btn-hover,
 .tx-block__item__link {
-    transition: opacity .2s ease-in-out;
+    transition: opacity .2s ease-out;
 
     &:hover {
         opacity: .8;

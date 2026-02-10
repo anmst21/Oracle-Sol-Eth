@@ -1,9 +1,10 @@
 "use server";
 
-import { UnifiedToken } from "@/types/coin-types";
 import { DexScreenerToken, DexScreenerTokenMeta } from "@/types/SolanaCoins";
 
-export async function fetchSolanaCoins(): Promise<UnifiedToken[] | null> {
+export async function fetchSolanaCoinsRaw(): Promise<
+  DexScreenerTokenMeta[] | null
+> {
   try {
     const response = await fetch(
       "https://api.dexscreener.com/token-boosts/top/v1",
@@ -13,7 +14,6 @@ export async function fetchSolanaCoins(): Promise<UnifiedToken[] | null> {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();
-    // Filter tokens to only include those on the Solana chain
     const solanaTokens = data.filter(
       (token: DexScreenerToken) =>
         token.chainId && token.chainId.toLowerCase() === "solana"
@@ -30,20 +30,9 @@ export async function fetchSolanaCoins(): Promise<UnifiedToken[] | null> {
 
     const metaData: DexScreenerTokenMeta[] = await priceResponse.json();
 
-    const generalized = metaData.map((t) => ({
-      source: "solTrending" as const,
-      chainId: 792703809,
-      address: t.baseToken.address,
-      symbol: t.baseToken.symbol,
-      logo: t.info?.imageUrl || "",
-      priceUsd: Number(t.priceUsd),
-      priceNative: Number(t.priceNative),
-      name: t.baseToken.name,
-    }));
-
-    return generalized;
+    return metaData;
   } catch (error) {
-    console.error("Error fetching popular tokens:", error);
+    console.error("Error fetching full Solana tokens:", error);
     return null;
   }
 }

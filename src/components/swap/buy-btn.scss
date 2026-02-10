@@ -9,7 +9,7 @@
      color: rgba(174, 233, 0, 0.80);
      padding: 0 16px;
 
-     transition: all .3s ease-in-out;
+     transition: all .2s ease-out;
      position: relative;
      overflow: hidden;
      z-index: 0;
@@ -27,7 +27,8 @@
          justify-content: flex-end;
          display: flex;
          opacity: 0;
-         transition: all .3s ease-in-out;
+         transition: all .2s ease-out;
+         pointer-events: none;
 
 
          &::before {
@@ -37,7 +38,7 @@
              right: 0;
              top: 0;
              bottom: 0;
-             transition: all .3s ease-in-out;
+             transition: all .2s ease-out;
          }
      }
 

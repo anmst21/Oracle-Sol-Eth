@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import SolanaCoinsLoader from "@/components/coins/solana-coins-loader";
 
 export const metadata: Metadata = {
   title: "Solana Coins",
@@ -13,5 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <div className="solana-coins"></div>;
+  return (
+    <div className="solana-coins">
+      <SolanaCoinsLoader />
+    </div>
+  );
 }

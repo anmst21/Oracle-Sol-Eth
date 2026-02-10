@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import EthereumCoinsLoader from "@/components/coins/ethereum-coins-loader";
 
 export const metadata: Metadata = {
   title: "Ethereum Coins",
@@ -13,5 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <div className="ethereum-coins"></div>;
+  return (
+    <div className="ethereum-coins">
+      <EthereumCoinsLoader />
+    </div>
+  );
 }
