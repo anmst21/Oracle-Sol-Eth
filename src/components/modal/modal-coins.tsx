@@ -178,10 +178,10 @@ Props) => {
   }, [filteredMoonpayCryptos, nativeSolBalance, userSolanaTokens, userEthTokens]);
 
   useEffect(() => {
-    if (isMoonpayActive && moonpayTokens.length === 0) {
+    if (modalMode === "onramp" && moonpayTokens.length === 0) {
       fetchMoonpayTokens();
     }
-  }, [isMoonpayActive, moonpayTokens.length, fetchMoonpayTokens]);
+  }, [modalMode, moonpayTokens.length, fetchMoonpayTokens]);
 
   useEffect(() => {
     if (!debouncedTerm) {
@@ -341,6 +341,19 @@ Props) => {
       : communityCoins.filter((c) => c.chainId === activeChainId);
   }, [communityCoins, activeChainId]);
 
+  const moonpayLookup = useMemo(() => {
+    const set = new Set<string>();
+    for (const t of moonpayTokens) {
+      set.add(`${t.chainId}:${t.address.toLowerCase()}`);
+    }
+    return set;
+  }, [moonpayTokens]);
+
+  const getMoonpaySource = (chainId: number | undefined, address: string) => {
+    if (modalMode !== "onramp" || !chainId) return undefined;
+    return moonpayLookup.has(`${chainId}:${address.toLowerCase()}`) ? "moonpay" as const : undefined;
+  };
+
   // const { activeWallet } = useActiveWallet();
 
   return (
@@ -420,6 +433,7 @@ Props) => {
                     onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={t.chainId}
+                    tokenSource={getMoonpaySource(t.chainId, t.address)}
                   />
                 );
               })}
@@ -459,6 +473,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
+                        tokenSource={getMoonpaySource(token.chainId, token.address === "native" ? zeroAddress : token.address)}
                       />
                     );
                   })}
@@ -487,6 +502,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={792703809}
+                        tokenSource={getMoonpaySource(792703809, solanaChain.currency?.address ?? "")}
                       />
                     )}
                 </div>
@@ -520,6 +536,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
+                        tokenSource={getMoonpaySource(token.chainId, token.address === "native" ? zeroAddress : token.address)}
                       />
                     );
                   })}
@@ -549,6 +566,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={792703809}
+                        tokenSource={getMoonpaySource(792703809, token.address)}
                       />
                     );
                   })}
@@ -575,6 +593,7 @@ Props) => {
                         chainId={activeChainId}
                         onSelect={onSelect}
                         modalMode={modalMode}
+                        tokenSource={getMoonpaySource(activeChainId, token.address)}
                       />
                     );
                   })}
@@ -606,6 +625,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
+                        tokenSource={getMoonpaySource(token.chainId, token.address)}
                       />
                     );
                   })}
@@ -639,6 +659,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
+                        tokenSource={getMoonpaySource(token.chainId, token.address)}
                       />
                     );
                   })}
@@ -673,6 +694,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
+                        tokenSource={getMoonpaySource(token.chainId, token.address)}
                       />
                     );
                   })}

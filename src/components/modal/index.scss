@@ -332,6 +332,12 @@
         transition: all .2s ease-in-out;
     }
 
+    h3 {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
     .coin-ticker {
         color: rgba(136, 150, 151, 0.80) !important;
     }
