@@ -86,3 +86,15 @@ export interface MoonpayCountry {
 }
 
 export type MoonpayCountriesResponse = MoonpayCountry[];
+
+export interface MoonpayBuyQuoteResponse {
+  quoteCurrencyAmount: number;
+  quoteCurrencyCode: string;
+  quoteCurrencyPrice: number;
+  feeAmount: number;
+  networkFeeAmount: number;
+  extraFeeAmount: number;
+  totalAmount: number;
+  baseCurrencyAmount: number;
+  baseCurrencyCode: string;
+}

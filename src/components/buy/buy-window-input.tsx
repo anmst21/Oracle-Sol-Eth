@@ -38,6 +38,8 @@ type Props = {
   isError: boolean;
   routeType: OracleRouteType;
   countryName: string;
+  conversionValue?: string;
+  isLoadingQuote?: boolean;
 };
 
 const presets = [5, 12.5, 25, 50];
@@ -57,6 +59,8 @@ const BuyWindowInput = ({
   onCurrenciesOpen,
   isError,
   countryName,
+  conversionValue,
+  isLoadingQuote,
 }: Props) => {
   // console.log("fiatCurrencies", fiatCurrencies);
 
@@ -199,12 +203,29 @@ const BuyWindowInput = ({
               <BuySwitch />
             </button>
             <div className="buy-window-input__input__value">
-              <span>
-                {inputType === "crypto" &&
-                  getSymbolFromCurrency(fiatCurrency.code)}
-                <span>0.00</span>
-                {inputType === "fiat" && activeToken.symbol}
-              </span>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={conversionValue || "empty"}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {inputType === "crypto" &&
+                    getSymbolFromCurrency(fiatCurrency.code)}
+                  <span>
+                    {isLoadingQuote
+                      ? "..."
+                      : conversionValue
+                        ? parseFloat(conversionValue).toLocaleString(
+                            undefined,
+                            { maximumFractionDigits: 6 }
+                          )
+                        : "0.00"}
+                  </span>
+                  {inputType === "fiat" && ` ${activeToken.symbol}`}
+                </motion.span>
+              </AnimatePresence>
             </div>
           </div>
         </label>

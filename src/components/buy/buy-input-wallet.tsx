@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { BuyWallet, BuyCard } from "@/components/icons";
 import WalletButton from "../universals/wallet-button";
 import { AnimatePresence, motion } from "motion/react";
 import WalletModal from "../wallets/wallet-modal";
-import { useActiveWallet } from "@/context/ActiveWalletContext";
 import {
   ConnectedSolanaWallet,
   ConnectedWallet,
@@ -14,20 +13,16 @@ import classNames from "classnames";
 
 type Props = {
   isError: boolean;
+  activeWallet: SwapWallet | ConnectedWallet | ConnectedSolanaWallet | null;
+  setActiveWallet: (
+    wallet: SwapWallet | ConnectedWallet | ConnectedSolanaWallet | null
+  ) => void;
 };
 
-const BuyInputWallet = ({ isError }: Props) => {
+const BuyInputWallet = ({ isError, activeWallet, setActiveWallet }: Props) => {
   const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
-  const { activeWallet: defaultWallet } = useActiveWallet();
-  const [activeWallet, setActiveWallet] = useState<
-    SwapWallet | ConnectedWallet | ConnectedSolanaWallet | null
-  >(null);
 
   const { ready } = usePrivy();
-
-  useEffect(() => {
-    if (!activeWallet && defaultWallet) setActiveWallet(defaultWallet);
-  }, [activeWallet, defaultWallet]);
 
   const isOpenCallback = useCallback(
     (value: boolean) => setIsOpenAddressModal(value),

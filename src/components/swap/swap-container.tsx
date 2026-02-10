@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import SwapWindow from "./swap-window";
 import { SwapSwitch } from "../icons";
 import { useTokenModal } from "@/context/TokenModalProvider";
@@ -28,7 +28,7 @@ import BuyBtn from "./buy-btn";
 // import { usePrivy } from "@privy-io/react-auth";
 // import { SendTransactionError } from "@solana/web3.js";
 // import { connection } from "../connects";
-// import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Confirmation from "../confirmation";
 import { AnimatePresence } from "motion/react";
 // import DeepLink from "../deep-link";
@@ -505,6 +505,58 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   // console.log("progress", progress, quote, adaptedWallet);
 
   ////// url deeplinking logic
+  const searchParams = useSearchParams();
+  const deepLinked = useRef(false);
+
+  useEffect(() => {
+    if (deepLinked.current) return;
+    const sellAddress = searchParams.get("sellAddress");
+    const sellChainId = searchParams.get("sellChainId");
+    const buyAddress = searchParams.get("buyAddress");
+    const buyChainId = searchParams.get("buyChainId");
+
+    if (sellAddress && sellChainId && buyAddress && buyChainId) {
+      deepLinked.current = true;
+      const sChainId = Number(sellChainId);
+      const bChainId = Number(buyChainId);
+
+      setSellToken({
+        source: "eth",
+        chainId: sChainId,
+        address: sellAddress,
+        symbol: "ETH",
+        name: "Ether",
+        logo: `https://assets.relay.link/icons/${sChainId}/light.png`,
+      });
+
+      // Fetch token metadata for the buy token
+      queryTokenList("https://api.relay.link", {
+        chainIds: [bChainId],
+        address: buyAddress,
+      }).then((tokens) => {
+        if (tokens.length > 0) {
+          const t = tokens[0];
+          setBuyToken({
+            source: "relay",
+            chainId: bChainId,
+            address: buyAddress,
+            symbol: t.symbol ?? buyAddress.slice(0, 6),
+            name: t.name ?? "Unknown",
+            logo: t.metadata?.logoURI ?? undefined,
+            decimals: t.decimals ?? undefined,
+          });
+        } else {
+          setBuyToken({
+            source: "relay",
+            chainId: bChainId,
+            address: buyAddress,
+            symbol: buyAddress.slice(0, 6),
+            name: "Unknown Token",
+          });
+        }
+      });
+    }
+  }, [searchParams, setSellToken, setBuyToken]);
 
   const clearProgressState = useCallback(() => {
     setProgress(null);
