@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import Image from "next/image";
 import { truncateAddress } from "@/helpers/truncate-address";
-import { HexChain } from "../icons";
+import { BuyDirect, BuyOracleRoute, HexChain } from "../icons";
 import { UnifiedToken } from "@/types/coin-types";
 import { ModalMode } from "@/types/modal-mode";
 
@@ -19,6 +19,7 @@ type Props = {
   modalMode: ModalMode;
   chainId: number | undefined;
   onSelect: (t: UnifiedToken) => void;
+  tokenSource?: UnifiedToken["source"];
 };
 
 const ModalCoinItem = ({
@@ -32,6 +33,8 @@ const ModalCoinItem = ({
   priceNative,
   onSelect,
   chainId,
+  modalMode,
+  tokenSource,
 }: Props) => {
   // const setActiveToken = useCallback(() => {
   //   if (modalMode === "buy") {
@@ -73,7 +76,7 @@ const ModalCoinItem = ({
 
   const token = useMemo<UnifiedToken>(
     () => ({
-      source: chainId === 792703809 ? "sol" : "eth",
+      source: tokenSource ?? (chainId === 792703809 ? "sol" : "eth"),
       chainId,
       address: coinAddress,
       symbol: coinSymbol ?? "",
@@ -82,7 +85,7 @@ const ModalCoinItem = ({
       balance: userBalance ?? undefined,
       name: coinName ?? "",
     }),
-    [chainId, coinAddress, coinSymbol, coinSrc, priceUsd, userBalance, coinName]
+    [chainId, coinAddress, coinSymbol, coinSrc, priceUsd, userBalance, coinName, tokenSource]
   );
 
   return (
@@ -102,16 +105,21 @@ const ModalCoinItem = ({
       </div>
 
       <div className="native-coin__meta">
-        <h3>{coinSymbol}</h3>
+        <h3>
+          {coinSymbol}
+          {modalMode === "onramp" && (
+            tokenSource === "moonpay" ? <BuyDirect /> : <BuyOracleRoute />
+          )}
+        </h3>
         <div className="native-coin__meta__bot">
           <span>{truncateAddress(coinAddress as string)}</span>
           <span className="name">{coinName ? coinName : "Name"}</span>
         </div>
       </div>
 
-      {userBalance ? (
+      {typeof userBalance === "number" ? (
         <div className="native-coin__balance">
-          {priceUsd && <h4>${(userBalance * priceUsd).toFixed(2)}</h4>}
+          <h4>${(userBalance * (priceUsd ?? 0)).toFixed(2)}</h4>
           <span>
             {userBalance.toFixed(6)}
             <span className="coin-ticker">

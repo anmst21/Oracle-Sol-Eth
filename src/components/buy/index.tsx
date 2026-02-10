@@ -2,11 +2,12 @@
 
 import {
   MoonpayCountriesResponse,
+  MoonpayCryptoCurrency,
   MoonpayFiatCurrency,
   MoonpayIpResponse,
 } from "@/types/moonpay-api";
 import BuyWindowInput from "./buy-window-input";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usdCurrency } from "@/helpers/moonpay-usd-currency";
 import { baseEthToken } from "@/helpers/base-eth-token";
 import { UnifiedToken } from "@/types/coin-types";
@@ -22,14 +23,23 @@ import BuyWindowCta from "./buy-window-cta";
 type Props = {
   moonpayIp: MoonpayIpResponse;
   fiatCurrencies: MoonpayFiatCurrency[];
+  cryptoCurrencies: MoonpayCryptoCurrency[];
   countries: MoonpayCountriesResponse;
 };
 
 const BuyWindow = ({
   moonpayIp,
   fiatCurrencies,
+  cryptoCurrencies,
   countries,
 }: Props) => {
+  const { setMoonpayCryptos } = useOnRamp();
+
+  useEffect(() => {
+    if (cryptoCurrencies.length > 0) {
+      setMoonpayCryptos(cryptoCurrencies);
+    }
+  }, [cryptoCurrencies, setMoonpayCryptos]);
   const [fiatCurrency, setFiatCurrency] =
     useState<MoonpayFiatCurrency>(usdCurrency);
 
@@ -41,9 +51,9 @@ const BuyWindow = ({
 
   const [isOpenCurrencies, setIsOpenCurrencies] = useState(false);
 
-  const [routeType] = useState<OracleRouteType>(
-    OracleRouteType.ORACLE
-  );
+  const routeType = activeToken.source === "moonpay"
+    ? OracleRouteType.DIRECT
+    : OracleRouteType.ORACLE;
   // fiatCurrency.maxBuyAmount
 
   const onInputValueChange = useCallback(
