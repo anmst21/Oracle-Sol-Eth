@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HexChain, DiskMini, SwapCopy, Wallet, WalletStar } from "../icons";
+import { HexChain, DiskMini, SwapCopy, Wallet, WalletStar, UserQuestion } from "../icons";
 import Image from "next/image";
 import { truncateAddress } from "@/helpers/truncate-address";
 import { getIconUri } from "@/helpers/get-icon-uri";
@@ -92,13 +92,17 @@ const WalletItem = ({
         <>
           <div className="wallet-item__center">
             <div className="wallet-item__client">
-              {icon && (
+              {icon ? (
                 <Image
                   alt={id}
                   src={icon.replace(/^\n+/, "").trimEnd()}
                   width={24}
                   height={24}
                 />
+              ) : (
+                <div className="wallet-item__client__fallback">
+                  <UserQuestion />
+                </div>
               )}
             </div>
             <div className="wallet-item__name">{name}</div>

@@ -28,32 +28,35 @@ const Header = ({
       <div className="header__cross">
         <HeaderCross />
       </div>
+
       <div className="header__side-divider" />
-      <HeaderLogo isRedirect />
-      <div className="divider">
-        <div />
-      </div>
-      <Navigation
-        categories={categories}
-        blogposts={blogposts}
-        isHomeRoute={isHomeRoute}
-      />
-      <div className="divider-long" />
-      {/* <Theme />
+      <div className="header__inner">
+        <HeaderLogo isRedirect />
+        <div className="divider">
+          <div />
+        </div>
+        <Navigation
+          categories={categories}
+          blogposts={blogposts}
+          isHomeRoute={isHomeRoute}
+        />
+        <div className="divider-long" />
+        {/* <Theme />
       <div className="divider">
         <div />
       </div> */}
-      {isHomeRoute ? (
-        <button
-          onClick={() => push("/swap")}
-          className="buy-btn buy-btn--active confirmation__buttons__cta"
-        >
-          <span>Visit App</span>
-          <BtnPolygons />
-        </button>
-      ) : (
-        <Wallet />
-      )}
+        {isHomeRoute ? (
+          <button
+            onClick={() => push("/swap")}
+            className="buy-btn buy-btn--active confirmation__buttons__cta"
+          >
+            <span>Visit App</span>
+            <BtnPolygons />
+          </button>
+        ) : (
+          <Wallet />
+        )}
+      </div>
       <div className="header__side-divider" />
       <div className="header__cross">
         <HeaderCross />

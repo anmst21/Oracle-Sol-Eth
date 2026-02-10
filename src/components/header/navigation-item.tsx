@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -11,9 +11,10 @@ type Props = {
     active: boolean;
     modal: React.JSX.Element | null;
   };
+  setRef?: (node: HTMLDivElement | null) => void;
 };
 
-const NavigationItem = ({ item }: Props) => {
+const NavigationItem = ({ item, setRef }: Props) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const router = useRouter();
   return (
@@ -23,6 +24,7 @@ const NavigationItem = ({ item }: Props) => {
       className="header-navigation__item__wrapper"
     >
       <div
+        ref={setRef}
         onClick={() => router.push(item.slug)}
         key={item.slug}
         className={classNames("header-navigation__item", {
@@ -32,13 +34,6 @@ const NavigationItem = ({ item }: Props) => {
       >
         {item.icon}
         <span>{item.title}</span>
-
-        {item.active ? (
-          <motion.div
-            layoutId="underline-header"
-            className="underline-header"
-          />
-        ) : null}
       </div>
       {item.modal && (
         <AnimatePresence mode="wait">

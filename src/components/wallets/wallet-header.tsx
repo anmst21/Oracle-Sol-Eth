@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { HexChain, PrivyLogo, Wallet } from "../icons";
+import { HexChain, PrivyLogo, UserQuestion, Wallet } from "../icons";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import Image from "next/image";
@@ -79,13 +79,15 @@ const WalletHeader = ({
                 key={activeWallet?.address}
                 className="wallet-header__address__value__image"
               >
-                {activeWallet?.meta?.icon && (
+                {activeWallet?.meta?.icon ? (
                   <Image
                     alt={activeWallet?.meta.id}
                     src={activeWallet?.meta.icon.replace(/^\n+/, "").trimEnd()}
                     width={20}
                     height={20}
                   />
+                ) : (
+                  <UserQuestion />
                 )}
               </div>
               <AnimatePresence mode="popLayout">

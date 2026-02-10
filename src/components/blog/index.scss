@@ -21,7 +21,7 @@
 
 }
 
-.posts-header {
+.blog-header.posts-header {
     margin-bottom: 80px !important;
     overflow: visible !important;
 
@@ -89,9 +89,12 @@
     }
 
     position: sticky;
-    top: 20px;
+    top: 70px;
     z-index: 5;
-    // width: 100%;
+
+    @include down(md) {
+        top: 20px;
+    }
 
     &__back,
     &__up,

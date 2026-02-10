@@ -4,17 +4,41 @@
     max-width: 1460px;
     padding: 16px 20px 0px 20px;
     align-items: center;
-    position: relative;
+    position: fixed;
+    top: 0;
+    z-index: 10000;
 
+    &::before {
+        content: "";
+        position: absolute;
+        top: 16px;
+        left: calc(20px + 38px + 8px + 44px);
+        right: calc(20px + 38px + 8px + 44px);
+        bottom: 0;
+        border-radius: 8px;
+        border: 1px solid rgba(136, 150, 151, 0.04);
+        background: rgba(0, 0, 0, 0.04);
+        backdrop-filter: blur(75px);
+        pointer-events: none;
+    }
 
     @include down(md) {
         display: none;
     }
 
-
+    &__inner {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 1px 12px;
+        // padding-left: 0;
+        border-radius: 8px;
+        position: relative;
+        z-index: 1;
+    }
 
     .buy-btn {
-        margin-left: 4px;
+        margin-left: 16px;
     }
 
     // &:before {
@@ -144,7 +168,9 @@
 
 .header-theme,
 .wallet-header {
-    margin: 0 4px;
+    // margin: 0 4px;
+    margin: 0;
+    margin-left: 4px;
 }
 
 .header-navigation {

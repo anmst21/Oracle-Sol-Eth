@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import SwapCog from "../icons/SwapCog";
 import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
-import { PrivyLogo, Wallet } from "../icons";
+import { PrivyLogo, UserQuestion, Wallet } from "../icons";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { slidingTextAnimation } from "../swap/animation";
 import { truncateAddress } from "@/helpers/truncate-address";
@@ -104,13 +104,15 @@ const SwapHeader = () => {
               key={activeWallet?.address}
               className="wallet-header__address__value__image"
             >
-              {activeWallet?.meta?.icon && (
+              {activeWallet?.meta?.icon ? (
                 <Image
                   alt={activeWallet?.meta.id}
                   src={activeWallet?.meta.icon.replace(/^\n+/, "").trimEnd()}
                   width={24}
                   height={24}
                 />
+              ) : (
+                <UserQuestion />
               )}
             </div>
             <AnimatePresence mode="popLayout">
