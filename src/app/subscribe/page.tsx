@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "Newsletter",
   description:
     "Subscribe to the Oracle Newsletter to stay updated on new releases, feature launches, and ecosystem insights. Get product updates, performance deep dives, and design philosophy delivered straight to your inbox — all in one place.",
+  openGraph: {
+    title: "Newsletter | Oracle",
+    description:
+      "Subscribe for new releases, feature launches, and ecosystem insights from Oracle.",
+    url: "https://oracleswap.app/subscribe",
+  },
 };
 
 export default function Page() {

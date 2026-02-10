@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   title: "Blog",
   description:
     "Explore the Oracle Blog for the latest updates, feature breakdowns, and insights into the multichain ecosystem. Learn how Oracle powers seamless swaps, bridges, and sends through Relay, Privy, and MoonPay. Stay informed with deep dives, product guides, and design philosophy behind the fastest cross-chain experience.",
+  openGraph: {
+    title: "Blog | Oracle",
+    description:
+      "Latest updates, feature breakdowns, and insights into the multichain ecosystem from Oracle.",
+    url: "https://oracleswap.app/blog",
+  },
 };
 
 export default async function Page({

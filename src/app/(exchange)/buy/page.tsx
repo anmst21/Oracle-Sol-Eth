@@ -1,17 +1,20 @@
-// "use client";
-
-// import BuyInput from "@/components/buy/buy-input";
-// import TokenToBuy from "@/components/buy/token-to-buy";
-// import RecipientWindow from "@/components/buy/recipient-window";
+import { Metadata } from "next";
 import { fetchMoonpayCountries } from "@/actions/fetch-moonpay-countries";
 import { fetchMoonpayCurrencies } from "@/actions/fetch-moonpay-currencies";
 import { fetchMoonpayIp } from "@/actions/fetch-moonpay-ip";
 import BuyWindow from "@/components/buy";
 
-// const MoonPayBuyWidget = dynamic(
-//   () => import("@moonpay/moonpay-react").then((mod) => mod.MoonPayBuyWidget),
-//   { ssr: false }
-// );
+export const metadata: Metadata = {
+  title: "Buy Crypto",
+  description:
+    "Buy crypto with fiat currency using MoonPay. Purchase SOL, ETH, and more with your local currency — fast, secure, and directly into your wallet.",
+  openGraph: {
+    title: "Buy Crypto | Oracle",
+    description:
+      "Buy crypto with fiat currency using MoonPay. Purchase SOL, ETH, and more directly into your wallet.",
+    url: "https://oracleswap.app/buy",
+  },
+};
 
 export default async function Page() {
   // const [visible, setVisible] = useState(false);
