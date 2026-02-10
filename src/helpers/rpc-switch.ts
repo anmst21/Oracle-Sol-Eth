@@ -1,23 +1,28 @@
 import { mainnet, base, arbitrum, polygon, degen, zora } from "viem/chains";
 
+const alchemyKey = process.env.ALCHEMY_API_KEY;
+
+const alchemyRpc = (network: string) =>
+  `https://${network}.g.alchemy.com/v2/${alchemyKey}`;
+
 export const rpcSwitch = (chain: string) => {
   switch (chain) {
     case "base":
-      return "https://base-mainnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY";
+      return alchemyRpc("base-mainnet");
     case "ethereum":
-      return "https://eth-mainnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY";
+      return alchemyRpc("eth-mainnet");
     case "arbitrum":
-      return "https://arb-mainnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY";
+      return alchemyRpc("arb-mainnet");
     case "polygon":
-      return "https://polygon-mainnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY";
+      return alchemyRpc("polygon-mainnet");
     case "degen":
-      return "https://degen-mainnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY";
+      return alchemyRpc("degen-mainnet");
     case "zora":
-      return "https://zora-mainnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY";
+      return alchemyRpc("zora-mainnet");
     case "solana":
-      return "https://solana-mainnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY";
+      return alchemyRpc("solana-mainnet");
     case "optimism":
-      return "https://opt-mainnet.g.alchemy.com/v2/REDACTED_ALCHEMY_KEY";
+      return alchemyRpc("opt-mainnet");
   }
 };
 
