@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { AnimatePresence } from "motion/react";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   slug: string;
@@ -13,6 +13,10 @@ const MenuItem = ({ slug, icon, modal }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const { push } = useRouter();
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   const onClick = () => {
     if (!isMenuOpen && modal) {
