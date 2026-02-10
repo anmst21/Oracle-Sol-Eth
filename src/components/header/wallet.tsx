@@ -85,7 +85,7 @@ const HeaderWalletButton = () => {
             transition={{ duration: 0.2, ease: "easeInOut" }}
             className="header__wallet__wrapper"
           >
-            <Wallets linkCallback={closeIfOpen} />
+            <Wallets callback={() => setIsOpen(false)} linkCallback={closeIfOpen} />
           </motion.div>
         )}
         {isOpenChains && (

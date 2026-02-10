@@ -15,6 +15,7 @@ import {
   RelayChain,
 } from "@reservoir0x/relay-sdk";
 import { TradeType } from "./types";
+import { UnifiedToken } from "@/types/coin-types";
 import {
   // convertViemChainToRelayChain,
   MAINNET_RELAY_API,
@@ -46,6 +47,10 @@ import { AnimatePresence } from "motion/react";
 const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   const [sellInputValue, setSellInputValue] = useState("");
   const [buyInputValue, setBuyInputValue] = useState("");
+  const prevEthSellToken = useRef<UnifiedToken | null>(null);
+  const prevSolSellToken = useRef<UnifiedToken | null>(null);
+  const prevEthBuyToken = useRef<UnifiedToken | null>(null);
+  const prevSolBuyToken = useRef<UnifiedToken | null>(null);
 
   const {
     isCustomSlippage,
@@ -155,22 +160,56 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   //   }
   // }, [activeWallet, setSellToken]);
 
+  // When buy token chain changes → switch buy wallet to match
+  useEffect(() => {
+    if (
+      activeBuyWallet?.type === "ethereum" &&
+      buyToken?.chainId === solanaChain.id &&
+      solLinked[0]
+    ) {
+      setActiveBuyWallet({
+        chainId: solanaChain.id,
+        address: solLinked[0].address,
+        type: "solana",
+      });
+    }
+
+    if (
+      activeBuyWallet?.type === "solana" &&
+      buyToken?.chainId !== solanaChain.id &&
+      ethLinked[0]
+    ) {
+      setActiveBuyWallet({
+        chainId: Number(ethLinked[0].chainId.split(":")[1]),
+        address: ethLinked[0].address,
+        type: "ethereum",
+      });
+    }
+  }, [buyToken]);
+
+  // When buy wallet changes → switch buy token to match
   useEffect(() => {
     if (
       activeBuyWallet?.type === "ethereum" &&
       buyToken?.chainId === solanaChain.id
     ) {
-      setBuyToken(getEthToken(Number(activeBuyWallet.chainId)));
+      prevSolBuyToken.current = buyToken;
+      setBuyToken(
+        prevEthBuyToken.current ??
+          getEthToken(Number(activeBuyWallet.chainId))
+      );
     }
 
     if (
       activeBuyWallet?.type === "solana" &&
       buyToken?.chainId !== solanaChain.id
     ) {
-      setBuyToken(solanaToken);
+      prevEthBuyToken.current = buyToken;
+      setBuyToken(prevSolBuyToken.current ?? solanaToken);
     }
-  }, [activeBuyWallet, setBuyToken, buyToken]);
+  }, [activeBuyWallet]);
 
+  // When sell token chain changes → switch wallet to match
   useEffect(() => {
     if (
       activeWallet?.type === "ethereum" &&
@@ -187,7 +226,29 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
     ) {
       setActiveWallet(ethLinked[0]);
     }
-  }, [sellToken, setActiveWallet, activeWallet, solLinked, ethLinked]);
+  }, [sellToken]);
+
+  // When wallet changes → switch sell token to match
+  useEffect(() => {
+    if (
+      activeWallet?.type === "ethereum" &&
+      sellToken?.chainId === solanaChain.id
+    ) {
+      prevSolSellToken.current = sellToken;
+      setSellToken(
+        prevEthSellToken.current ??
+          getEthToken(Number(activeWallet.chainId.split(":")[1]))
+      );
+    }
+
+    if (
+      activeWallet?.type === "solana" &&
+      sellToken?.chainId !== solanaChain.id
+    ) {
+      prevEthSellToken.current = sellToken;
+      setSellToken(prevSolSellToken.current ?? solanaToken);
+    }
+  }, [activeWallet]);
 
   // useEffect(() => {
   //   if (
