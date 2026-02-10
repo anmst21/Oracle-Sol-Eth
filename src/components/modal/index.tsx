@@ -151,7 +151,7 @@ const Modal: React.FC<ModalProps> = ({
             <h2>Featured</h2>
           </div>
           {suggestedTokens && suggestedTokens.length > 0
-            ? suggestedTokens.map((token, i) => {
+            ? suggestedTokens.map((token) => {
                 if (!chains) return;
 
                 return (

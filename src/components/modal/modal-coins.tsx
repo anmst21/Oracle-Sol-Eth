@@ -129,7 +129,7 @@ Props) => {
         if (chainId === 792703809) {
           if (isNative && nativeSolBalance) {
             balance = nativeSolBalance.balance;
-            priceUsd = nativeSolBalance.solUsdPrice;
+            priceUsd = nativeSolBalance.solUsdPrice ?? undefined;
           } else {
             const found = userSolanaTokens?.find(
               (t) => t.address.toLowerCase() === resolvedAddr.toLowerCase()

@@ -43,14 +43,6 @@ export function createAsciiMaterial(opts: {
   const uColor6 = uniform(color(palette[5]));
 
   const asciiCode = Fn(() => {
-    const uRange = uniform(1);
-    const uBase = uniform(1);
-
-    const wave = sin(uTime.mul(0.12))
-      .add(sin(uTime.mul(0.9)).mul(0.3))
-      .add(sin(uTime.mul(0.03)).mul(0.5))
-      .add(attribute("aRandom").x.mul(0.2));
-
     const uRangeColor = uniform(0.1);
     const uBaseColor = uniform(0.2);
 
@@ -59,12 +51,10 @@ export function createAsciiMaterial(opts: {
       .add(sin(uTime.mul(0.03)).mul(0.5))
       .add(attribute("aRandom").x.mul(0.2));
 
-    const animatedExponent = wave.mul(uRange).add(uBase);
     const animatedExponentColor = waveColor.mul(uRangeColor).add(uBaseColor);
 
     // Sample the rendered scene texture
     const textureColor = texture(sceneTexture, attribute("aPixelUV"));
-    const brightness = pow(textureColor.r, animatedExponent);
     const brightnessColor = pow(textureColor.r, animatedExponentColor);
     const brightnessAscii = pow(textureColor.r, 2);
 
@@ -77,11 +67,6 @@ export function createAsciiMaterial(opts: {
 
     // Palette color ramp (base — no glow)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let finalColor: any = uColor1;
-    finalColor = mix(finalColor, uColor2, step(0.1, brightness));
-    finalColor = mix(finalColor, uColor3, step(0.3, brightness));
-    finalColor = mix(finalColor, uColor4, step(0.5, brightness));
-
     // Full color ramp (always visible now — no displacement switching)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let outColor: any = uColor1;

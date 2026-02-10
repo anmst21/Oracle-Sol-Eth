@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import React, { useEffect } from "react";
-import { render, screen, act, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import React from "react";
+import { render, screen, act } from "@testing-library/react";
 import { SlippageProvider, useSlippage } from "@/context/SlippageContext";
 import { OnRampProvider, useOnRamp } from "@/context/OnRampProvider";
 
