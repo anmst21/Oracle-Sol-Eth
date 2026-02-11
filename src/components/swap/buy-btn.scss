@@ -62,12 +62,8 @@
          }
 
          &:active {
-             color: #BEFF00 !important;
-             background-color: #000;
-
-             .btn-polygons {
-                 opacity: 1;
-             }
+             color: black !important;
+             background-color: #BEFF00 !important;
          }
      }
 
@@ -86,23 +82,14 @@
          }
 
          &:hover {
-             .btn-polygons {
-                 opacity: 1;
-             }
+             background: #AEE900;
+             border-color: #AEE900;
          }
 
          &:active {
+             background: #000;
+             border: 1px solid rgba(174, 233, 0, 0.80);
              color: #AEE900;
-
-             //  background-color: black;
-             .btn-polygons {
-                 background-color: #000;
-
-
-                 &::before {
-                     background: linear-gradient(89deg, #000 40%, rgba(0, 0, 0, 0.96) 76%, rgba(0, 0, 0, 0.00) 100%);
-                 }
-             }
          }
 
      }

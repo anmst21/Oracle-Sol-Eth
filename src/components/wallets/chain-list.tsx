@@ -8,7 +8,7 @@ import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { useTokenModal } from "@/context/TokenModalProvider";
 import ChainItem from "./chian-item";
 import { zeroAddress } from "viem";
-import { InputCross } from "../icons";
+import { InputCross, SearchGlass } from "../icons";
 
 const ChainList = ({
   closeIfOpenChains,
@@ -83,6 +83,7 @@ const ChainList = ({
           }}
           className="chain-sidebar__input"
         >
+          <SearchGlass />
           <input
             disabled={isInputDisabled}
             type="text"

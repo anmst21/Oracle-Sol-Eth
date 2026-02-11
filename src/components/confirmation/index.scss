@@ -258,6 +258,10 @@
     flex-direction: column;
     flex: 1;
 
+    .user-placeholder {
+        background-color: white;
+    }
+
 
     &__success {
         display: flex;

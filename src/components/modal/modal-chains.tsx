@@ -1,11 +1,13 @@
-import React, { useCallback, useMemo } from "react";
-import { HexChain, InputCross } from "../icons";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { HexChain, InputCross, SearchGlass } from "../icons";
 import classNames from "classnames";
 import { RelayChain } from "@/types/relay-query-chain-type";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import SkeletonLoaderWrapper from "../skeleton";
 import ChainSkeleton from "./chain-skeleton";
 import { ModalMode } from "@/types/modal-mode";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
+import { motion, AnimatePresence } from "motion/react";
 
 export const MOONPAY_CHAIN_ID = -1;
 
@@ -38,7 +40,36 @@ const ModalChains = ({
   disableSearch,
   modalMode,
 }: Props) => {
-  // Combine your “all‐chain” icons
+  const isDesktop = useIsDesktop();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const chainsRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Close on outside click (mobile only)
+  useEffect(() => {
+    if (isDesktop || !isExpanded) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (chainsRef.current && !chainsRef.current.contains(e.target as Node)) {
+        setIsExpanded(false);
+        setSearchTerm("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isDesktop, isExpanded, setSearchTerm]);
+
+  // Auto-focus input when expanding
+  useEffect(() => {
+    if (!isDesktop && isExpanded) {
+      requestAnimationFrame(() => {
+        searchInputRef.current?.focus();
+      });
+    }
+  }, [isDesktop, isExpanded]);
+
+  // Combine your "all‐chain" icons
   const allChainIds = useMemo(
     () =>
       [solanaChain?.id, baseChain?.id, ethereumChain?.id].filter(
@@ -74,29 +105,78 @@ const ModalChains = ({
     [otherChains, filterChains]
   );
 
+  const handleChainSelect = useCallback(
+    (id: number) => {
+      setActiveChainId(id);
+      if (!isDesktop) setIsExpanded(false);
+    },
+    [setActiveChainId, isDesktop]
+  );
+
+  const handleSearchClose = useCallback(() => {
+    setSearchTerm("");
+    if (!isDesktop) setIsExpanded(false);
+  }, [setSearchTerm, isDesktop]);
+
+  const isMobileCollapsed = !isDesktop && !isExpanded;
+
   return (
-    <div className="modal-chains">
+    <motion.div
+      ref={chainsRef}
+      className={classNames("modal-chains", {
+        "modal-chains--collapsed": isMobileCollapsed,
+      })}
+      initial={false}
+      animate={
+        !isDesktop
+          ? {
+              width: isMobileCollapsed ? 46 : 200,
+              flexShrink: 0,
+            }
+          : undefined
+      }
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
       {/* Search input */}
       {!disableSearch && (
         <div className="chain-sidebar__contianer">
-          <label className="chain-sidebar__input">
-            <input
-              disabled={isLoadingChains}
-              type="text"
-              placeholder="Enter name or ID"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-2 border rounded"
-            />
-            {searchTerm.length > 0 && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="chain-sidebar__input__abandon"
-              >
-                <InputCross />
-              </button>
-            )}
-          </label>
+          {isMobileCollapsed ? (
+            <button
+              className="chain-sidebar__input chain-sidebar__input--search-btn"
+              onClick={() => setIsExpanded(true)}
+            >
+              <SearchGlass />
+            </button>
+          ) : (
+            <label className="chain-sidebar__input">
+              <SearchGlass />
+              <input
+                ref={searchInputRef}
+                disabled={isLoadingChains}
+                type="text"
+                placeholder="Enter name or ID"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-2 border rounded"
+              />
+              {!isDesktop && (
+                <button
+                  onClick={handleSearchClose}
+                  className="chain-sidebar__input__abandon"
+                >
+                  <InputCross />
+                </button>
+              )}
+              {isDesktop && searchTerm.length > 0 && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="chain-sidebar__input__abandon"
+                >
+                  <InputCross />
+                </button>
+              )}
+            </label>
+          )}
         </div>
       )}
       <div className="modal-chains__scroll">
@@ -107,10 +187,21 @@ const ModalChains = ({
               className={classNames("chain-sidebar", {
                 "chain-sidebar--active": activeChainId === MOONPAY_CHAIN_ID,
               })}
-              onClick={() => setActiveChainId(MOONPAY_CHAIN_ID)}
+              onClick={() => handleChainSelect(MOONPAY_CHAIN_ID)}
             >
               <HexChain uri="https://cryptoiconsstorage.blob.core.windows.net/crypto-icons/moonpay-logo-lg.png" />
-              <span>MoonPay</span>
+              <AnimatePresence mode="popLayout">
+                {!isMobileCollapsed && (
+                  <motion.span
+                    initial={!isDesktop ? { width: 0, opacity: 0 } : false}
+                    animate={{ width: "auto", opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    MoonPay
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         )}
@@ -121,7 +212,7 @@ const ModalChains = ({
             className={classNames("chain-sidebar", {
               "chain-sidebar--active": activeChainId === 0,
             })}
-            onClick={() => setActiveChainId(0)}
+            onClick={() => handleChainSelect(0)}
           >
             <div className="all-chains-icon">
               <SkeletonLoaderWrapper
@@ -142,22 +233,45 @@ const ModalChains = ({
                 ))}
               </SkeletonLoaderWrapper>
             </div>
-            <SkeletonLoaderWrapper
-              radius={2}
-              height={24}
-              width={"auto"}
-              isLoading={false}
-              flex
-            >
-              <span>All Chains</span>
-            </SkeletonLoaderWrapper>
+            <AnimatePresence mode="popLayout">
+              {!isMobileCollapsed && (
+                <motion.div
+                  initial={!isDesktop ? { width: 0, opacity: 0 } : false}
+                  animate={{ width: "auto", opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                >
+                  <SkeletonLoaderWrapper
+                    radius={2}
+                    height={24}
+                    width={"auto"}
+                    isLoading={false}
+                    flex
+                  >
+                    <span>All Chains</span>
+                  </SkeletonLoaderWrapper>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </button>
         </div>
 
         {/* Featured */}
 
         <div className="chain-sidebar__contianer">
-          <div className="chain-sidebar__header">Featured Chains</div>
+          <AnimatePresence mode="popLayout">
+            {!isMobileCollapsed && (
+              <motion.div
+                className="chain-sidebar__header"
+                initial={!isDesktop ? { height: 0, opacity: 0 } : false}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                Featured Chains
+              </motion.div>
+            )}
+          </AnimatePresence>
           {displayedFeatured.length > 0 && !isLoadingChains
             ? displayedFeatured.map((chain) => {
                 if (!chain.id) return;
@@ -168,25 +282,45 @@ const ModalChains = ({
                     className={classNames("chain-sidebar", {
                       "chain-sidebar--active": activeChainId === chain.id,
                     })}
-                    onClick={() => setActiveChainId(chain?.id || 0)}
+                    onClick={() => handleChainSelect(chain?.id || 0)}
                   >
                     <HexChain uri={getIconUri(chain.id)} />
-                    <span>{chain.displayName}</span>
+                    <AnimatePresence mode="popLayout">
+                      {!isMobileCollapsed && (
+                        <motion.span
+                          initial={!isDesktop ? { width: 0, opacity: 0 } : false}
+                          animate={{ width: "auto", opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                        >
+                          {chain.displayName}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
                   </button>
                 );
               })
             : Array.from({ length: 7 }, (_, idx) => (
                 <ChainSkeleton key={idx} />
               ))}
-          {/* {Array.from({ length: 7 }, (_, idx) => (
-            <ChainSkeleton key={idx} />
-          ))} */}
         </div>
 
         {/* Other */}
         {displayedOther.length > 0 && (
           <div className="chain-sidebar__contianer">
-            <div className="chain-sidebar__header">Other Chains</div>
+            <AnimatePresence mode="popLayout">
+              {!isMobileCollapsed && (
+                <motion.div
+                  className="chain-sidebar__header"
+                  initial={!isDesktop ? { height: 0, opacity: 0 } : false}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                >
+                  Other Chains
+                </motion.div>
+              )}
+            </AnimatePresence>
             {displayedOther.map((chain) => {
               if (!chain.id) return;
               return (
@@ -195,17 +329,28 @@ const ModalChains = ({
                   className={classNames("chain-sidebar", {
                     "chain-sidebar--active": activeChainId === chain.id,
                   })}
-                  onClick={() => setActiveChainId(chain?.id || 0)}
+                  onClick={() => handleChainSelect(chain?.id || 0)}
                 >
                   <HexChain uri={getIconUri(chain.id)} />
-                  <span>{chain.displayName}</span>
+                  <AnimatePresence mode="popLayout">
+                    {!isMobileCollapsed && (
+                      <motion.span
+                        initial={!isDesktop ? { width: 0, opacity: 0 } : false}
+                        animate={{ width: "auto", opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                      >
+                        {chain.displayName}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </button>
               );
             })}
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

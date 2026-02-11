@@ -106,7 +106,7 @@ const ModalCoinItem = ({
 
       <div className="native-coin__meta">
         <h3>
-          {coinSymbol}
+          <span>{coinSymbol}</span>
           {modalMode === "onramp" && (
             tokenSource === "moonpay" ? <BuyDirect /> : <BuyOracleRoute />
           )}
