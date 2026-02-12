@@ -103,7 +103,7 @@ const BuyBtn = ({
       label = "Error";
     }
   } else if (!isLoading && isInsuficientBalance) {
-    label = "Funds (Runnable)";
+    label = "Funds";
     disabled = false;
     icon = <ButtonFunds />;
     handleClick = onBuy;
