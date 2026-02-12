@@ -25,10 +25,7 @@ const AboutItem = ({
   paragraph,
   animation,
   object,
-  colorTop,
-  colorBottom,
   rotation,
-  position,
 }: Props) => {
   const isNormal = itemKey === "swap" || itemKey === "bridge";
   const isInverted = itemKey === "buy" || itemKey === "send";
@@ -46,13 +43,7 @@ const AboutItem = ({
             animation={animation}
           />
         ) : (
-          <ItemObject
-            colorTop={colorTop}
-            colorBottom={colorBottom}
-            objectUri={object}
-            rotation={rotation}
-            position={position}
-          />
+          <ItemObject objectUri={object} rotation={rotation} />
         )}
       </div>
       <div
@@ -67,13 +58,7 @@ const AboutItem = ({
             animation={animation}
           />
         ) : (
-          <ItemObject
-            colorTop={colorTop}
-            colorBottom={colorBottom}
-            objectUri={object}
-            rotation={rotation}
-            position={position}
-          />
+          <ItemObject objectUri={object} rotation={rotation} />
         )}
       </div>
     </AboutItemWrapper>

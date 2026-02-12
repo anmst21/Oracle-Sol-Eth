@@ -1,103 +1,73 @@
 "use client";
 
-import { useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import {
-  Center,
-  PresentationControls,
-  useGLTF,
-  Float,
-} from "@react-three/drei";
-// import { EffectComposer, ASCII } from "@react-three/postprocessing";
-
-import * as THREE from "three";
-
-const material = new THREE.MeshToonMaterial({ color: "white" });
+import { useEffect, useRef } from "react";
 
 type Props = {
   objectUri: string;
-  colorTop: string;
-  rotation: number[];
-  position: number[];
-  colorBottom: string;
+  rotation?: number[];
 };
 
-const ItemObject = ({
-  objectUri,
-  colorTop,
-  colorBottom,
-  // rotation,
-  // position,
-}: Props) => {
-  const { scene } = useGLTF(objectUri);
+type AsciiEngineInstance = {
+  pause: () => void;
+  resume: () => void;
+  dispose: () => void;
+};
+
+const ItemObject = ({ objectUri, rotation }: Props) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const engineRef = useRef<AsciiEngineInstance | null>(null);
 
   useEffect(() => {
-    scene.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh;
-        mesh.material = material;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-      }
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+
+    let disposed = false;
+
+    import("./ascii-engine").then(({ AsciiEngine }) => {
+      if (disposed || !container) return;
+      const engine = new AsciiEngine({
+        container,
+        modelUrl: objectUri,
+        rotation: rotation as [number, number, number] | undefined,
+      });
+      engineRef.current = engine;
     });
-  }, [scene]);
+
+    // IntersectionObserver for pause/resume
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            engineRef.current?.resume();
+          } else {
+            engineRef.current?.pause();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(container);
+
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      engineRef.current?.dispose();
+      engineRef.current = null;
+    };
+  }, [objectUri]);
 
   return (
-    <Canvas
-      flat
-      camera={{
-        fov: 60,
-        near: 0.1,
-        far: 200,
-        position: [1, 2, 6],
-      }}
+    <div
+      ref={containerRef}
       style={{
         width: "100%",
         height: "100%",
+        position: "relative",
         zIndex: 50,
       }}
-    >
-      {/* <color args={["#fff"]} attach="background" /> */}
-      {/* <OrbitControls makeDefault /> */}
-      <ambientLight intensity={0.7} />
-      <hemisphereLight args={[colorTop, colorBottom, 3]} />
-      {/* <PresentationControls> */}
-      <PresentationControls
-        // makes it spring back to the initial rotation when you release
-        snap
-        global
-        // pointer cursor on hover
-        cursor
-        // starting rotation (same as your prop, but you can hardcode too)
-
-        // how far user can tilt vertically
-        // config={{ mass: 1, tension: 170, friction: 26 }}
-        polar={[-Math.PI / 6, Math.PI / 4]}
-        // how far user can rotate horizontally
-        azimuth={[-Math.PI / 4, Math.PI / 4]}
-        // spring config (tweak feel here)
-        //    config={{ mass: 1, tension: 170, friction: 26 }}
-        // how fast it reacts to drag
-        speed={1}
-      >
-        <Center>
-          <Float rotationIntensity={1}>
-            <primitive object={scene} scale={2.5} castShadow receiveShadow />
-          </Float>
-        </Center>
-      </PresentationControls>
-      {/* <EffectComposer>
-        <ASCII />
-      </EffectComposer> */}
-      {/* </PresentationControls> */}
-    </Canvas>
+    />
   );
 };
 
 export default ItemObject;
-//  font?: string;
-//     characters?: string;
-//     fontSize?: number;
-//     cellSize?: number;
-//     color?: string;
-//     invert?: boolean;

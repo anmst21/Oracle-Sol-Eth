@@ -36,7 +36,7 @@ const aboutList = [
   {
     colorTop: "#9500EB",
     colorBottom: "#56EB00",
-    rotation: [0, -0.5, 0],
+    rotation: [3, -1, 0],
     position: [-1.45, 0, 0],
     key: "swap",
     icon: <SwapIcon />,
@@ -63,7 +63,7 @@ const aboutList = [
   {
     colorTop: "#00B0EB",
     colorBottom: "#EB3B00",
-    rotation: [0.15, 0.7, 0.04],
+    rotation: [0.5, -0.9, 0.35],
     position: [1.55, 0.65, 0],
 
     key: "bridge",
@@ -77,7 +77,7 @@ const aboutList = [
   {
     colorTop: "#EB8900",
     colorBottom: "#0062EB",
-    rotation: [1.27, 2.83, 0.1],
+    rotation: [1.27, 4, -0.2],
     position: [0, 1, 0],
 
     key: "send",

@@ -1,21 +1,20 @@
 import * as THREE from "three/webgpu";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { getAsciiAtlas, CHAR_COUNT } from "./ascii-texture";
+import { getPatternAtlas } from "./ascii-texture";
 import { createAsciiMaterial } from "./ascii-material";
 import { DragControls } from "./drag-controls";
 
 const CAMERA_Z = 2;
 const CAMERA_FOV = 70;
-const GRID_ROWS = 65;
+const GRID_ROWS = 90;
 const TARGET_FPS = 30;
 const FRAME_INTERVAL = 1000 / TARGET_FPS;
 
 export interface AsciiEngineOptions {
   container: HTMLElement;
   modelUrl: string;
-  colorTop: string;
-  colorBottom: string;
+  rotation?: [number, number, number];
 }
 
 export class AsciiEngine {
@@ -52,6 +51,7 @@ export class AsciiEngine {
   private instances: number;
 
   private modelUrl: string;
+  private initialRotation: [number, number, number];
 
   // Bound handlers
   private boundResize: () => void;
@@ -59,6 +59,7 @@ export class AsciiEngine {
   constructor(opts: AsciiEngineOptions) {
     this.container = opts.container;
     this.modelUrl = opts.modelUrl;
+    this.initialRotation = opts.rotation || [0, 0, 0];
     this.width = this.container.offsetWidth;
     this.height = this.container.offsetHeight;
 
@@ -109,23 +110,25 @@ export class AsciiEngine {
     this.modelCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
     this.modelCamera.position.set(0, 0, 5);
     this.modelCamera.lookAt(0, 0, 0);
-    this.renderTarget = new THREE.RenderTarget(512, 512);
+    this.renderTarget = new THREE.RenderTarget(1024, 1024);
 
     // Pivot group for drag rotation
     this.modelPivot = new THREE.Group();
     this.modelScene.add(this.modelPivot);
 
-    // Lighting — strong directional + ambient so model details are prominent
-    const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+    // Lower ambient for wider tonal range across the model
+    const ambient = new THREE.AmbientLight(0xffffff, 0.35);
     this.modelScene.add(ambient);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
-    dirLight.position.set(1, 1, 1);
-    this.modelScene.add(dirLight);
+    // Key light — strong for shape definition
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    keyLight.position.set(2, 2, 2);
+    this.modelScene.add(keyLight);
 
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight2.position.set(-1, -0.5, 0.5);
-    this.modelScene.add(dirLight2);
+    // Fill light — moderate to lift shadows
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    fillLight.position.set(-2, -1, 1);
+    this.modelScene.add(fillLight);
   }
 
   private setupAsciiScene() {
@@ -142,7 +145,7 @@ export class AsciiEngine {
     const gltf = await loader.loadAsync(this.modelUrl);
     this.model = gltf.scene;
 
-    const whiteMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff });
+    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, metalness: 0.0 });
     this.model.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         (child as THREE.Mesh).material = whiteMat;
@@ -154,19 +157,26 @@ export class AsciiEngine {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
-    const scale = 3.2 / maxDim;
+    const scale = 4.6 / maxDim;
     this.model.scale.setScalar(scale);
     this.model.position.copy(center).multiplyScalar(-scale);
 
     this.modelPivot.add(this.model);
+
+    // Apply initial rotation
+    this.modelPivot.rotation.set(
+      this.initialRotation[0],
+      this.initialRotation[1],
+      this.initialRotation[2]
+    );
   }
 
   private async addAsciiGrid() {
-    const asciiTexture = await getAsciiAtlas();
+    const { texture: asciiTexture, length } = getPatternAtlas();
 
     this.material = createAsciiMaterial({
       asciiTexture,
-      charCount: CHAR_COUNT,
+      length,
       sceneTexture: this.renderTarget.texture,
     });
 
