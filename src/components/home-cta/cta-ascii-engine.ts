@@ -49,6 +49,7 @@ export class CtaAsciiEngine {
     screenCursor: THREE.Vector2;
     canvasCursor: THREE.Vector2;
     hasPointer: boolean;
+    pointerMoved: boolean;
     texture: THREE.CanvasTexture;
   };
 
@@ -207,6 +208,7 @@ export class CtaAsciiEngine {
       screenCursor: new THREE.Vector2(9999, 9999),
       canvasCursor: new THREE.Vector2(9999, 9999),
       hasPointer: false,
+      pointerMoved: false,
       texture: new THREE.CanvasTexture(canvas),
     };
   }
@@ -230,6 +232,7 @@ export class CtaAsciiEngine {
     this.displacement.screenCursor.y =
       -((y - rect.top) / rect.height) * 2 + 1;
     this.displacement.hasPointer = true;
+    this.displacement.pointerMoved = true;
   }
 
   private async addAsciiGrid() {
@@ -356,17 +359,20 @@ export class CtaAsciiEngine {
       this.displacement.canvas.height
     );
 
-    // Draw glow at cursor
-    const glowSize = this.displacement.canvas.width * GLOW_SIZE;
-    this.displacement.context.globalCompositeOperation = "lighten";
-    this.displacement.context.globalAlpha = 1;
-    this.displacement.context.drawImage(
-      this.displacement.glowImage,
-      this.displacement.canvasCursor.x - glowSize * 0.5,
-      this.displacement.canvasCursor.y - glowSize * 0.5,
-      glowSize,
-      glowSize
-    );
+    // Draw glow at cursor only when moving
+    if (this.displacement.pointerMoved) {
+      const glowSize = this.displacement.canvas.width * GLOW_SIZE;
+      this.displacement.context.globalCompositeOperation = "lighten";
+      this.displacement.context.globalAlpha = 1;
+      this.displacement.context.drawImage(
+        this.displacement.glowImage,
+        this.displacement.canvasCursor.x - glowSize * 0.5,
+        this.displacement.canvasCursor.y - glowSize * 0.5,
+        glowSize,
+        glowSize
+      );
+      this.displacement.pointerMoved = false;
+    }
 
     this.displacement.texture.needsUpdate = true;
 
