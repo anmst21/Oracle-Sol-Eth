@@ -12,10 +12,11 @@
     }
 
     &__artwork {
-        //  position: relative;
+        position: relative;
+        overflow: hidden;
         width: 640px;
         height: 640px;
-        background: rgba(255, 255, 255, 0.05);
+        // background: rgba(255, 255, 255, 0.05);
         display: flex;
         padding: 67px;
         transform: translateX(-100px);

@@ -1,4 +1,5 @@
 import ContactsForm from "@/components/contacts-form";
+import ContactsArtwork from "@/components/contacts-artwork";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div id="capcha-container" className="contacts-page">
-      <div className="contacts-page__artwork"></div>
+      <ContactsArtwork />
       <div className="contacts-page__form">
         <ContactsForm />
       </div>
