@@ -14,7 +14,7 @@ type Props = {
   colorTop: string;
   colorBottom: string;
   rotation: number[];
-  position: number[];
+  position?: number[];
 };
 
 const AboutItem = ({
