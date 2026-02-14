@@ -304,8 +304,8 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
 
   const handleTokenSwitch = useCallback(() => {
     if (isLoading) return;
-    // 1. swap tokens
     setIsSwitching(true);
+    setQuote(null);
     // 2. swap wallets
 
     const resolveActiveBuyWallet = () => {

@@ -27,12 +27,12 @@ export function RelayKitProviderWrapper({
     source: "oracleswap.app",
     appFees: [
       {
-        recipient: "0x0000000000000000000000000000000000000000",
+        recipient: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
         fee: "100", // 1%
       },
     ],
     duneApiKey: process.env.NEXT_PUBLIC_DUNE_API_KEY ?? "",
-    chains: chains as RelayChain[],
+    ...(chains?.length ? { chains: chains as RelayChain[] } : {}),
     baseApiUrl: MAINNET_RELAY_API,
   };
 
