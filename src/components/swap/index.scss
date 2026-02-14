@@ -387,6 +387,24 @@
     display: flex;
     gap: 8px;
 
+    &__nav {
+        display: flex;
+        gap: 8px;
+
+        @include down(sm) {
+            overflow-x: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+            }
+
+            mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+        }
+    }
 
     &__badge {
         height: 34px;
@@ -415,6 +433,7 @@
         align-items: center;
         border-radius: 4px;
         transition: all .2s ease-in-out;
+        flex-shrink: 0;
 
         &:hover {
             border: 1px solid rgba(217, 241, 233, 0.15);
@@ -447,6 +466,7 @@
         border: 1px solid rgba(136, 150, 151, 0.10);
         background: rgba(136, 150, 151, 0.05);
         margin-left: auto;
+        flex-shrink: 0;
     }
 }
 

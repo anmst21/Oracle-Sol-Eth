@@ -50,18 +50,20 @@ const SwapHeader = () => {
 
   return (
     <div className="swap-header">
-      {buttonsLogin.map((button, i) => (
-        <Link
-          className={classNames("swap-header__item", {
-            "swap-header__item--active": pathname === button.href,
-          })}
-          key={i}
-          href={button.href}
-        >
-          {button.icon}
-          <span>{button.name}</span>
-        </Link>
-      ))}
+      <div className="swap-header__nav">
+        {buttonsLogin.map((button, i) => (
+          <Link
+            className={classNames("swap-header__item", {
+              "swap-header__item--active": pathname === button.href,
+            })}
+            key={i}
+            href={button.href}
+          >
+            {button.icon}
+            <span>{button.name}</span>
+          </Link>
+        ))}
+      </div>
       <div
         onMouseLeave={() => {
           if (isOpenSlippage) setIsOpenSlippage(false);

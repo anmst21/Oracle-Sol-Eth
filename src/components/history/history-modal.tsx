@@ -195,7 +195,7 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
         </label>
       </div>
       <AnimatePresence mode="popLayout" initial={false}>
-        {type === "network" && (
+        {type === "network" ? (
           <motion.div
             {...sectionAnimation}
             key="wallet-network"
@@ -219,8 +219,7 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
               isLoadingChains={isLoadingChains}
             />
           </motion.div>
-        )}
-        {type === "wallet" && (
+        ) : (
           <motion.div
             {...sectionAnimation}
             key="wallet-wrapper"
