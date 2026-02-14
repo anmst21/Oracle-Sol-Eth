@@ -1,4 +1,5 @@
 import HeaderIcon from "../home-section-header/header-icon";
+import TextReveal from "../text-reveal";
 
 const ItemText = ({
   animation,
@@ -12,8 +13,8 @@ const ItemText = ({
   return (
     <div className="about-text">
       <HeaderIcon animation={animation} />
-      <h3>{header}</h3>
-      <p>{paragraph}</p>
+      <TextReveal as="h3">{header}</TextReveal>
+      <TextReveal as="p" delay={100}>{paragraph}</TextReveal>
     </div>
   );
 };

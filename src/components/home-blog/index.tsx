@@ -9,6 +9,7 @@ import { HomeHeaderType } from "@/types/home-page";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { homeBlogPosts } from "@/helpers/home-blog-posts";
+import { animate as animeAnimate, stagger } from "animejs";
 const ANIMATION_TIME = 5000;
 
 const HomeBlog = () => {
@@ -23,6 +24,7 @@ const HomeBlog = () => {
     [Autoplay({ playOnInit: true, delay: ANIMATION_TIME })]
   );
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
 
   const isDesktop = useIsDesktop();
 
@@ -58,6 +60,35 @@ const HomeBlog = () => {
       emblaApi.off("pointerUp", scheduleRestart);
     };
   }, [emblaApi, isDesktop]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const cards = section.querySelectorAll<HTMLElement>(".home-blog-post");
+    if (!cards.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            animeAnimate(cards, {
+              opacity: [0, 1],
+              delay: stagger(250, { grid: [3, 3], from: 0 }),
+              duration: 2000,
+              ease: "outQuint",
+            });
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, []);
 
   const onButtonClick = useCallback(
     (index: number) => {
@@ -158,13 +189,14 @@ const HomeBlog = () => {
         })}
       </div>
 
-      <div className="home-blog__section">
+      <div className="home-blog__section" ref={sectionRef}>
         {homeBlogPosts.map((post, i) => {
           return (
             <Link
               className={`home-blog-post home-blog-post--${i + 1}`}
               href={`/blog${post.href}`}
               key={post.title}
+              style={{ opacity: 0 }}
             >
               <div className="home-blog-post__header">
                 <div className="home-blog-post__header__icon">{post.icon}</div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useInView, animate } from "motion/react";
 import { HomeLaunch } from "../icons";
 import { CtaAsciiEngine } from "./cta-ascii-engine";
+import TextReveal from "../text-reveal";
 
 const bgImage = "/thick-smoke-inverted.jpg";
 
@@ -42,22 +43,22 @@ const HomeCta = () => {
   return (
     <div id="values" className="home-cta">
       <div className="home-cta__text">
-        <h2>Move Value the Way It Should Be</h2>
-        <span>
+        <TextReveal as="h2">Move Value the Way It Should Be</TextReveal>
+        <TextReveal as="span">
           Fast execution, real transparency, and multichain freedom — all in one
           seamless flow.
-        </span>
+        </TextReveal>
       </div>
       <div className="home-cta__container" ref={containerRef}>
         <div className="home-cta__card">
           <div className="home-cta__card__badge">Oracle Team</div>
-          <h3>Oracle</h3>
-          <span className="home-cta__card__paragraph">
+          <TextReveal as="h3">Oracle</TextReveal>
+          <TextReveal as="span" className="home-cta__card__paragraph">
             Oracle brings swapping, bridging, and sending into a single, fluid
             experience powered by Relay. Fast fills, clear fees, verified data,
             and frictionless wallet control — everything you need to move value
             across chains with confidence.
-          </span>
+          </TextReveal>
           <Link className="home-cta__card__cta" href={"/swap"}>
             <HomeLaunch />
             <div className="home-cta__card__cta__mid">

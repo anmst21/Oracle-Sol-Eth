@@ -20,6 +20,7 @@ import {
   dashboardAnimation,
 } from "@/components/icons/landing-pack/index";
 import HeaderIcon from "./header-icon";
+import TextReveal from "../text-reveal";
 
 type Props = {
   type: HomeHeaderType;
@@ -104,8 +105,8 @@ const HomePageHeader = ({ type }: Props) => {
     <div className="home-page-header">
       <div className="home-page-header__title">
         <HeaderIcon animation={animation} icon={icon} />
-        <h2>{header}</h2>
-        <p>{subheader}</p>
+        <TextReveal as="h2">{header}</TextReveal>
+        <TextReveal as="p" delay={100}>{subheader}</TextReveal>
       </div>
       <div className="home-page-header__link">
         <Link className="home-page-header__link__button" href={uri}>
