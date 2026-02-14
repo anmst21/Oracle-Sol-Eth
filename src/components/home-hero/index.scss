@@ -102,6 +102,7 @@
 
     @include down(md) {
         justify-content: flex-start;
+        margin-bottom: 0;
     }
 
     &__text {
