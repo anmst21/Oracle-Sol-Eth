@@ -109,7 +109,8 @@
             margin-bottom: 12px;
 
             @include down(md) {
-                font-size: 32px;
+                font-size: 24px;
+                margin-bottom: 8px;
             }
         }
 
@@ -122,8 +123,8 @@
             line-height: 34px;
 
             @include down(md) {
-                font-size: 16px;
-                line-height: 24px;
+                font-size: 14px;
+                line-height: 22px;
             }
         }
 
