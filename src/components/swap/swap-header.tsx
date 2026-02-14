@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { SwapIcon, SwapBuy, SwapCog, HistoryIcon, ChartIcon } from "../icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -48,9 +48,24 @@ const SwapHeader = () => {
     ? buttons
     : buttons.filter((b) => b.href !== "/history");
 
+  const navRef = useRef<HTMLDivElement>(null);
+  const [scrolledToEnd, setScrolledToEnd] = useState(false);
+
+  const handleNavScroll = useCallback(() => {
+    const el = navRef.current;
+    if (!el) return;
+    setScrolledToEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
+  }, []);
+
   return (
     <div className="swap-header">
-      <div className="swap-header__nav">
+      <div
+        className={classNames("swap-header__nav", {
+          "swap-header__nav--end": scrolledToEnd,
+        })}
+        ref={navRef}
+        onScroll={handleNavScroll}
+      >
         {buttonsLogin.map((button, i) => (
           <Link
             className={classNames("swap-header__item", {

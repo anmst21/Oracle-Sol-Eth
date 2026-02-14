@@ -62,8 +62,17 @@ function HistoryItem({
   //   currencyOut,
   // });
 
-  const [intIn, decIn] = (currencyIn?.amountFormatted || "0.0")?.split(".");
-  const [intOut, decOut] = (currencyOut?.amountFormatted || "0.0")?.split(".");
+  const formatAmount = (raw: string | undefined) => {
+    const num = parseFloat(raw || "0");
+    if (num >= 1) return num.toFixed(2);
+    if (num === 0) return "0.0";
+    const match = raw?.match(/^0\.0*/);
+    const leadingZeros = match ? match[0].length - 2 : 0;
+    return num.toFixed(Math.max(6, leadingZeros + 1));
+  };
+
+  const [intIn, decIn] = formatAmount(currencyIn?.amountFormatted).split(".");
+  const [intOut, decOut] = formatAmount(currencyOut?.amountFormatted).split(".");
 
   // const propsData = [{ icon: <HistorySender />, key: "Sender" }];
   return (
