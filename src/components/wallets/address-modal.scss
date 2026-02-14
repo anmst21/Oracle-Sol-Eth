@@ -168,10 +168,6 @@
     }
 
     &__container {
-        // position: absolute;
-        // left: 50%;
-        // top: 50%;
-        // transform: translate(-50%, -50%);
         width: 320px;
         padding: 12px;
 
@@ -179,5 +175,13 @@
         border: 1px solid rgba(136, 150, 151, 0.20);
         background: rgba(136, 150, 151, 0.05);
         backdrop-filter: blur(30px);
+
+        @include down(md) {
+            position: fixed;
+            left: 20px;
+            right: 20px;
+            width: auto;
+            bottom: calc(102px + 36px + 16px);
+        }
     }
 }

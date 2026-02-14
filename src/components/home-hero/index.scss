@@ -97,7 +97,11 @@
     z-index: 0;
 
     @include down(xxl) {
-        margin-bottom: 250px;
+        margin-bottom: 120px;
+    }
+
+    @include down(md) {
+        justify-content: flex-start;
     }
 
     &__text {
@@ -163,12 +167,6 @@
         display: flex;
         position: relative;
         width: 100%;
-        transform: translateY(-120px);
-
-        @include down(xxl) {
-            // margin-top: 40px;
-            transform: none;
-        }
     }
 
 
