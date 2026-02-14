@@ -92,7 +92,6 @@ export class AsciiEngine {
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(0x000000, this.clearAlpha);
     this.container.appendChild(this.renderer.domElement);
-    this.renderer.domElement.style.cursor = "grab";
 
     // Scenes & cameras
     this.setupModelScene();
@@ -103,6 +102,8 @@ export class AsciiEngine {
     await this.addAsciiGrid();
 
     // Controls
+    this.renderer.domElement.style.cursor = "grab";
+    this.renderer.domElement.style.touchAction = "none";
     this.drag = new DragControls(this.renderer.domElement);
 
     // Events
