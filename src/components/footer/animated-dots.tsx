@@ -3,6 +3,13 @@
 import { motion, useAnimation, useInView } from "motion/react";
 import React, { useEffect, useRef } from "react";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
+import Link from "next/link";
+import {
+  SocialNexus,
+  SocialMail,
+  SocialLinkedin,
+  SocialTwitter,
+} from "../icons";
 
 const AnimatedDots = () => {
   const circlesRef = useRef<HTMLDivElement | null>(null);
@@ -49,10 +56,38 @@ const AnimatedDots = () => {
 
   return (
     <div ref={circlesRef} className="animated-dots">
-      <div className="footer-dot"></div>
-      <div className="footer-dot"></div>
-      <div className="footer-dot"></div>
-      <div className="footer-dot"></div>
+      <div className="footer-dot">
+        <Link
+          href="https://nexus-git-main-anmst21s-projects.vercel.app/"
+          className="footer__hole"
+          target="_blank"
+        >
+          <SocialNexus />
+        </Link>
+      </div>
+      <div className="footer-dot">
+        <Link
+          target="_blank"
+          href="mailto:r01@ai.com"
+          className="footer__hole"
+        >
+          <SocialMail />
+        </Link>
+      </div>
+      <div className="footer-dot">
+        <Link target="_blank" href="/" className="footer__hole">
+          <SocialLinkedin />
+        </Link>
+      </div>
+      <div className="footer-dot">
+        <Link
+          target="_blank"
+          href="https://x.com/reveal_r01"
+          className="footer__hole"
+        >
+          <SocialTwitter />
+        </Link>
+      </div>
 
       <motion.div
         className="blog-circle blog-circle--overlay"

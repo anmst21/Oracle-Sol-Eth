@@ -34,6 +34,29 @@
             width: 24px;
             height: 24px;
         }
+
+        .footer__hole {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            background: black;
+            border-radius: 1000px;
+            opacity: 0;
+            transition: opacity .2s ease-out;
+
+            @include down(md) {
+                width: 24px;
+                height: 24px;
+            }
+
+            &:hover {
+                opacity: 1;
+            }
+        }
     }
 }
 
@@ -50,7 +73,7 @@
 
     @include down(md) {
         order: 1;
-        margin-top: 24px;
+        margin-top: -24px;
         margin-bottom: 24px;
     }
 

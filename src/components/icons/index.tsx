@@ -125,8 +125,16 @@ import PrivacyIconMobile from "./PrivacyIconMobile";
 import ContactsIconMobile from "./ContactsIconMobile";
 import BlogIconMobile from "./BlogIconMobile";
 import HomeLaunch from "./HomeLaunch";
+import SocialLinkedin from "./social-linkedin";
+import SocialMail from "./social-mail";
+import SocialNexus from "./social-nexus";
+import SocialTwitter from "./social-twitter";
 
 export {
+  SocialLinkedin,
+  SocialMail,
+  SocialNexus,
+  SocialTwitter,
   HomeLaunch,
   FeedIconMobile,
   SwapIconMobile,
