@@ -89,6 +89,7 @@
     flex-direction: column;
     gap: 8px;
     width: 100%;
+    z-index: 0;
     margin: 0 62px;
 
 
@@ -152,6 +153,10 @@
             align-items: center;
             justify-content: center;
             position: absolute;
+
+            @include down(md) {
+                display: none;
+            }
         }
 
         &__left {
@@ -177,6 +182,33 @@
     &__info {
         display: flex;
         gap: 8px;
+
+        @include down(md) {
+            flex-direction: column;
+            position: relative;
+        }
+
+        &__swap {
+            display: none;
+
+            @include down(md) {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 100;
+
+                width: 24px;
+                height: 24px;
+                border-radius: 5px;
+                border: 1px solid rgba(136, 150, 151, 0.10);
+                background: rgba(217, 241, 233, 0.05);
+                backdrop-filter: blur(40px);
+            }
+        }
     }
 
     &__headers,
@@ -185,6 +217,10 @@
         gap: 8px;
         width: 100%;
         flex-direction: column;
+    }
+
+    @include down(md) {
+        margin: 0 20px;
     }
 }
 
@@ -319,6 +355,12 @@
 .transaction-info {
     position: relative;
 
+    &__hide-mobile {
+        @include down(md) {
+            display: none;
+        }
+    }
+
 
 
 
@@ -372,6 +414,12 @@
 
             border-radius: 6px;
             background: rgba(136, 150, 151, 0.05);
+        }
+
+        &__prefix--tz {
+            @include down(md) {
+                display: none;
+            }
         }
 
         &__button {
@@ -496,6 +544,10 @@
         z-index: 100;
         top: 50%;
         transform: translateY(-50%);
+
+        @include down(md) {
+            display: none;
+        }
     }
 }
 

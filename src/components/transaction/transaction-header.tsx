@@ -3,6 +3,7 @@ import { HexChain, UserQuestion } from "../icons";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import Image from "next/image";
 import GreenDot from "../green-dot";
+import { formatAmount } from "@/helpers/format-amount";
 import SkeletonLoaderWrapper from "../skeleton";
 
 type Props = {
@@ -24,11 +25,7 @@ const TransactionHeader = ({
   amountFormatted,
   isLoading,
 }: Props) => {
-  const amount = amountFormatted ? Number(amountFormatted) : 0;
-
-  const amt = amount > 1 ? amount.toFixed(2) : amount;
-
-  const [int, dec] = amt.toString().split(".");
+  const [int, dec] = formatAmount(amountFormatted).split(".");
 
   // const isLoadingTo = isLoading && type === "to";
 

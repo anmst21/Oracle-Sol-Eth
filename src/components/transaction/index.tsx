@@ -6,7 +6,7 @@ import { queryRelayChains } from "@reservoir0x/relay-kit-hooks";
 import { RelayTransaction } from "@/types/relay-transaction";
 import { RelayChainFetch } from "@/types/relay-chain";
 import { notFound } from "next/navigation";
-import { HeaderCross } from "../icons";
+import { HeaderCross, TxSwap } from "../icons";
 import classNames from "classnames";
 import { formatUnits } from "viem";
 import TransactionTime from "./transaction-time";
@@ -140,6 +140,9 @@ const Transaction = async ({
                 : "0.0"
             }
           />
+        </div>
+        <div className="transaction__info__swap">
+          <TxSwap />
         </div>
         <div className="transaction__main">
           <TransactionHeader

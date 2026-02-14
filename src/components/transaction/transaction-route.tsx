@@ -2,6 +2,7 @@ import React from "react";
 import { relayLogoUri } from "@/helpers/relay-logo-uri";
 import Image from "next/image";
 import GreenDot from "../green-dot";
+import { formatAmount } from "@/helpers/format-amount";
 import SkeletonLoaderWrapper from "../skeleton";
 
 type Props = {
@@ -25,8 +26,8 @@ const TransactionRoute = ({
   isLoading,
   hideFill,
 }: Props) => {
-  const [intDeposit, decDeposit] = String(depositGasValue).split(".");
-  const [intFill, decFill] = String(fillGasValue).split(".");
+  const [intDeposit, decDeposit] = formatAmount(depositGasValue).split(".");
+  const [intFill, decFill] = formatAmount(fillGasValue).split(".");
 
   return (
     <div className="transaction-route">

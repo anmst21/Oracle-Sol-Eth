@@ -10,6 +10,7 @@ import {
 } from "../icons";
 import classNames from "classnames";
 import GreenDot from "../green-dot";
+import { formatAmount } from "@/helpers/format-amount";
 import { TxStatus } from "../transaction/types";
 import { truncateAddress } from "@/helpers/truncate-address";
 import Link from "next/link";
@@ -61,15 +62,6 @@ function HistoryItem({
   //   currencyIn,
   //   currencyOut,
   // });
-
-  const formatAmount = (raw: string | undefined) => {
-    const num = parseFloat(raw || "0");
-    if (num >= 1) return num.toFixed(2);
-    if (num === 0) return "0.0";
-    const match = raw?.match(/^0\.0*/);
-    const leadingZeros = match ? match[0].length - 2 : 0;
-    return num.toFixed(Math.max(6, leadingZeros + 1));
-  };
 
   const [intIn, decIn] = formatAmount(currencyIn?.amountFormatted).split(".");
   const [intOut, decOut] = formatAmount(currencyOut?.amountFormatted).split(".");

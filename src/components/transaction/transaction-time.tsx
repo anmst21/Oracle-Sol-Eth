@@ -1,5 +1,6 @@
 import React from "react";
 import GreenDot from "../green-dot";
+import { formatAmount } from "@/helpers/format-amount";
 import ClockInfo from "../icons/ClockInfo";
 import SkeletonLoaderWrapper from "../skeleton";
 
@@ -18,8 +19,8 @@ const TransactionTime = ({
   timeEstimate,
   isLoading,
 }: Props) => {
-  const [intRelay, decRelay] = String(relayFeeValue).split(".");
-  const [intApp, decApp] = String(appFeeValue).split(".");
+  const [intRelay, decRelay] = formatAmount(relayFeeValue).split(".");
+  const [intApp, decApp] = formatAmount(appFeeValue).split(".");
 
   return (
     <div className="transaction-time">

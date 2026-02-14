@@ -7,6 +7,7 @@ import Link from "next/link";
 import { truncateAddress } from "@/helpers/truncate-address";
 import CopyBtn from "./copy-btn";
 import GreenDot from "../green-dot";
+import { formatAmount } from "@/helpers/format-amount";
 import classNames from "classnames";
 import SkeletonLoaderWrapper from "../skeleton";
 
@@ -65,10 +66,7 @@ const TransactionInfo = ({
 
   const timeParts = [dateStr, timeStr, ampmStr, tzStr];
 
-  const ammountNumber = Number(amountFormatted);
-  const ammount = ammountNumber > 1 ? ammountNumber.toFixed(2) : ammountNumber;
-
-  const [int, dec] = String(ammount).split(".");
+  const [int, dec] = formatAmount(amountFormatted).split(".");
   // console.log("explorerUri", explorerUri);
 
   const isLoading =
@@ -169,7 +167,7 @@ const TransactionInfo = ({
 
       <div className="transaction-info__item">
         <div className="transaction-info__item__key">
-          {type === "deposit" ? "Sender" : "Recipient"} Address
+          {type === "deposit" ? "Sender" : "Recipient"}<span className="transaction-info__hide-mobile"> Address</span>
         </div>
         <SkeletonLoaderWrapper
           radius={6}
@@ -193,7 +191,7 @@ const TransactionInfo = ({
       </div>
 
       <div className="transaction-info__item">
-        <div className="transaction-info__item__key">Transaction Hash</div>
+        <div className="transaction-info__item__key">Transaction<span className="transaction-info__hide-mobile"> Hash</span></div>
         <SkeletonLoaderWrapper
           radius={6}
           height={30}
@@ -226,7 +224,10 @@ const TransactionInfo = ({
         >
           {timeParts.map((part, i) => {
             return (
-              <div key={i} className="transaction-info__item__prefix">
+              <div
+                key={i}
+                className={`transaction-info__item__prefix${i === timeParts.length - 1 ? " transaction-info__item__prefix--tz" : ""}`}
+              >
                 {part}
               </div>
             );
