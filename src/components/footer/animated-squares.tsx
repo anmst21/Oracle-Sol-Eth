@@ -19,13 +19,22 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-const CELL = 20; // px
-const GAP = 6; // px
+const CELL_DESKTOP = 20;
+const GAP_DESKTOP = 6;
+const CELL_MOBILE = 10;
+const GAP_MOBILE = 3;
+const MD_BREAKPOINT = 1024;
 
-function computeCols(containerWidth: number, mustBeEven = true) {
-  let n = Math.floor((containerWidth + GAP) / (CELL + GAP));
+function getCellGap(width: number) {
+  return width < MD_BREAKPOINT
+    ? { cell: CELL_MOBILE, gap: GAP_MOBILE }
+    : { cell: CELL_DESKTOP, gap: GAP_DESKTOP };
+}
+
+function computeCols(containerWidth: number, cell: number, gap: number, mustBeEven = true) {
+  let n = Math.floor((containerWidth + gap) / (cell + gap));
   if (n < 2) n = 2;
-  if (mustBeEven && n % 2) n -= 1; // enforce even column count
+  if (mustBeEven && n % 2) n -= 1;
   return n;
 }
 
@@ -34,10 +43,11 @@ const AnimatedSquares: React.FC = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const palette = useMemo(() => paletteCreator(gridWidth * gridHeight), []);
 
-  const [cols, setCols] = React.useState(56); // initial fallback
+  const [cols, setCols] = React.useState(56);
+  const [sizes, setSizes] = React.useState({ cell: CELL_DESKTOP, gap: GAP_DESKTOP });
   const containerWidthPx = React.useMemo(
-    () => cols * CELL + (cols - 1) * GAP,
-    [cols]
+    () => cols * sizes.cell + (cols - 1) * sizes.gap,
+    [cols, sizes]
   );
 
   // Measurements
@@ -142,10 +152,10 @@ const AnimatedSquares: React.FC = () => {
     scheduleApply(c.ax, c.ay);
 
     const ro = new ResizeObserver(() => {
-      // Update container column count
       const width = root.clientWidth;
-      setCols(computeCols(width, true));
-      // Refresh grid bounds
+      const { cell, gap } = getCellGap(width);
+      setSizes({ cell, gap });
+      setCols(computeCols(width, cell, gap, true));
       refreshBounds();
       const a = currentAnchorRef.current ?? centerAnchor();
       scheduleApply(a.ax, a.ay);
@@ -165,7 +175,12 @@ const AnimatedSquares: React.FC = () => {
       scheduleApply(a.ax, a.ay);
     };
 
-    const onScrollOrResize = () => {
+    const onScroll = () => {
+      // Invalidate cached bounds; next pointer event will recalculate
+      boundsRef.current = null;
+    };
+
+    const onResize = () => {
       refreshBounds();
       const a = currentAnchorRef.current ?? centerAnchor();
       scheduleApply(a.ax, a.ay);
@@ -173,15 +188,15 @@ const AnimatedSquares: React.FC = () => {
 
     grid.addEventListener("pointermove", onPointerMove, { passive: true });
     grid.addEventListener("pointerleave", onPointerLeave);
-    window.addEventListener("scroll", onScrollOrResize, true);
-    window.addEventListener("resize", onScrollOrResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
 
     return () => {
       ro.disconnect();
       grid.removeEventListener("pointermove", onPointerMove);
       grid.removeEventListener("pointerleave", onPointerLeave);
-      window.removeEventListener("scroll", onScrollOrResize, true);
-      window.removeEventListener("resize", onScrollOrResize);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
       if (animInstanceRef.current) {
         animInstanceRef.current.pause();
         animInstanceRef.current = null;
