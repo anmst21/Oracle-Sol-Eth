@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { InputCross } from "../icons";
 import { AnimatePresence, motion } from "motion/react";
 import classNames from "classnames";
@@ -44,7 +45,7 @@ const DynamicNotification = ({ message, type, time }: Props) => {
     }
   }, [message, type, time]);
 
-  return (
+  return createPortal(
     <AnimatePresence mode="sync">
       {toasts.map((t) => {
         return (
@@ -99,7 +100,8 @@ const DynamicNotification = ({ message, type, time }: Props) => {
           </motion.div>
         );
       })}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

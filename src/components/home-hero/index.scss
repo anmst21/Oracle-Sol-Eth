@@ -117,6 +117,7 @@
 
         @include down(md) {
             gap: 6px;
+            bottom: -180px;
         }
 
         h1 {

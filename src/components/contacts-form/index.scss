@@ -29,6 +29,17 @@
             span {
                 color: #F13D20;
             }
+
+            input::placeholder,
+            textarea::placeholder {
+                color: rgba(241, 61, 32, 0.40);
+                transition: color .2s ease-out;
+            }
+
+            input:focus::placeholder,
+            textarea:focus::placeholder {
+                color: rgba(136, 150, 151, 0.80);
+            }
         }
 
 
@@ -138,14 +149,19 @@
             transition: all .2s ease-out;
             display: flex;
             justify-content: center;
-            height: 36px;
+            height: 40px;
             border-radius: 6px;
             background: rgba(136, 150, 151, 0.05);
         }
 
         &__icon {
             align-items: center;
-            width: 36px;
+            width: 40px;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
         }
 
         input {
