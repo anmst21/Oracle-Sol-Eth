@@ -252,7 +252,14 @@
     &__top {
 
         .token-to-buy__token {
-            flex: 1
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+        @include down(sm) {
+            .token-to-buy__token__text span {
+                display: none;
+            }
         }
 
         a {
@@ -261,7 +268,8 @@
             background: rgba(217, 241, 233, 0.05);
             display: flex;
             //  width: 100%;
-            flex: 1;
+            flex: 1 1 0;
+            min-width: 0;
             height: 56px;
             justify-content: space-between;
             align-items: center;
@@ -332,6 +340,10 @@
                 margin: 0px 8px;
                 //   width: fit-content;
 
+                @include down(sm) {
+                    font-size: 22px;
+                }
+
                 span span {
                     color: #D9F1E9;
                 }
@@ -391,8 +403,12 @@
 
             height: 70px;
             flex: 1 1 0;
-            /* allow them to shrink below their content’s natural width */
+            /* allow them to shrink below their content's natural width */
             min-width: 0;
+
+            @include down(sm) {
+                height: 56px;
+            }
         }
 
         .stats-item {
@@ -416,13 +432,19 @@
                 font-weight: 500;
                 border-bottom: 1px solid rgba(136, 150, 151, 0.10);
 
-
+                @include down(sm) {
+                    font-size: 10px;
+                }
             }
 
             &__value {
                 font-size: 16px;
                 font-style: normal;
                 font-weight: 500;
+
+                @include down(sm) {
+                    font-size: 11px;
+                }
 
                 span {
                     color: rgba(217, 241, 233, 0.60);
