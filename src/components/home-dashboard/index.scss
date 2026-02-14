@@ -840,11 +840,7 @@
 
 .home-dashboard__animation {
     padding: 0;
-
-    canvas {
-        width: 100% !important;
-        height: auto !important;
-    }
+    overflow: hidden;
 }
 
 

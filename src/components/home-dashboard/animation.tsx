@@ -1,71 +1,71 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
-import {
-  Center,
-  PresentationControls,
-  useGLTF,
-  Float,
-} from "@react-three/drei";
-import * as THREE from "three";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-const material = new THREE.MeshToonMaterial({ color: "white" });
+type AsciiEngineInstance = {
+  pause: () => void;
+  resume: () => void;
+  dispose: () => void;
+};
 
 const Animation = () => {
-  // scene is your full model root
-  const { scene } = useGLTF("/objects/cup.glb");
-
-  // optional: set a toon material on all meshes
+  const containerRef = useRef<HTMLDivElement>(null);
+  const engineRef = useRef<AsciiEngineInstance | null>(null);
 
   useEffect(() => {
-    scene.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh;
-        mesh.material = material;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-      }
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+
+    let disposed = false;
+
+    import("../home-about/ascii-engine").then(({ AsciiEngine }) => {
+      if (disposed || !container) return;
+      const engine = new AsciiEngine({
+        container,
+        modelUrl: "/objects/cup.glb",
+        rotation: [-2, -0.7, 0.2],
+        gridRows: 60,
+        modelScale: 3.2,
+        clearAlpha: 0,
+      });
+      engineRef.current = engine;
     });
-  }, [scene]);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            engineRef.current?.resume();
+          } else {
+            engineRef.current?.pause();
+          }
+        });
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(container);
+
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      engineRef.current?.dispose();
+      engineRef.current = null;
+    };
+  }, []);
 
   return (
     <div className="home-dashboard__animation">
-      <Canvas
-        flat
-        camera={{
-          fov: 60,
-          near: 0.1,
-          far: 200,
-          position: [1, 2, 6],
+      <div
+        ref={containerRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
         }}
-        // style={{
-        //   width: "100%",
-        //   height: "100%",
-        // }}
-      >
-        <ambientLight intensity={0.7} />
-        <hemisphereLight args={["#56EB00", "#9500EB", 3]} />
-        <PresentationControls
-          snap
-          global
-          cursor
-          polar={[-Math.PI / 6, Math.PI / 4]}
-          azimuth={[-Math.PI / 4, Math.PI / 4]}
-          speed={1}
-        >
-          <Center>
-            <Float rotationIntensity={1}>
-              {/* put the whole gltf scene into the canvas */}
-              <primitive object={scene} scale={2.7} castShadow receiveShadow />
-            </Float>
-          </Center>
-        </PresentationControls>
-      </Canvas>
+      />
     </div>
   );
 };
-
-useGLTF.preload("/objects/cup.glb");
 
 export default Animation;

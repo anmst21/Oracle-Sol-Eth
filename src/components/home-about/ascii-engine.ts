@@ -15,6 +15,9 @@ export interface AsciiEngineOptions {
   container: HTMLElement;
   modelUrl: string;
   rotation?: [number, number, number];
+  gridRows?: number;
+  modelScale?: number;
+  clearAlpha?: number;
 }
 
 export class AsciiEngine {
@@ -52,6 +55,8 @@ export class AsciiEngine {
 
   private modelUrl: string;
   private initialRotation: [number, number, number];
+  private modelScaleValue: number;
+  private clearAlpha: number;
 
   // Bound handlers
   private boundResize: () => void;
@@ -60,6 +65,8 @@ export class AsciiEngine {
     this.container = opts.container;
     this.modelUrl = opts.modelUrl;
     this.initialRotation = opts.rotation || [0, 0, 0];
+    this.modelScaleValue = opts.modelScale ?? 4.6;
+    this.clearAlpha = opts.clearAlpha ?? 1;
     this.width = this.container.offsetWidth;
     this.height = this.container.offsetHeight;
 
@@ -67,7 +74,7 @@ export class AsciiEngine {
     const aspect = this.width / this.height;
     const visibleHeight = 2 * CAMERA_Z * Math.tan((CAMERA_FOV / 2) * Math.PI / 180);
     const visibleWidth = visibleHeight * aspect;
-    this.rows = GRID_ROWS;
+    this.rows = opts.gridRows ?? GRID_ROWS;
     this.columns = Math.floor(this.rows / aspect);
     this.cellSize = visibleWidth / this.rows;
     this.instances = this.rows * this.columns;
@@ -83,7 +90,7 @@ export class AsciiEngine {
     await this.renderer.init();
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor(0x000000, 1);
+    this.renderer.setClearColor(0x000000, this.clearAlpha);
     this.container.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.cursor = "grab";
 
@@ -157,7 +164,7 @@ export class AsciiEngine {
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
-    const scale = 4.6 / maxDim;
+    const scale = this.modelScaleValue / maxDim;
     this.model.scale.setScalar(scale);
     this.model.position.copy(center).multiplyScalar(-scale);
 
