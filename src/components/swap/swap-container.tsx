@@ -33,7 +33,7 @@ import { useSearchParams } from "next/navigation";
 import Confirmation from "../confirmation";
 import { AnimatePresence } from "motion/react";
 // import DeepLink from "../deep-link";
-// import DynamicNotification from "../dynamic-notification";
+import DynamicNotification from "../dynamic-notification";
 
 // createClient({
 //   baseApiUrl: MAINNET_RELAY_API,
@@ -280,6 +280,20 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
   const [tradeType, setTradeType] = useState<TradeType>(TradeType.EXACT_INPUT);
+  const [notifMessage, setNotifMessage] = useState("");
+  const [notifType, setNotifType] = useState<"error" | "success" | null>(null);
+
+  const triggerNotif = useCallback(
+    (message: string, type: "error" | "success") => {
+      setNotifMessage("");
+      setNotifType(null);
+      setTimeout(() => {
+        setNotifMessage(message);
+        setNotifType(type);
+      }, 0);
+    },
+    []
+  );
 
   // console.log("quote", quote, error, tradeType);
 
@@ -487,18 +501,23 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
 
       if (msg.toLowerCase().includes("no routes found")) {
         setError("No routes found for that pair");
+        triggerNotif("No routes found for that pair", "error");
         setIsLoading(false);
       } else if (msg.toLowerCase().includes("decimals")) {
         setIsLoading(false);
         setError("Unable to fetch quote");
+        triggerNotif("Unable to fetch quote", "error");
       } else if (msg.includes("Invalid address")) {
         setError("Invalid address for chain");
+        triggerNotif("Invalid address for chain", "error");
         setIsLoading(false);
       } else if (msg.includes("Swap output amount is too small")) {
         setError("Swap output amount is too small");
+        triggerNotif("Swap output amount is too small", "error");
         setIsLoading(false);
       } else {
         setError(msg);
+        triggerNotif(msg, "error");
         setIsLoading(false);
       }
       if (tradeType === TradeType.EXACT_INPUT) setBuyInputValue("");
@@ -558,10 +577,25 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
           onProgress: (progress) => setProgress(progress),
         });
       } catch (err) {
-        if (err instanceof Error) setProgress(null);
+        setProgress(null);
+        const msg =
+          err instanceof Error ? err.message : typeof err === "string" ? err : "";
+        const lower = msg.toLowerCase();
+        if (
+          lower.includes("user rejected") ||
+          lower.includes("user denied") ||
+          lower.includes("action_rejected")
+        ) {
+          triggerNotif("Transaction rejected in wallet", "error");
+        } else {
+          triggerNotif(
+            msg ? msg.slice(0, 100) : "Transaction failed",
+            "error"
+          );
+        }
       }
     }
-  }, [adaptedWallet, quote, sellToken?.chainId]);
+  }, [adaptedWallet, quote, sellToken?.chainId, triggerNotif]);
 
   // console.log("progress", progress, quote, adaptedWallet);
 
@@ -696,15 +730,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       />
       {!isHero && <SwapMeta isLoading={isLoading} quote={quote} />}
       {/* <DeepLink /> */}
-      {/* <DynamicNotification
-        progress={progress}
-        // fromTokenMeta={{
-        //   address: sellToken?.address,
-        //   chainId: sellToken?.chainId,
-        //   ticker: sellToken?.name,
-        // }}
-        error={error}
-      /> */}
+      <DynamicNotification message={notifMessage} type={notifType} time={5} />
       <AnimatePresence mode="wait">
         {progress && (
           <Confirmation
