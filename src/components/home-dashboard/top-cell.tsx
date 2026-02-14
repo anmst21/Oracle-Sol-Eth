@@ -83,7 +83,7 @@ const TopCell = ({ type, index = 0, values }: Props) => {
           }
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.3, rootMargin: "0px 0px -15% 0px" }
     );
 
     observer.observe(el);

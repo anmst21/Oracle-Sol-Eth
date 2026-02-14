@@ -116,7 +116,10 @@
         }
 
         h1 {
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.25em;
             font-family: var(--font-funnel-display);
             font-size: 48px;
             font-style: normal;

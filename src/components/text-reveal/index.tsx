@@ -8,7 +8,7 @@ type Props = {
   className?: string;
   children: ReactNode;
   delay?: number;
-  staggerMs?: number;
+  variant?: "default" | "hero";
 };
 
 function wrapTextNodes(el: HTMLElement) {
@@ -40,7 +40,7 @@ const TextReveal = ({
   className,
   children,
   delay = 0,
-  staggerMs = 50,
+  variant = "default",
 }: Props) => {
   const ref = useRef<HTMLElement>(null);
 
@@ -48,36 +48,65 @@ const TextReveal = ({
     const el = ref.current;
     if (!el) return;
 
-    wrapTextNodes(el);
+    let targets: HTMLElement[];
+
+    if (variant === "hero") {
+      // Animate existing child spans directly — no word wrapping needed
+      targets = Array.from(el.children) as HTMLElement[];
+      targets.forEach((child) => {
+        child.style.opacity = "0";
+        child.style.scale = "0.8";
+      });
+    } else {
+      wrapTextNodes(el);
+      targets = Array.from(el.querySelectorAll<HTMLElement>(".tr-word"));
+    }
 
     el.style.opacity = "1";
-
-    const words = el.querySelectorAll<HTMLElement>(".tr-word");
-    if (!words.length) return;
+    if (!targets.length) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            animate(words, {
-              translateY: [20, 0],
-              opacity: [0, 1],
-              filter: ["blur(4px)", "blur(0px)"],
-              delay: stagger(staggerMs, { start: delay }),
-              duration: 800,
-              ease: "outQuint",
-            });
+            if (variant === "hero") {
+              animate(targets, {
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                delay: stagger(120, { start: delay }),
+                duration: 600,
+                ease: "outQuint",
+              });
+            } else {
+              // Diagonal sweep: delay based on distance from top-left
+              const containerRect = el.getBoundingClientRect();
+              const distances = targets.map((word) => {
+                const rect = word.getBoundingClientRect();
+                return (rect.left - containerRect.left) + (rect.top - containerRect.top);
+              });
+              const maxDist = Math.max(...distances);
+              targets.forEach((word, i) => {
+                const wordDelay = delay + (maxDist > 0 ? (distances[i] / maxDist) * 250 : 0);
+                animate(word, {
+                  translateY: [8, 0],
+                  opacity: [0, 1],
+                  delay: wordDelay,
+                  duration: 500,
+                  ease: "outQuint",
+                });
+              });
+            }
             observer.disconnect();
           }
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2, rootMargin: "0px 0px -15% 0px" }
     );
 
     observer.observe(el);
 
     return () => observer.disconnect();
-  }, [delay, staggerMs]);
+  }, [delay, variant]);
 
   return (
     <Tag ref={ref} className={className} style={{ opacity: 0 }}>
