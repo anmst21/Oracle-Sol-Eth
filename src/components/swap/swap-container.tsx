@@ -127,6 +127,11 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         }
         if (buyToken && buyToken.chainId !== 792703809 && ethLinked[0]) {
           setActiveWallet(ethLinked[0]);
+          setActiveBuyWallet({
+            address: ethLinked[0].address,
+            chainId: Number(ethLinked[0].chainId.split(":")[1]),
+            type: "ethereum",
+          });
         }
       }
 
@@ -387,13 +392,18 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
 
   // console.log("quote active", activeBuyWallet, buyToken);
   const { chains } = useRelayChains();
+  const chainsRef = useRef<RelayChain[]>([]);
+  if (chains?.length) {
+    chainsRef.current = chains as RelayChain[];
+  }
   const client = useMemo(
     () =>
       createClient({
         baseApiUrl: MAINNET_RELAY_API,
         source: "oracleswap.app",
-
-        chains: chains as RelayChain[],
+        // Only pass chains when non-empty to avoid wiping the global singleton
+        // during re-renders where useRelayChains() temporarily returns []
+        ...(chains?.length ? { chains: chains as RelayChain[] } : {}),
       }),
     [chains]
   );
@@ -571,7 +581,12 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       if (chainId !== sellToken?.chainId)
         adaptedWallet.switchChain(sellToken?.chainId);
       try {
-        await getClient().actions.execute({
+        // Restore chains on the global singleton right before execute,
+        // because re-renders with empty useRelayChains() data can wipe them
+        if (chainsRef.current.length) {
+          getClient().chains = chainsRef.current;
+        }
+        await client.actions.execute({
           quote,
           wallet: adaptedWallet,
           onProgress: (progress) => setProgress(progress),
@@ -595,7 +610,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         }
       }
     }
-  }, [adaptedWallet, quote, sellToken?.chainId, triggerNotif]);
+  }, [adaptedWallet, client, quote, sellToken?.chainId, triggerNotif]);
 
   // console.log("progress", progress, quote, adaptedWallet);
 
