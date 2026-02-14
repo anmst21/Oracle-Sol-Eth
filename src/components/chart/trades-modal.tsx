@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InputCross } from "../icons";
-import { modalAnimation } from "./animation";
+import { modalAnimation } from "../shared/animation";
 import {
   TradeItem as TradeItemType,
   TradesResponse,

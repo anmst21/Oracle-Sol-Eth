@@ -133,7 +133,7 @@ const BuyWindowInput = ({
               initial={{ opacity: 0, width: 0 }}
               animate={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
             >
               <span className="buy-window-input__top__name">
                 {activeToken.symbol}
@@ -209,7 +209,7 @@ const BuyWindowInput = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
                 >
                   {inputType === "crypto" &&
                     getSymbolFromCurrency(fiatCurrency.code)}

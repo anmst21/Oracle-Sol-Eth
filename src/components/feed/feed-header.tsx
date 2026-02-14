@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import classNames from "classnames";
 import Image from "next/image";
-import { slidingTextAnimation } from "../swap/animation";
+import { slidingTextAnimation } from "../shared/animation";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 
 const FeedHeader = () => {
@@ -137,7 +137,7 @@ const FeedHeader = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
                   className={classNames("recipient-window__address__arrow", {
                     "recipient-window__address__arrow--inactive": !ready,
                   })}
@@ -154,7 +154,7 @@ const FeedHeader = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className="slippage-modal__wrapper"
               id="feed-modal-root"
             >

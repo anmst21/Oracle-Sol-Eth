@@ -9,7 +9,7 @@ import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
 import { PrivyLogo, UserQuestion, Wallet } from "../icons";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
-import { slidingTextAnimation } from "../swap/animation";
+import { slidingTextAnimation } from "../shared/animation";
 import { truncateAddress } from "@/helpers/truncate-address";
 import Wallets from "@/components/wallets/wallet-modal";
 

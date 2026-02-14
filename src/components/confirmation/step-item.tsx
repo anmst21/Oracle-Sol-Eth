@@ -4,7 +4,7 @@ import Image from "next/image";
 import { truncateAddress } from "@/helpers/truncate-address";
 import Link from "next/link";
 import Lottie from "lottie-react";
-import { iconProps } from "./animation";
+import { iconProps } from "../shared/animation";
 import animationData from "../icons/loader-animation.json";
 import { AnimatePresence, motion } from "motion/react";
 

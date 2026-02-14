@@ -21,7 +21,7 @@ import { formatPairName } from "@/helpers/format-pair-name";
 
 import GreenDot from "../green-dot";
 import { AnimatePresence, motion } from "motion/react";
-import { slidingTextAnimation } from "../swap/animation";
+import { slidingTextAnimation } from "../shared/animation";
 import { useTokenModal } from "@/context/TokenModalProvider";
 import { truncateAddress } from "@/helpers/truncate-address";
 import SkeletonLoaderWrapper from "../skeleton";

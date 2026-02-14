@@ -10,7 +10,7 @@ import ModalChains from "../modal/modal-chains";
 import { useChainsData } from "@/hooks/useChains";
 import ConnectedWallets from "../wallets/connected-wallets";
 import { useHistory } from "@/context/HistoryProvider";
-import { slidingTextAnimation } from "../swap/animation";
+import { slidingTextAnimation } from "../shared/animation";
 import HistoryModalWrapper from "./history-modal-wrapper";
 
 type Props = {

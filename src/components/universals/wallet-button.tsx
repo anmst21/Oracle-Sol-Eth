@@ -5,7 +5,7 @@ import { solanaChain } from "@/helpers/solanaChain";
 import classNames from "classnames";
 import { AnimatePresence, motion } from "motion/react";
 import { truncateAddress } from "@/helpers/truncate-address";
-import { slidingTextAnimation } from "../swap/animation";
+import { slidingTextAnimation } from "../shared/animation";
 import { ReactNode } from "react";
 import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
 import { SwapWallet } from "../swap/types";

@@ -15,7 +15,7 @@
 
 .modal-info-icon {
     display: flex;
-    transition: all .3s ease-in-out;
+    transition: all .2s ease-out;
 
     &:hover {
         color: #D9F1E9;
@@ -283,7 +283,7 @@
         font-style: normal;
         font-weight: 300;
         line-height: 20px;
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
 
         &--empty {
             opacity: .5;
@@ -296,7 +296,7 @@
             flex: 1;
             justify-content: flex-end;
 
-            transition: all .2s ease-in-out;
+            transition: all .2s ease-out;
 
             &:hover {
                 color: #D9F1E9;

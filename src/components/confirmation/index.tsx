@@ -19,8 +19,7 @@ import { useRouter } from "next/navigation";
 import TxBlock from "./tx-block";
 import { AnimatePresence, motion } from "motion/react";
 import classNames from "classnames";
-import { iconProps } from "./animation";
-import { slidingTextAnimation } from "../swap/animation";
+import { iconProps, slidingTextAnimation } from "../shared/animation";
 import WalletItem from "./wallet-item";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 

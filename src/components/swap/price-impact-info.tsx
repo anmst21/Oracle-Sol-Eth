@@ -1,6 +1,6 @@
 import React from "react";
 import { ModalInfo } from "../icons";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import classNames from "classnames";
 type Props = {
   type?: string;
@@ -50,7 +50,7 @@ const PriceImpactInfo = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       className={classNames("price-impact-info", {
         "price-impact-info--1": index,
       })}

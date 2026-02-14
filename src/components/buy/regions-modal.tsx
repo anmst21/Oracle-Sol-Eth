@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { InputCross } from "../icons";
 
-import { modalAnimation } from "../chart/animation";
+import { modalAnimation } from "../shared/animation";
 import {
   MoonpayCountriesResponse,
   MoonpayIpResponse,

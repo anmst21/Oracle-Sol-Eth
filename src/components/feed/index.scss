@@ -63,7 +63,7 @@
             font-weight: 400;
 
             justify-content: center;
-            transition: all .2s ease-in;
+            transition: all .2s ease-out;
 
 
 
@@ -137,10 +137,10 @@
             line-height: 18px;
             /* 128.571% */
             letter-spacing: -0.7px;
-            transition: all .2s ease-in;
+            transition: all .2s ease-out;
 
             span {
-                transition: all .2s ease-in;
+                transition: all .2s ease-out;
             }
 
             &:hover {
@@ -196,7 +196,7 @@
             line-height: 16px;
 
             span {
-                transition: all .2s ease-in;
+                transition: all .2s ease-out;
             }
 
             &:hover {
@@ -238,7 +238,7 @@
             background: rgba(174, 233, 0, 0.15);
             padding: 5px 10px 5px 4px;
             gap: 2px;
-            transition: all .2s ease-in;
+            transition: all .2s ease-out;
 
             &:hover {
                 background: #AEE900;
@@ -361,7 +361,7 @@
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
-                transition: all .2s ease-in;
+                transition: all .2s ease-out;
 
                 &:hover {
                     color: rgba(217, 241, 233, 0.80);
@@ -390,7 +390,7 @@
     }
 
     .recipient-window__address__arrow {
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
     }
 
     &:hover {
@@ -433,7 +433,7 @@
 
 
     &__text {
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
         display: flex;
         border-radius: 6px;
         border: 1px solid rgba(217, 241, 233, 0.10);
@@ -461,7 +461,7 @@
     }
 
     &__logo {
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
         align-items: center;
         justify-content: center;
         display: flex;

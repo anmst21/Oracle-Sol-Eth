@@ -8,7 +8,7 @@
 }
 
 .modal-info {
-    transition: all .2s ease-in-out;
+    transition: all .2s ease-out;
 }
 
 .swap-window {
@@ -169,7 +169,7 @@
         &__main {
             display: flex;
             cursor: pointer;
-            transition: all .2s ease-in-out;
+            transition: all .2s ease-out;
 
 
             border-radius: 6px;
@@ -315,7 +315,7 @@
 
         border-radius: 8px;
         background: rgba(136, 150, 151, 0.05);
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
 
 
 
@@ -331,7 +331,7 @@
             border-radius: 5px;
             border: 1px solid rgba(136, 150, 151, 0.10);
             background: rgba(217, 241, 233, 0.05);
-            transition: all .2s ease-in-out;
+            transition: all .2s ease-out;
         }
 
 
@@ -438,7 +438,7 @@
         height: 32px;
         align-items: center;
         border-radius: 4px;
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
         flex-shrink: 0;
 
         &:hover {
@@ -482,12 +482,12 @@
 .swap-window__token__ammount__option,
 .swap-header__settings {
 
-    transition: all .2s ease-in-out;
+    transition: all .2s ease-out;
 
     .recipient-window__address__arrow,
     .token-to-buy__token__arrow {
         position: relative;
-        transition: transform .2s ease-in-out;
+        transition: transform .2s ease-out;
     }
 
 
@@ -520,7 +520,7 @@
 
 .swap-window__token__ammount__option {
     span {
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
     }
 
     &:active {

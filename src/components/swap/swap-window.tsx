@@ -18,16 +18,16 @@ import WalletButton from "../universals/wallet-button";
 import TokenButton from "../universals/token-button";
 
 const containerVariants = {
-  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" as const } },
+  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeOut" as const } },
   exit: {
     opacity: 0,
-    transition: { duration: 0.2, ease: "easeInOut" as const },
+    transition: { duration: 0.2, ease: "easeOut" as const },
   },
 };
 
 const buttonVariants = {
-  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeInOut" as const } },
-  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeInOut" as const } },
+  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeOut" as const } },
+  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeOut" as const } },
 };
 
 type Props = {
@@ -157,7 +157,7 @@ const SwapWindow = ({
     (tradeType === TradeType.EXACT_INPUT && mode === "buy" && isLoadingQuote) ||
     (tradeType === TradeType.EXACT_OUTPUT && mode === "sell" && isLoadingQuote);
 
-  const { ready } = usePrivy();
+  const { ready, authenticated } = usePrivy();
 
   const isWalletError =
     (token?.chainId === solanaChain.id && activeWallet?.type !== "solana") ||
@@ -280,7 +280,7 @@ const SwapWindow = ({
           </div> */}
         <WalletButton
           isWalletError={isWalletError}
-          isLoading={!ready || isSwitching}
+          isLoading={!ready || isSwitching || (authenticated && !activeWallet)}
           activeWallet={activeWallet}
           setIsOpenCallback={isOpenCallback}
           enableLayout
@@ -291,7 +291,7 @@ const SwapWindow = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 className="swap-window__wallet"
               >
                 <WalletModal

@@ -50,7 +50,7 @@
         &__arrow {
             display: flex;
             margin-left: auto;
-            //     transition: all .3s ease-in-out;
+            //     transition: all .3s ease-out;
 
             &--inactive {
                 opacity: .5;
@@ -80,7 +80,7 @@
     //  color: #0F0E1B;
     position: relative;
     left: -10px;
-    // transition: all .2s ease-in-out;
+    // transition: all .2s ease-out;
 
     svg {
         color: #252732;
@@ -125,7 +125,7 @@
 
         .user-placeholder--empty {
             border: none;
-            transition: background-color .2s ease-in-out;
+            transition: background-color .2s ease-out;
         }
 
         &:hover {

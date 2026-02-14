@@ -1,4 +1,5 @@
 import { usePrivy } from "@privy-io/react-auth";
+import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { Execute } from "@reservoir0x/relay-sdk";
 import React, { useEffect, useState } from "react";
 import {
@@ -16,6 +17,7 @@ import {
 import classNames from "classnames";
 
 import { AnimatePresence, motion } from "motion/react";
+import { buttonSlideAnimation } from "../shared/animation";
 
 export const LoaderIcon = () => {
   return (
@@ -57,6 +59,7 @@ const BuyBtn = ({
   isInsuficientBalance,
 }: Props) => {
   const { authenticated, ready, login } = usePrivy();
+  const { activeWallet: globalWallet } = useActiveWallet();
   //   const disableLogin = !ready || (ready && authenticated);
 
   const [isLoading, setIsLoading] = useState(isLoadingQuote);
@@ -76,8 +79,8 @@ const BuyBtn = ({
   let handleClick: (() => void) | undefined = undefined;
   let icon = <LoaderIcon />;
 
-  if (!ready || isLoading) {
-    // 1. still initializing the SDK
+  if (!ready || isLoading || (authenticated && !globalWallet)) {
+    // 1. still initializing the SDK or wallet hasn't loaded yet
     label = "Fetching Quote";
     disabled = true;
     icon = <LoaderIcon />;
@@ -130,13 +133,7 @@ const BuyBtn = ({
     icon = <ButtonSwap />;
   }
 
-  const animatedProps = {
-    initial: { y: 20, opacity: 0 },
-    animate: { y: 0, opacity: 1 },
-    exit: { y: -20, opacity: 0 },
-    transition: { duration: 0.3 },
-    style: { display: "flex", gap: 10 },
-  } as const;
+  const animatedProps = buttonSlideAnimation;
 
   return (
     <button

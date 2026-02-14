@@ -57,7 +57,7 @@
         font-style: normal;
         font-weight: 500;
         line-height: 20px;
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
         flex: 0 0 50%;
 
 
@@ -208,7 +208,7 @@
             justify-content: center;
             color: #AEE900;
             display: flex;
-            transition: all .2s ease-in-out;
+            transition: all .2s ease-out;
 
             &:hover {
                 background: #AEE900;
@@ -443,7 +443,7 @@
 
     .address-modal__cta {
         margin-top: auto;
-        transition: all .2s ease-in;
+        transition: all .2s ease-out;
 
         &:hover {
             background: #AEE900;

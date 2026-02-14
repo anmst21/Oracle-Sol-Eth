@@ -275,7 +275,7 @@
             align-items: center;
             padding: 4px 8px 4px 14px;
             color: rgba(217, 241, 233, 0.60);
-            transition: all .2s ease-in;
+            transition: all .2s ease-out;
 
             &:hover {
                 text-decoration: underline;
@@ -308,7 +308,7 @@
             }
 
             span span {
-                transition: all .2s ease-in;
+                transition: all .2s ease-out;
                 color: rgba(217, 241, 233, 0.60);
             }
         }
@@ -492,7 +492,7 @@
 
 
 
-            transition: all .2s ease-in;
+            transition: all .2s ease-out;
             @include button-style;
 
             &:nth-of-type(1) {
@@ -622,11 +622,11 @@
 
         &__header {
             color: #D9F1E9;
-            transition: all .2s ease-in;
+            transition: all .2s ease-out;
 
             span {
                 color: rgba(217, 241, 233, 0.60);
-                transition: all .2s ease-in;
+                transition: all .2s ease-out;
             }
         }
 
@@ -640,8 +640,8 @@
 
         background: rgba(217, 241, 233, 0.05);
         height: 36px;
-        transition: background .2s ease-in,
-        color .2s ease-in;
+        transition: background .2s ease-out,
+        color .2s ease-out;
 
         &:last-child {
             span {
@@ -703,7 +703,7 @@
         justify-content: center;
 
         .tv-lightweight-charts {
-            transition: opacity .2s ease-in-out;
+            transition: opacity .2s ease-out;
         }
 
         &--loading {
@@ -735,7 +735,7 @@
             align-items: center;
             justify-content: center;
 
-            transition: all .2s ease-in-out;
+            transition: all .2s ease-out;
             position: relative;
 
             .underline {
@@ -799,10 +799,10 @@
             line-height: normal;
             background-color: transparent;
             border-radius: 5px;
-            transition: all .2s ease-in-out;
+            transition: all .2s ease-out;
 
             span {
-                transition: scale .2s ease-in-out;
+                transition: scale .2s ease-out;
             }
 
             .underline {
@@ -1074,7 +1074,7 @@
 
 
     &__transaction {
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
 
         &:hover {
             opacity: .7;
@@ -1092,7 +1092,7 @@
 
 
     &__from__wrapper {
-        transition: all .2s ease-in-out;
+        transition: all .2s ease-out;
 
         &:hover {
             text-decoration: underline;

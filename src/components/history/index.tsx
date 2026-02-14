@@ -23,7 +23,7 @@ import { useHistory } from "@/context/HistoryProvider";
 import { solanaChain } from "@/helpers/solanaChain";
 import { ConnectedSolanaWallet, ConnectedWallet } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "motion/react";
-import { slidingTextAnimation } from "../swap/animation";
+import { slidingTextAnimation } from "../shared/animation";
 
 const History = () => {
   const containerRef = useRef<HTMLDivElement>(null); // ②
@@ -152,7 +152,7 @@ const History = () => {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     exit: { opacity: 0 },
-    transition: { duration: 0.2 },
+    transition: { duration: 0.2, ease: "easeOut" as const },
   };
 
   const sortDisable =

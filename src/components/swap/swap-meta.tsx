@@ -5,7 +5,7 @@ import { Portal } from "../slippage-modal/portal";
 import { Execute } from "@reservoir0x/relay-sdk";
 import { useSlippage } from "@/context/SlippageContext";
 import SkeletonLoaderWrapper from "../skeleton";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import classNames from "classnames";
 import { formatUnits } from "viem";
 import Link from "next/link";
@@ -132,11 +132,11 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
   const detailsVariants = {
     open: {
       height: "auto",
-      transition: { when: "beforeChildren", staggerChildren: 0.1 },
+      transition: { duration: 0.2, ease: "easeOut" as const, when: "beforeChildren", staggerChildren: 0.03 },
     },
     collapsed: {
       height: 0,
-      transition: { when: "afterChildren" },
+      transition: { duration: 0.2, ease: "easeOut" as const, when: "afterChildren" },
     },
   };
 

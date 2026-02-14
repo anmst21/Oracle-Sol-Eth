@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InputCross } from "../icons";
-import { modalAnimation } from "./animation";
+import { modalAnimation } from "../shared/animation";
 import { useChart } from "@/context/ChartProvider";
 import PoolItem from "./pool-item";
 import { PoolItem as PoolItemType } from "@/types/token-pools";

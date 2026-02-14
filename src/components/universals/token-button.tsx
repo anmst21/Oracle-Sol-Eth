@@ -3,7 +3,7 @@ import { HexChain, SwapArrow, UserQuestion } from "../icons";
 import classNames from "classnames";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { AnimatePresence, motion } from "motion/react";
-import { slidingTextAnimation } from "../swap/animation";
+import { slidingTextAnimation } from "../shared/animation";
 import { truncateAddress } from "@/helpers/truncate-address";
 import Image from "next/image";
 import { UnifiedToken } from "@/types/coin-types";

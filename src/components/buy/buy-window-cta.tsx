@@ -11,6 +11,7 @@ import {
 } from "@/components/icons";
 import classNames from "classnames";
 import { AnimatePresence, motion } from "motion/react";
+import { buttonSlideAnimation } from "../shared/animation";
 import { OracleRouteType } from "./types";
 
 const LoaderIcon = () => (
@@ -96,13 +97,7 @@ const BuyWindowCta = ({
     icon = <ButtonSwap />;
   }
 
-  const animatedProps = {
-    initial: { y: 20, opacity: 0 },
-    animate: { y: 0, opacity: 1 },
-    exit: { y: -20, opacity: 0 },
-    transition: { duration: 0.3 },
-    style: { display: "flex", gap: 10 },
-  } as const;
+  const animatedProps = buttonSlideAnimation;
 
   return (
     <button

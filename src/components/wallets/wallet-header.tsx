@@ -11,8 +11,9 @@ import { zeroAddress } from "viem";
 import GreenDot from "../green-dot";
 import { usePrivy } from "@privy-io/react-auth";
 import { AnimatePresence, motion } from "motion/react";
-import { slidingTextAnimation } from "../swap/animation";
+import { slidingTextAnimation } from "../shared/animation";
 import classNames from "classnames";
+import SkeletonLoaderWrapper from "../skeleton";
 
 const WalletHeader = ({
   callback,
@@ -50,9 +51,18 @@ const WalletHeader = ({
   const { ready, authenticated, login } = usePrivy();
   const disableLogin = !ready || (ready && authenticated);
 
+  const showSkeleton = !ready || (authenticated && !activeWallet);
+
   return (
     <div className="wallet-header">
-      {!authenticated ? (
+      {showSkeleton ? (
+        <SkeletonLoaderWrapper
+          radius={4}
+          height={36}
+          width={120}
+          isLoading={true}
+        />
+      ) : !authenticated ? (
         <button
           disabled={disableLogin}
           onClick={() => login()}
