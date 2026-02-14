@@ -8,6 +8,7 @@
     @include down(md) {
         flex-direction: column;
         padding: 0 20px;
+        margin-top: 0;
         gap: 20px;
     }
 

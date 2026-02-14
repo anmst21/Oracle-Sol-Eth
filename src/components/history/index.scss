@@ -317,6 +317,10 @@
         padding: 6px 8px;
         display: flex;
 
+        @include down(sm) {
+            display: none;
+        }
+
         span {
             color: #889697;
             font-family: var(--font-handjet);

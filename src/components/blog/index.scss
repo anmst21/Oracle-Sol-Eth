@@ -127,6 +127,10 @@
 
     &__share {
         margin-left: 14px;
+
+        @include down(md) {
+            margin-left: 4px;
+        }
         position: relative;
         cursor: pointer;
 
@@ -194,6 +198,10 @@
         padding: 0;
         width: 32px;
         justify-content: center;
+
+        @include down(md) {
+            margin-right: 4px;
+        }
 
         svg {
             rotate: 90deg;
