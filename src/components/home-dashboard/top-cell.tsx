@@ -8,6 +8,7 @@ import {
 } from "@/components/icons/dashboard";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import { useEffect, useRef } from "react";
+import { animate, stagger } from "animejs";
 
 type Props = {
   type: "users" | "volume" | "requests";
@@ -18,6 +19,7 @@ type Props = {
 
 const TopCell = ({ type, index = 0, values }: Props) => {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const centerRef = useRef<HTMLDivElement>(null);
 
   let header = "Users";
   let subheader = "Users to date";
@@ -59,6 +61,35 @@ const TopCell = ({ type, index = 0, values }: Props) => {
     return () => clearTimeout(timeout);
   }, [index]);
 
+  useEffect(() => {
+    const el = centerRef.current;
+    if (!el) return;
+
+    const slots = el.querySelectorAll<HTMLElement>(".slot-inner");
+    if (!slots.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            animate(slots, {
+              translateY: ["-100%", "0%"],
+              opacity: [0, 1],
+              delay: stagger(120, { start: index * 200 }),
+              duration: 800,
+              ease: "outQuint",
+            });
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [index]);
+
   return (
     <div className={`dashboard-top-cell  dashboard-top-cell--${type}`}>
       <div className="dashboard-top-cell__top">
@@ -66,13 +97,19 @@ const TopCell = ({ type, index = 0, values }: Props) => {
         <div className="dashboard-top-cell__top__icon">{icon}</div>
       </div>
 
-      <div className="dashboard-top-cell__center">
-        <div className="dashboard-top-cell__center__mil">
-          <span>{values[0]}</span>
-          {values[1]}
+      <div className="dashboard-top-cell__center" ref={centerRef}>
+        <div className="dashboard-top-cell__center__mil" style={{ overflow: "hidden" }}>
+          <div className="slot-inner" style={{ opacity: 0 }}>
+            <span>{values[0]}</span>
+            {values[1]}
+          </div>
         </div>
-        <div className="dashboard-top-cell__center__gran">{values[2]}</div>
-        <div className="dashboard-top-cell__center__num">{values[3]}</div>
+        <div className="dashboard-top-cell__center__gran" style={{ overflow: "hidden" }}>
+          <div className="slot-inner" style={{ opacity: 0 }}>{values[2]}</div>
+        </div>
+        <div className="dashboard-top-cell__center__num" style={{ overflow: "hidden" }}>
+          <div className="slot-inner" style={{ opacity: 0 }}>{values[3]}</div>
+        </div>
       </div>
 
       <div className="dashboard-top-cell__bottom">
