@@ -204,6 +204,11 @@
     transform: translateY(-50%);
     z-index: 0;
 
+    @include down(md) {
+        left: -20px;
+        right: -20px;
+    }
+
     &::before,
     &::after {
         width: 200px;
@@ -211,6 +216,10 @@
         position: absolute;
         top: 0;
         bottom: 0;
+
+        @include down(md) {
+            display: none;
+        }
     }
 
     &::before {
