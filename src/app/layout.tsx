@@ -26,6 +26,7 @@ import Footer from "@/components/footer";
 import { getHeaderModal } from "../../sanity/sanity-utils";
 import MenuBar from "@/components/menu";
 import CookieConsentBanner from "@/components/cookie-consent";
+import PullToRefresh from "@/components/pull-to-refresh";
 import { CapchaProvider } from "@/context/CapchaProvier";
 // import FarcasterAuthProvider from "@/context/FarcasterAuthProvider";
 const firaCode = Fira_Code({
@@ -123,6 +124,7 @@ export default async function RootLayout({
       <body
         className={`${firaCode.variable} ${handjet.variable} ${funnelDisplay.variable} ${funnelSans.variable}`}
       >
+        <PullToRefresh />
         <Suspense>
           <FaviconAnimator />
         </Suspense>

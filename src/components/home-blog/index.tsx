@@ -74,15 +74,16 @@ const HomeBlog = () => {
           if (entry.isIntersecting) {
             animeAnimate(cards, {
               opacity: [0, 1],
-              delay: stagger(250, { grid: [3, 3], from: 0 }),
-              duration: 2000,
+              translateY: [24, 0],
+              delay: stagger(80, { grid: [3, 3], from: 0 }),
+              duration: 600,
               ease: "outQuint",
             });
             observer.disconnect();
           }
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.15, rootMargin: "0px 0px -15% 0px" }
     );
 
     observer.observe(section);
