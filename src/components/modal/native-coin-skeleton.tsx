@@ -1,13 +1,31 @@
 import React, { useMemo } from "react";
 import SkeletonLoaderWrapper from "../skeleton";
 import { getRandomInt } from "@/helpers/get-random-int";
+import { useIsDesktop } from "@/hooks/useIsDesktop";
 
 const NativeCoinSkeleton = () => {
-  const randomIntOne = useMemo(() => getRandomInt(100, 160), []);
-  const randomIntTwo = useMemo(() => getRandomInt(70, 140), []);
-  const randomIntThree = useMemo(() => getRandomInt(50, 120), []);
-  const randomIntFour = useMemo(() => getRandomInt(20, 50), []);
-  const randomIntFive = useMemo(() => getRandomInt(60, 100), []);
+  const isDesktop = useIsDesktop();
+
+  const randomIntOne = useMemo(
+    () => (isDesktop ? getRandomInt(100, 160) : getRandomInt(60, 100)),
+    [isDesktop]
+  );
+  const randomIntTwo = useMemo(
+    () => (isDesktop ? getRandomInt(70, 140) : getRandomInt(40, 80)),
+    [isDesktop]
+  );
+  const randomIntThree = useMemo(
+    () => (isDesktop ? getRandomInt(50, 120) : getRandomInt(30, 70)),
+    [isDesktop]
+  );
+  const randomIntFour = useMemo(
+    () => (isDesktop ? getRandomInt(20, 50) : getRandomInt(15, 30)),
+    [isDesktop]
+  );
+  const randomIntFive = useMemo(
+    () => (isDesktop ? getRandomInt(60, 100) : getRandomInt(30, 60)),
+    [isDesktop]
+  );
 
   return (
     <button disabled={true} className="native-coin native-coin-skeleton">
