@@ -192,7 +192,10 @@
     @include down(md) {
         height: auto;
         max-height: 100%;
-        overflow-y: auto;
+        overflow: hidden;
+        min-width: 0;
+        max-width: none;
+        flex-shrink: 0;
 
         &::-webkit-scrollbar {
             width: 0;
@@ -202,29 +205,31 @@
     }
 
     &--collapsed {
-        min-width: 46px;
-        max-width: 46px;
-        width: 46px;
-        height: 100%;
         overflow-y: auto;
+
+        @include down(md) {
+            overflow: hidden;
+        }
 
         .chain-sidebar__contianer {
             overflow: hidden;
             flex-shrink: 0;
-            align-items: center;
         }
 
         .chain-sidebar {
             justify-content: center;
-            padding: 4px;
-            width: 38px;
             height: 38px;
             flex-shrink: 0;
+            gap: 0;
+
+            > span {
+                width: 0;
+                overflow: hidden;
+            }
         }
 
         .chain-sidebar__input--search-btn {
             justify-content: center;
-            width: 38px;
             height: 36px;
             padding: 6px;
             flex-shrink: 0;

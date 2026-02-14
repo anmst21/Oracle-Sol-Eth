@@ -7,7 +7,7 @@ import SkeletonLoaderWrapper from "../skeleton";
 import ChainSkeleton from "./chain-skeleton";
 import { ModalMode } from "@/types/modal-mode";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 
 export const MOONPAY_CHAIN_ID = -1;
 
@@ -190,18 +190,7 @@ const ModalChains = ({
               onClick={() => handleChainSelect(MOONPAY_CHAIN_ID)}
             >
               <HexChain uri="https://cryptoiconsstorage.blob.core.windows.net/crypto-icons/moonpay-logo-lg.png" />
-              <AnimatePresence mode="popLayout">
-                {!isMobileCollapsed && (
-                  <motion.span
-                    initial={!isDesktop ? { width: 0, opacity: 0 } : false}
-                    animate={{ width: "auto", opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                  >
-                    MoonPay
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              <span>MoonPay</span>
             </button>
           </div>
         )}
@@ -233,45 +222,18 @@ const ModalChains = ({
                 ))}
               </SkeletonLoaderWrapper>
             </div>
-            <AnimatePresence mode="popLayout">
-              {!isMobileCollapsed && (
-                <motion.div
-                  initial={!isDesktop ? { width: 0, opacity: 0 } : false}
-                  animate={{ width: "auto", opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                >
-                  <SkeletonLoaderWrapper
-                    radius={2}
-                    height={24}
-                    width={"auto"}
-                    isLoading={false}
-                    flex
-                  >
-                    <span>All Chains</span>
-                  </SkeletonLoaderWrapper>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <span>All Chains</span>
           </button>
         </div>
 
         {/* Featured */}
 
         <div className="chain-sidebar__contianer">
-          <AnimatePresence mode="popLayout">
-            {!isMobileCollapsed && (
-              <motion.div
-                className="chain-sidebar__header"
-                initial={!isDesktop ? { height: 0, opacity: 0 } : false}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-              >
-                Featured Chains
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {!isMobileCollapsed && (
+            <div className="chain-sidebar__header">
+              Featured Chains
+            </div>
+          )}
           {displayedFeatured.length > 0 && !isLoadingChains
             ? displayedFeatured.map((chain) => {
                 if (!chain.id) return;
@@ -285,18 +247,7 @@ const ModalChains = ({
                     onClick={() => handleChainSelect(chain?.id || 0)}
                   >
                     <HexChain uri={getIconUri(chain.id)} />
-                    <AnimatePresence mode="popLayout">
-                      {!isMobileCollapsed && (
-                        <motion.span
-                          initial={!isDesktop ? { width: 0, opacity: 0 } : false}
-                          animate={{ width: "auto", opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
-                        >
-                          {chain.displayName}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
+                    <span>{chain.displayName}</span>
                   </button>
                 );
               })
@@ -308,19 +259,11 @@ const ModalChains = ({
         {/* Other */}
         {displayedOther.length > 0 && (
           <div className="chain-sidebar__contianer">
-            <AnimatePresence mode="popLayout">
-              {!isMobileCollapsed && (
-                <motion.div
-                  className="chain-sidebar__header"
-                  initial={!isDesktop ? { height: 0, opacity: 0 } : false}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                >
-                  Other Chains
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {!isMobileCollapsed && (
+              <div className="chain-sidebar__header">
+                Other Chains
+              </div>
+            )}
             {displayedOther.map((chain) => {
               if (!chain.id) return;
               return (
@@ -332,18 +275,7 @@ const ModalChains = ({
                   onClick={() => handleChainSelect(chain?.id || 0)}
                 >
                   <HexChain uri={getIconUri(chain.id)} />
-                  <AnimatePresence mode="popLayout">
-                    {!isMobileCollapsed && (
-                      <motion.span
-                        initial={!isDesktop ? { width: 0, opacity: 0 } : false}
-                        animate={{ width: "auto", opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                      >
-                        {chain.displayName}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
+                  <span>{chain.displayName}</span>
                 </button>
               );
             })}
