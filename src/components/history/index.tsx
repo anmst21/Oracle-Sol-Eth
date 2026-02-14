@@ -240,7 +240,7 @@ const History = () => {
               >
                 {activeWallet?.address
                   ? truncateAddress(activeWallet?.address)
-                  : "x0XX...XXXX"}
+                  : "Connect"}
               </motion.span>
             </AnimatePresence>
           </div>

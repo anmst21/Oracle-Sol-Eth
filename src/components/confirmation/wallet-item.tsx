@@ -15,7 +15,7 @@ const WalletItem = ({ chainId, address }: Props) => {
         <HexChain width={20} uri={getIconUri(chainId || 1)} />
       </div>
 
-      <span>{address ? truncateAddress(address) : "x0XXXX...XXXX"}</span>
+      <span>{address ? truncateAddress(address) : "Connect"}</span>
     </div>
   );
 };

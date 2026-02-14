@@ -179,7 +179,7 @@ const TransactionInfo = ({
           flex={isLoadingFill}
         >
           <div className="transaction-info__item__button">
-            {userAddress ? truncateAddress(userAddress) : "0xXX...XXXX"}
+            {userAddress ? truncateAddress(userAddress) : "Connect"}
           </div>
           <Link
             target="_blank"
@@ -202,7 +202,7 @@ const TransactionInfo = ({
           flex={isLoadingFill}
         >
           <div className="transaction-info__item__button">
-            {txHash ? truncateAddress(txHash, 8) : "0xXXXXXXXXXX...XXXX"}
+            {txHash ? truncateAddress(txHash, 8) : "\u2014"}
           </div>
           <Link
             target="_blank"

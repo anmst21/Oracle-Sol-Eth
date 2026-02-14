@@ -58,7 +58,7 @@ const WalletButton = ({
             {...slidingTextAnimation}
           >
             {!activeWallet?.address
-              ? "XxXX...XXXX"
+              ? "Connect"
               : truncateAddress(activeWallet.address)}
           </motion.span>
         </AnimatePresence>

@@ -97,7 +97,7 @@ const WalletHeader = ({
                 >
                   {activeWallet?.address
                     ? truncateAddress(activeWallet?.address)
-                    : "0xXX...XXXX"}
+                    : "Connect"}
                 </motion.span>
               </AnimatePresence>
             </div>
