@@ -167,7 +167,7 @@ const SwapWindow = ({
       activeWallet !== null);
 
   const isOpenCallback = useCallback(
-    (value: boolean) => setIsOpenAddressModal(value),
+    (value: boolean) => setIsOpenAddressModal(prev => value ? !prev : false),
     [setIsOpenAddressModal]
   );
 
@@ -285,26 +285,18 @@ const SwapWindow = ({
           setIsOpenCallback={isOpenCallback}
           enableLayout
         >
-          <AnimatePresence mode="wait">
-            {isOpenAddressModal && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="swap-window__wallet"
-              >
-                <WalletModal
-                  isBuy={mode === "buy"}
-                  callback={(wallet) => {
-                    callback(wallet);
-                  }}
-                  swapWindow
-                  activeAddress={activeWallet?.address}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {isOpenAddressModal && (
+            <div className="swap-window__wallet" onClick={(e) => e.stopPropagation()}>
+              <WalletModal
+                isBuy={mode === "buy"}
+                callback={(wallet) => {
+                  callback(wallet);
+                }}
+                swapWindow
+                activeAddress={activeWallet?.address}
+              />
+            </div>
+          )}
         </WalletButton>
 
         {/* </div> */}

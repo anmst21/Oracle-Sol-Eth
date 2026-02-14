@@ -147,7 +147,8 @@ export default function Wallets({
 
   const openAddressModal = useCallback(() => {
     setIsAddressModalOpen(true);
-  }, [setIsAddressModalOpen]);
+    if (callback) callback(null);
+  }, [setIsAddressModalOpen, callback]);
 
   const disableLogin = !ready || (ready && authenticated);
 

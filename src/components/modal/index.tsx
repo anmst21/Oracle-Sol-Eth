@@ -128,19 +128,15 @@ const Modal: React.FC<ModalProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <motion.div
+    <div
       onClick={closeModal}
       className="modal__wrapper"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
     >
       <motion.div
-        initial={{ y: 30 }}
-        animate={{ y: 0 }}
-        exit={{ y: 30 }}
-        transition={{ duration: 0.25, ease: "easeOut" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()}
         className="modal"
       >
@@ -223,7 +219,7 @@ const Modal: React.FC<ModalProps> = ({
           />
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 

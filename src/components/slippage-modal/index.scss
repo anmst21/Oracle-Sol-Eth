@@ -237,13 +237,11 @@
 
         &::before {
             content: "";
-            //    background-color: red;
             position: absolute;
-            height: 60px;
+            height: 8px;
             width: 100%;
-            z-index: -1;
             right: 0;
-            bottom: calc(100% - 20px);
+            bottom: 100%;
         }
     }
 }

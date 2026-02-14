@@ -82,7 +82,7 @@ const HeaderWalletButton = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className="header__wallet__wrapper"
           >
             <Wallets callback={() => setIsOpen(false)} linkCallback={closeIfOpen} />
@@ -94,7 +94,7 @@ const HeaderWalletButton = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className="header__wallet__wrapper"
           >
             <ChainList closeIfOpenChains={closeIfOpenChains} />

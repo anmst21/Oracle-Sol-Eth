@@ -31,7 +31,7 @@ const DropdownBlog = ({ blogposts, categories }: Props) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       className="dropdown-routes__wrapper dropdown-blog"
     >
       <div className="dropdown-routes">

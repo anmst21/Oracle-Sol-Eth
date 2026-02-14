@@ -21,15 +21,15 @@ const SlippageModal = ({ closeModal }: Props) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
       ref={wrapperRef}
       className="slippage-modal__wrapper"
       id="modal-root"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
     >
-      <div className="slippage-modal__container">
+      <div className="slippage-modal__container" onClick={(e) => e.stopPropagation()}>
         <div className="slippage-modal">
           <div className="slippage-modal__header">
             <span className="slippage-modal__header__h1">Max Slippage</span>

@@ -29,7 +29,7 @@ const WalletButton = ({
 }: Props) => {
   return (
     <div
-      onClick={() => setIsOpenCallback(true)}
+      onClick={(e) => { e.stopPropagation(); setIsOpenCallback(true); }}
       onMouseLeave={() => setIsOpenCallback(false)}
       className={classNames("swap-window__token__wallet", {
         "swap-window__token__wallet--error": isWalletError,

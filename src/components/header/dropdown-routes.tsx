@@ -37,12 +37,12 @@ const DropdownRoutes = ({ routes }: Props) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       className="dropdown-routes__wrapper"
     >
       <div className="dropdown-routes">
         <div className="dropdown-routes__list">
-          {routes.map((route, i) => {
+          {routes.filter((r) => r.isVisible).map((route, i) => {
             return (
               <Link
                 className={classNames("dropdown-routes__btn", {
