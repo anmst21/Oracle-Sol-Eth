@@ -19,7 +19,7 @@ import Header from "@/components/header";
 import { RelayKitProviderWrapper as RelayKitProvider } from "@/context/RelayKitProvider";
 import QueryClientProvider from "@/context/QueryClientProvider";
 // import HeaderFooter from "@/components/footer/header-footer";
-import FaviconAnimator from "@/components/favicon-animatior";
+import FaviconAnimator from "@/components/favicon-animator";
 import OnRampProvider from "@/context/OnRampProvider";
 import FeedProvider from "@/context/FeedProvider";
 import Footer from "@/components/footer";
