@@ -2,8 +2,7 @@
 
 import React, { useLayoutEffect, useMemo, useRef } from "react";
 import { palette as paletteCreator } from "./create-palette";
-import { animate, stagger, utils } from "animejs";
-import classNames from "classnames";
+import { animate, stagger } from "animejs";
 
 const gridWidth = 56;
 const gridHeight = 10;
@@ -41,22 +40,6 @@ const AnimatedSquares: React.FC = () => {
     [cols]
   );
 
-  // console.log({ containerWidthPx });
-  useLayoutEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-
-    const update = () => {
-      const width = el.clientWidth; // <div ref={rootRef} ...>
-      setCols(computeCols(width, true));
-    };
-
-    update(); // initial
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
   // Measurements
   const boundsRef = useRef<DOMRect | null>(null);
   const cellWRef = useRef(0);
@@ -70,6 +53,7 @@ const AnimatedSquares: React.FC = () => {
   // Animation control
   const animQueueRef = useRef<number[]>([]);
   const isRunningRef = useRef(false);
+  const animInstanceRef = useRef<ReturnType<typeof animate> | null>(null);
 
   const centerAnchor = () => ({
     ax: Math.floor((gridWidth - 2) / 2),
@@ -158,10 +142,15 @@ const AnimatedSquares: React.FC = () => {
     scheduleApply(c.ax, c.ay);
 
     const ro = new ResizeObserver(() => {
+      // Update container column count
+      const width = root.clientWidth;
+      setCols(computeCols(width, true));
+      // Refresh grid bounds
       refreshBounds();
       const a = currentAnchorRef.current ?? centerAnchor();
       scheduleApply(a.ax, a.ay);
     });
+    ro.observe(root);
     ro.observe(grid);
 
     const onPointerMove = (e: PointerEvent) => {
@@ -193,11 +182,17 @@ const AnimatedSquares: React.FC = () => {
       grid.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("scroll", onScrollOrResize, true);
       window.removeEventListener("resize", onScrollOrResize);
-      grid.style.removeProperty("pointer-events");
+      if (animInstanceRef.current) {
+        animInstanceRef.current.pause();
+        animInstanceRef.current = null;
+      }
+      animQueueRef.current = [];
+      isRunningRef.current = false;
     };
   }, []);
 
   function animateGrid(from: number) {
+    if (!gridRef.current) return;
     animQueueRef.current.push(from);
     isRunningRef.current = true;
 
@@ -206,14 +201,15 @@ const AnimatedSquares: React.FC = () => {
       scheduleApply(ax, ay);
     };
 
-    const $squares = utils.$(".square");
-    animate($squares, {
+    const $squares = gridRef.current.querySelectorAll(".square");
+    animInstanceRef.current = animate($squares, {
       opacity: [{ to: 1 }, { to: 0 }],
       delay: stagger(200, { grid: [gridWidth, gridHeight], from }),
       onComplete: () => {
         animQueueRef.current.shift();
         if (animQueueRef.current.length === 0) {
           isRunningRef.current = false;
+          animInstanceRef.current = null;
           resetToCenter();
         }
       },
@@ -232,12 +228,13 @@ const AnimatedSquares: React.FC = () => {
       >
         <div ref={gridRef} className="animated-squares__grid">
           {palette.map((color, i) => (
-            <button key={i} onClick={() => animateGrid(i)}>
-              <div
-                className={classNames(`square square-${i + 1}`)}
-                style={{ backgroundColor: color, opacity: OPACITY_BASE }}
-              />
-            </button>
+            <button
+              key={i}
+              type="button"
+              className={`square square-${i + 1}`}
+              style={{ backgroundColor: color, opacity: OPACITY_BASE }}
+              onClick={() => animateGrid(i)}
+            />
           ))}
         </div>
       </div>
