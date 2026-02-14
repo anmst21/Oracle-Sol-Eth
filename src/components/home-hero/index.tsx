@@ -7,10 +7,12 @@ const HomeHero = () => {
   return (
     <div id="hero" className="home-hero">
       <div className="home-hero__main">
-        <HeroCarousel />
-        <div className="home-hero__swap">
-          <HeroSwapHeader />
-          <SwapContainer isHero />
+        <div className="home-hero__swap-area">
+          <HeroCarousel />
+          <div className="home-hero__swap">
+            <HeroSwapHeader />
+            <SwapContainer isHero />
+          </div>
         </div>
         <div className="home-hero__text">
           <h1>
