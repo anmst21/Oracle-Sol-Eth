@@ -26,8 +26,9 @@ const BlogHeader = ({ categories }: Props) => {
     if (node && containerRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const itemRect = node.getBoundingClientRect();
+      const scrollLeft = containerRef.current.scrollLeft;
       setUnderline({
-        left: itemRect.left - containerRect.left,
+        left: itemRect.left - containerRect.left + scrollLeft,
         width: itemRect.width,
       });
       setReady(true);
