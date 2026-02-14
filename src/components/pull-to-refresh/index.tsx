@@ -15,7 +15,7 @@ export default function PullToRefresh() {
 
   useEffect(() => {
     const isStandalone =
-      (navigator as any).standalone === true ||
+      "standalone" in navigator && (navigator as Navigator & { standalone: boolean }).standalone ||
       window.matchMedia("(display-mode: standalone)").matches;
     if (!isStandalone) return;
 
