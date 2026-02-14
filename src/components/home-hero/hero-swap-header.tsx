@@ -26,6 +26,22 @@ const SwapHeader = () => {
     if (!authenticated) setIsOpen(false);
   }, [authenticated]);
 
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    if (isOpen) {
+      html.style.overflow = "hidden";
+      body.style.overflow = "hidden";
+    } else {
+      html.style.overflow = "";
+      body.style.overflow = "";
+    }
+    return () => {
+      html.style.overflow = "";
+      body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   const closeIfOpen = useCallback(() => {
     if (isOpen) {
       setIsOpen(false);

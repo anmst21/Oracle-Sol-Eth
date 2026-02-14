@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Wallet from "../header/wallet";
 import { BtnPolygons, MenuHome } from "../icons";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouteOptions } from "@/hooks/useRouteOptions";
 import { Blogpost, Category } from "@/types/blogpost-types";
 import MenuItem from "./menu-item";
@@ -26,6 +26,22 @@ const MenuBar = ({ categories, blogposts }: Props) => {
     categories,
     blogposts,
   });
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    if (isOpen || isOpenChains) {
+      html.style.overflow = "hidden";
+      body.style.overflow = "hidden";
+    } else {
+      html.style.overflow = "";
+      body.style.overflow = "";
+    }
+    return () => {
+      html.style.overflow = "";
+      body.style.overflow = "";
+    };
+  }, [isOpen, isOpenChains]);
 
   const isHomeRoute =
     pathname.includes("/blog") ||
