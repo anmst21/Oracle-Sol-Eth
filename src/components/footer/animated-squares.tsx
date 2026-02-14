@@ -175,6 +175,12 @@ const AnimatedSquares: React.FC = () => {
       scheduleApply(a.ax, a.ay);
     };
 
+    const onPointerUp = () => {
+      if (isRunningRef.current || animQueueRef.current.length) return;
+      const a = centerAnchor();
+      scheduleApply(a.ax, a.ay);
+    };
+
     const onScroll = () => {
       // Invalidate cached bounds; next pointer event will recalculate
       boundsRef.current = null;
@@ -186,8 +192,10 @@ const AnimatedSquares: React.FC = () => {
       scheduleApply(a.ax, a.ay);
     };
 
+    grid.style.touchAction = "none";
     grid.addEventListener("pointermove", onPointerMove, { passive: true });
     grid.addEventListener("pointerleave", onPointerLeave);
+    grid.addEventListener("pointerup", onPointerUp);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
 
@@ -195,6 +203,7 @@ const AnimatedSquares: React.FC = () => {
       ro.disconnect();
       grid.removeEventListener("pointermove", onPointerMove);
       grid.removeEventListener("pointerleave", onPointerLeave);
+      grid.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (animInstanceRef.current) {

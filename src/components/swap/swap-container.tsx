@@ -391,21 +391,25 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   }, [quote]);
 
   // console.log("quote active", activeBuyWallet, buyToken);
-  const { chains } = useRelayChains();
+  const { chains, isSuccess: chainsLoaded } = useRelayChains();
+
+  // Cache chains from useRelayChains() — these have viemChain populated.
+  // The SDK's internal configureDynamicChains() overwrites getClient().chains
+  // with objects that LACK viemChain, so we must restore before every execute.
   const chainsRef = useRef<RelayChain[]>([]);
-  if (chains?.length) {
+  if (chainsLoaded && chains?.length) {
     chainsRef.current = chains as RelayChain[];
   }
+
+  // Create the client once — never re-create on chain changes so we don't
+  // replace the global singleton with one that has empty/fallback chains.
   const client = useMemo(
     () =>
       createClient({
         baseApiUrl: MAINNET_RELAY_API,
         source: "oracleswap.app",
-        // Only pass chains when non-empty to avoid wiping the global singleton
-        // during re-renders where useRelayChains() temporarily returns []
-        ...(chains?.length ? { chains: chains as RelayChain[] } : {}),
       }),
-    [chains]
+    []
   );
 
   const fetchQuote = useCallback(async (): Promise<void> => {
@@ -580,15 +584,34 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       const chainId = await adaptedWallet.getChainId();
       if (chainId !== sellToken?.chainId)
         adaptedWallet.switchChain(sellToken?.chainId);
-      try {
-        // Restore chains on the global singleton right before execute,
-        // because re-renders with empty useRelayChains() data can wipe them
+
+      // The SDK's configureDynamicChains() can overwrite getClient().chains
+      // with objects that lack viemChain. Wrap wallet handlers so we restore
+      // the properly-configured chains right before the SDK does its lookup.
+      const ensureChains = () => {
         if (chainsRef.current.length) {
           getClient().chains = chainsRef.current;
         }
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const wrap = (fn: (...a: any[]) => any) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async (...a: any[]) => { ensureChains(); return fn(...a); };
+      const walletWithChains = {
+        ...adaptedWallet,
+        handleSendTransactionStep: wrap(adaptedWallet.handleSendTransactionStep),
+        ...(adaptedWallet.handleBatchTransactionStep && {
+          handleBatchTransactionStep: wrap(adaptedWallet.handleBatchTransactionStep),
+        }),
+        ...(adaptedWallet.handleConfirmTransactionStep && {
+          handleConfirmTransactionStep: wrap(adaptedWallet.handleConfirmTransactionStep),
+        }),
+      };
+
+      try {
         await client.actions.execute({
           quote,
-          wallet: adaptedWallet,
+          wallet: walletWithChains,
           onProgress: (progress) => setProgress(progress),
         });
       } catch (err) {
