@@ -112,7 +112,7 @@ export const stakeholdersList = [
     header: "Nexus Technologies NYC",
     key: "nexus",
 
-    uri: "https://n3xus.nyc",
+    uri: "https://nexus-git-main-anmst21s-projects.vercel.app",
     description:
       "The team building Oracle. Focused on fast, user-friendly crypto apps.",
     type: "creator",

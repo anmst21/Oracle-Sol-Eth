@@ -71,7 +71,7 @@ const HomePageHeader = ({ type }: Props) => {
       subheader =
         "Protocols, networks, and tools that power Oracle's speed, performance, and data.";
       btnContent = "Visit Nexus";
-      uri = "https://n3xus.nyc/";
+      uri = "https://nexus-git-main-anmst21s-projects.vercel.app/";
       icon = <StakeholdersIcon />;
       animation = stakeholdersAnimation;
       break;

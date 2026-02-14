@@ -149,7 +149,7 @@ const SwapHeader = () => {
           if (isOpenSlippage) setIsOpenSlippage(false);
         }}
         onClick={() => {
-          if (!isOpenSlippage) setIsOpenSlippage(true);
+          setIsOpenSlippage((prev) => !prev);
         }}
         className={classNames("swap-header__settings", {
           "swap-header__settings--active": isOpenSlippage,

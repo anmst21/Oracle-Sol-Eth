@@ -84,7 +84,7 @@ const SwapHeader = () => {
           if (isOpenSlippage) setIsOpenSlippage(false);
         }}
         onClick={() => {
-          if (!isOpenSlippage && pathname === "/swap") setIsOpenSlippage(true);
+          if (pathname === "/swap") setIsOpenSlippage(!isOpenSlippage);
           if (!isOpenPools && pathname === "/chart" && activePool)
             poolsCallback(!isOpenPools);
           if (!isOpenHistory && pathname === "/history")
