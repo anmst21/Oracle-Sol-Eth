@@ -483,6 +483,12 @@
 
     .modal-chains {
         max-width: initial;
+        min-width: 200px;
+
+        .chain-sidebar {
+            overflow: visible;
+            gap: 7px;
+        }
     }
 
     &__inner {

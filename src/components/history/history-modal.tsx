@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { HistorySortType } from "./types";
 import classNames from "classnames";
 import { InputCross, PensilLarge, SearchGlass, SaveDisk } from "../icons";
@@ -86,46 +86,61 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
     transition: { duration: 0.2 },
   };
 
+  const buttonContainerRef = useRef<HTMLDivElement>(null);
+  const networkBtnRef = useRef<HTMLButtonElement>(null);
+  const walletBtnRef = useRef<HTMLButtonElement>(null);
+  const [underline, setUnderline] = useState({ left: 0, width: 0 });
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const btnRef = type === "network" ? networkBtnRef : walletBtnRef;
+    const node = btnRef.current;
+    const container = buttonContainerRef.current;
+    if (node && container) {
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = node.getBoundingClientRect();
+      setUnderline({
+        left: btnRect.left - containerRect.left,
+        width: btnRect.width,
+      });
+      setReady(true);
+    }
+  }, [type]);
+
   return (
     <HistoryModalWrapper
       info="If multiple chains or wallet addresses match, they will be sorted according to your selected criteria."
       closeModal={closeModal}
       header="Sort By"
     >
-      <motion.div className="slippage-modal__button">
+      <div className="slippage-modal__button" ref={buttonContainerRef} style={{ position: "relative" }}>
         <button
+          ref={networkBtnRef}
           className={classNames({
             "slippage-modal__button--active": type === "network",
           })}
           onClick={() => setType("network")}
-          key={"network-sort"}
         >
           Network
-          {type === "network" ? (
-            <motion.div
-              initial={false}
-              layoutId="underline"
-              className="underline"
-            />
-          ) : null}
         </button>
         <button
-          key={"wallet-sort"}
+          ref={walletBtnRef}
           className={classNames({
             "slippage-modal__button--active": type === "wallet",
           })}
           onClick={() => setType("wallet")}
         >
           Wallet
-          {type === "wallet" ? (
-            <motion.div
-              initial={false}
-              layoutId="underline"
-              className="underline"
-            />
-          ) : null}
         </button>
-      </motion.div>
+        {ready && (
+          <motion.div
+            className="underline"
+            animate={{ left: underline.left, width: underline.width }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
+            style={{ position: "absolute", top: "50%", translateY: "-50%", height: 26 }}
+          />
+        )}
+      </div>
       <div className="history-modal__input">
         <label className="address-modal__input">
           <AnimatePresence initial={false} mode="popLayout">
@@ -187,6 +202,7 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
             className="chain-sidebar__contianer"
           >
             <ModalChains
+              forceExpanded
               disableSearch
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}

@@ -24,6 +24,7 @@ type Props = {
   searchTerm: string;
   disableSearch?: boolean;
   modalMode?: ModalMode;
+  forceExpanded?: boolean;
 };
 
 const ModalChains = ({
@@ -39,8 +40,10 @@ const ModalChains = ({
   searchTerm,
   disableSearch,
   modalMode,
+  forceExpanded,
 }: Props) => {
-  const isDesktop = useIsDesktop();
+  const _isDesktop = useIsDesktop();
+  const isDesktop = forceExpanded || _isDesktop;
   const [isExpanded, setIsExpanded] = useState(false);
   const chainsRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -154,7 +157,7 @@ const ModalChains = ({
                 ref={searchInputRef}
                 disabled={isLoadingChains}
                 type="text"
-                placeholder="Enter name or ID"
+                placeholder="Search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full p-2 border rounded"
