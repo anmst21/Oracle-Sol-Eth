@@ -402,6 +402,10 @@
     overflow: hidden;
     position: relative;
 
+    @include down(md) {
+        width: 100%;
+    }
+
 
 
     .modal-info__paragraph {
@@ -552,6 +556,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
+        @include down(md) {
+            align-items: flex-end;
+            padding: 0 20px;
+            bottom: calc(36px + 16px + 102px);
+        }
     }
 
 }

@@ -82,7 +82,7 @@ const BuyInputWallet = ({ isError, activeWallet, setActiveWallet }: Props) => {
         <div className="buy-input-wallet__bottom">
           <div className="buy-input-wallet__bottom__key">
             <BuyCard />
-            <span>Payment Method</span>
+            <span>Payment<span className="method-label"> Method</span></span>
           </div>
           <div className="buy-input-wallet__bottom__item">
             <span>Card</span>

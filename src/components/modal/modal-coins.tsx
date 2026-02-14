@@ -365,7 +365,7 @@ Props) => {
           <SearchGlass />
           <input
             type="text"
-            placeholder="Search Ticker or Address"
+            placeholder="Search tokens"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

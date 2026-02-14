@@ -62,6 +62,14 @@
         align-items: center;
     }
 
+    &__bottom__key {
+        .method-label {
+            @include down(sm) {
+                display: none;
+            }
+        }
+    }
+
     &__bottom__item {
         justify-content: flex-end;
     }
