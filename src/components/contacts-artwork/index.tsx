@@ -30,7 +30,7 @@ const ContactsArtwork = () => {
   useEffect(() => {
     if (isInView && engineRef.current) {
       animate(0, 1, {
-        duration: 5,
+        duration: 2,
         ease: [0.25, 0.1, 0.25, 1],
         onUpdate: (v) => engineRef.current?.setReveal(v),
       });
