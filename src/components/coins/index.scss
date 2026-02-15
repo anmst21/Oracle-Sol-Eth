@@ -38,6 +38,12 @@
             width: 200px;
         }
 
+        .chain-sidebar__input,
+        .chain-sidebar__input--search-btn {
+            border: 1px solid rgba(136, 150, 151, 0.10);
+            background: rgba(136, 150, 151, 0.05);
+        }
+
         .chain-sidebar__input--search-btn {
             width: 36px;
             height: 36px;
@@ -128,7 +134,6 @@
 
     @include down(md) {
         max-width: 1000px;
-        padding: 0 20px;
         align-self: flex-start;
         height: calc(100dvh - 60px - 160px);
     }

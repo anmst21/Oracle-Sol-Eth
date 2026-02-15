@@ -10,15 +10,13 @@
 
     @include down(md) {
         align-items: flex-start;
+        padding-left: 20px;
+        padding-right: 20px;
     }
 }
 
 .exchange-layout {
     min-height: 641px;
-
-    @include down(md) {
-        padding: 0 20px;
-    }
 }
 
 

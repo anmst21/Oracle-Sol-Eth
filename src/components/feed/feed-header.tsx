@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   PrivyLogo,
   FarcasterLogo,
@@ -22,6 +22,25 @@ const FeedHeader = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { push } = useRouter();
   const { isFollowing, setIsFollowing } = useFeed();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const btnRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+  const [underline, setUnderline] = useState({ left: 0, width: 0 });
+  const [underlineReady, setUnderlineReady] = useState(false);
+
+  const activeTab = isFollowing ? "following" : "featured";
+
+  useEffect(() => {
+    const node = btnRefs.current.get(activeTab);
+    if (node && containerRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const itemRect = node.getBoundingClientRect();
+      setUnderline({
+        left: itemRect.left - containerRect.left,
+        width: itemRect.width,
+      });
+      setUnderlineReady(true);
+    }
+  }, [activeTab]);
 
   const { user, ready, linkFarcaster, unlinkFarcaster, login } = usePrivy();
   const onFeedChange = useCallback(
@@ -66,8 +85,9 @@ const FeedHeader = () => {
 
   return (
     <div className="feed-header">
-      <div className="slippage-modal__button">
+      <div className="slippage-modal__button" ref={containerRef}>
         <button
+          ref={(el) => { if (el) btnRefs.current.set("featured", el); }}
           className={classNames({
             "slippage-modal__button--active": !isFollowing,
           })}
@@ -75,12 +95,10 @@ const FeedHeader = () => {
           key={"feed-featured"}
         >
           Featured
-          {!isFollowing ? (
-            <motion.div layoutId="underline" className="underline" />
-          ) : null}
         </button>
         {user?.farcaster && (
           <button
+            ref={(el) => { if (el) btnRefs.current.set("following", el); }}
             key={"feed-following"}
             className={classNames({
               "slippage-modal__button--active": isFollowing,
@@ -88,10 +106,15 @@ const FeedHeader = () => {
             onClick={() => onFeedChange(true)}
           >
             Following
-            {isFollowing ? (
-              <motion.div layoutId="underline" className="underline" />
-            ) : null}
           </button>
+        )}
+        {underlineReady && (
+          <motion.div
+            className="underline"
+            animate={{ left: underline.left, width: underline.width }}
+            transition={{ type: "tween", ease: "easeOut", duration: 0.2 }}
+            style={{ position: "absolute" }}
+          />
         )}
       </div>
       <div

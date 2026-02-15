@@ -264,6 +264,10 @@
     backdrop-filter: blur(30px);
     overflow: scroll;
 
+    @include down(md) {
+        height: 100%;
+    }
+
     &--error {
         align-items: center;
         justify-content: center;
@@ -285,7 +289,12 @@
     gap: 8px;
     width: 100%;
     display: flex;
-    padding: 0 20px;
+    min-height: 641px;
+
+    @include down(md) {
+        min-height: 0;
+        height: calc(100dvh - 60px - 160px);
+    }
 }
 
 .feed-header {
@@ -296,11 +305,12 @@
     justify-content: space-between;
     padding: 12px;
     align-items: center;
+    gap: 4px;
 
     .slippage-modal__button {
+        position: relative;
+
         button {
-
-
             height: 24px;
         }
 
@@ -316,6 +326,10 @@
 
     .underline {
         z-index: 10;
+        height: 24px;
+        top: 50%;
+        transform: translateY(-50%);
+        bottom: auto;
     }
 }
 
@@ -325,6 +339,11 @@
     display: flex;
     gap: 4px;
     width: 220px;
+
+    @include down(md) {
+        width: auto;
+        min-width: 80px;
+    }
 
 
 
@@ -443,6 +462,12 @@
         padding: 0 6px;
         flex: 1;
         padding-right: 8px;
+
+        @include down(md) {
+            flex: none;
+            max-width: 120px;
+            width: 80px;
+        }
 
         color: #889697;
 

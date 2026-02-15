@@ -8,7 +8,7 @@ import { motion, useAnimation, useInView } from "motion/react";
 
 const BlogSubscribe = ({ isSubscribe }: { isSubscribe?: boolean }) => {
   const circlesRef = useRef<HTMLDivElement | null>(null);
-  const inView = useInView(circlesRef, { margin: "-20% 0px" });
+  const inView = useInView(circlesRef, { margin: "-5% 0px" });
   const controls = useAnimation();
 
   useEffect(() => {
