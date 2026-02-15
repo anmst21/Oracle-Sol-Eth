@@ -292,8 +292,10 @@
     min-height: 641px;
 
     @include down(md) {
+        max-width: 540px;
         min-height: 0;
         height: calc(100dvh - 60px - 160px);
+        padding: 0 20px;
     }
 }
 

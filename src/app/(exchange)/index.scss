@@ -4,4 +4,9 @@
     flex-direction: column;
     gap: 8px;
     width: 100%;
+
+    @include down(md) {
+        max-width: 540px;
+        padding: 0 20px;
+    }
 }
