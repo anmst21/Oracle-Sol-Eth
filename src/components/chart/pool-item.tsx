@@ -1,7 +1,7 @@
 import React from "react";
 import { type PoolItem } from "@/types/token-pools";
 import Image from "next/image";
-import { HexChain } from "../icons";
+import { HexChain, UserQuestion } from "../icons";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { splitCompact } from "@/helpers/compact-formatter";
 import { timeAgoShort } from "@/helpers/time-ago-short";
@@ -67,7 +67,7 @@ const PoolItem = ({
       <td>
         <div className="pool-item__pool">
           <div className="pool-item__pool__image">
-            {activeToken && activeToken.logo && activeToken?.chainId && (
+            {activeToken?.logo ? (
               <>
                 <Image
                   width={32}
@@ -75,9 +75,18 @@ const PoolItem = ({
                   alt={`${activeToken.name} logo`}
                   src={activeToken.logo}
                 />
-                <HexChain width={16} uri={getIconUri(activeToken?.chainId)} />
+                {activeToken.chainId && (
+                  <HexChain width={16} uri={getIconUri(activeToken.chainId)} />
+                )}
               </>
-            )}
+            ) : activeToken?.chainId ? (
+              <>
+                <div className="pool-item__pool__placeholder">
+                  <UserQuestion />
+                </div>
+                <HexChain width={16} uri={getIconUri(activeToken.chainId)} />
+              </>
+            ) : null}
           </div>
           <div className="pool-item__pool__name">
             <div className="pool-item__pool__name__top">

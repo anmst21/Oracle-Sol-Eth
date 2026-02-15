@@ -19,7 +19,7 @@ export type CoinTokenMeta = {
   symbol: string;
 };
 
-type Props = {
+type BaseProps = {
   data: PoolItemType[] | null;
   isLoading: boolean;
   isError: boolean;
@@ -27,7 +27,32 @@ type Props = {
   showSparkline?: boolean;
   sparklineData?: Map<string, SparklineEntry>;
   tokenMeta?: Map<string, CoinTokenMeta>;
+  defaultChainId?: number;
 };
+
+type ClientPaginationProps = BaseProps & {
+  paginationMode?: "client";
+  totalPages?: never;
+  currentPage?: never;
+  setCurrentPage?: never;
+  isLoadingMore?: never;
+  isErrorMore?: never;
+  isNoMore?: never;
+  goBack?: never;
+};
+
+type ServerPaginationProps = BaseProps & {
+  paginationMode: "server";
+  totalPages: number;
+  currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  isLoadingMore: boolean;
+  isErrorMore: boolean;
+  isNoMore: boolean;
+  goBack: () => void;
+};
+
+type Props = ClientPaginationProps | ServerPaginationProps;
 
 function chunkArray<T>(array: T[] | null, size: number): T[][] {
   if (array === null) return [];
@@ -40,21 +65,54 @@ function chunkArray<T>(array: T[] | null, size: number): T[][] {
 
 const ITEMS_PER_PAGE = 20;
 
-const CoinsTable = ({
-  data,
-  isLoading,
-  isError,
-  onRetry,
-  showSparkline,
-  sparklineData,
-  tokenMeta,
-}: Props) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const CoinsTable = (props: Props) => {
+  const {
+    data,
+    isLoading,
+    isError,
+    onRetry,
+    showSparkline,
+    sparklineData,
+    tokenMeta,
+    defaultChainId,
+  } = props;
 
-  const pages = useMemo(() => chunkArray(data, ITEMS_PER_PAGE), [data]);
-  const totalPages = pages.length;
-  const currentItems = pages[currentPage - 1] ?? [];
+  const isServer = props.paginationMode === "server";
+
+  // Client-side pagination state
+  const [clientPage, setClientPage] = useState(1);
+
+  // Client-side chunking
+  const clientPages = useMemo(
+    () => (isServer ? [] : chunkArray(data, ITEMS_PER_PAGE)),
+    [data, isServer]
+  );
+
+  const currentPage = isServer ? props.currentPage : clientPage;
+  const setCurrentPage = isServer ? props.setCurrentPage : setClientPage;
+  const totalPages = isServer ? props.totalPages : clientPages.length;
+
+  // Current items: server mode uses data directly; client mode uses chunk
+  const currentItems = isServer ? (data ?? []) : (clientPages[currentPage - 1] ?? []);
   const pageOffset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  const showSkeleton = isLoading || (isServer && props.isLoadingMore);
+  const showPageError = isServer && props.isErrorMore && !currentItems.length;
+
+  if (showPageError) {
+    return (
+      <div className="modal-table" style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1 }}>
+        <ChartError
+          btnLeftCallback={props.goBack}
+          btnLeftHeader="Go Back"
+          btnRightCallback={onRetry}
+          btnRightHeader="Reload Data"
+          mainHeader="Unable to Load Data"
+          paragraph="We encountered an issue retrieving the latest data. This may be due to a temporary network problem or unavailable data from the source."
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="modal-table">
@@ -62,8 +120,8 @@ const CoinsTable = ({
         <ChartError
           btnLeftCallback={onRetry}
           btnLeftHeader="Reload Data"
-          btnRightCallback={() => {}}
-          btnRightHeader="Close Window"
+          btnRightCallback={onRetry}
+          btnRightHeader="Retry"
           mainHeader="Unable to Load Data"
           paragraph="We encountered an issue retrieving the latest data. This may be due to a temporary network problem or unavailable data from the source."
         />
@@ -144,7 +202,7 @@ const CoinsTable = ({
           </tr>
         </thead>
         <tbody className="pools-modal__main">
-          {isLoading &&
+          {showSkeleton &&
             Array.from({ length: ITEMS_PER_PAGE }, (_, i) => (
               <PoolItemSkeleton
                 index={i + 1}
@@ -165,9 +223,10 @@ const CoinsTable = ({
                 }
               />
             ))}
-          {!isLoading &&
+          {!showSkeleton &&
             currentItems.map((item, i) => {
               const meta = tokenMeta?.get(item.attributes.address);
+              const [fromTicker] = (item.attributes.name ?? "").split(" ");
               const activeToken: UnifiedToken | undefined = meta
                 ? {
                     name: meta.name,
@@ -177,7 +236,15 @@ const CoinsTable = ({
                     chainId: meta.chainId,
                     source: "gecko",
                   }
-                : undefined;
+                : defaultChainId
+                  ? {
+                      name: fromTicker ?? "",
+                      symbol: fromTicker ?? "",
+                      address: item.attributes.address,
+                      chainId: defaultChainId,
+                      source: "gecko",
+                    }
+                  : undefined;
               return (
               <PoolItem
                 isActive={false}
@@ -211,6 +278,13 @@ const CoinsTable = ({
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         disableItemsPerPage={true}
+        disableRight={
+          isServer
+            ? (currentPage === totalPages &&
+                (props.isNoMore || props.isErrorMore)) ||
+              props.isLoadingMore
+            : undefined
+        }
       />
     </div>
   );

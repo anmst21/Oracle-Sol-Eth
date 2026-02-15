@@ -7,9 +7,10 @@ type Props = {
   slug: string;
   icon: React.ReactNode;
   modal?: React.ReactNode;
+  active?: boolean;
 };
 
-const MenuItem = ({ slug, icon, modal }: Props) => {
+const MenuItem = ({ slug, icon, modal, active }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const { push } = useRouter();
@@ -33,7 +34,7 @@ const MenuItem = ({ slug, icon, modal }: Props) => {
     <div
       onMouseLeave={() => setIsMenuOpen(false)}
       className={classNames("menu-item", {
-        "menu-item--active": pathname === slug,
+        "menu-item--active": active ?? (slug === "/" ? pathname === "/" : pathname.includes(slug)),
         "menu-item--open": isMenuOpen,
       })}
     >

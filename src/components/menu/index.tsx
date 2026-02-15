@@ -89,6 +89,7 @@ const MenuBar = ({ categories, blogposts }: Props) => {
                 icon={item.iconMobile}
                 key={item.slug}
                 slug={item.slug}
+                active={item.active}
               />
             );
           }
