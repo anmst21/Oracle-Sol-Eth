@@ -46,6 +46,19 @@ export default function PullToRefresh() {
 
     const onTouchStart = (e: TouchEvent) => {
       if (window.scrollY > 0) return;
+
+      // Only activate on body/main scroll — ignore nested scroll containers
+      let el = e.target as HTMLElement | null;
+      while (el && el !== document.body) {
+        if (el.tagName === "MAIN") break;
+        if (el.scrollHeight > el.clientHeight) {
+          const style = getComputedStyle(el);
+          const overflow = style.overflowY;
+          if (overflow === "auto" || overflow === "scroll") return;
+        }
+        el = el.parentElement;
+      }
+
       startY = e.touches[0].clientY;
       pulling = true;
       dist = 0;
