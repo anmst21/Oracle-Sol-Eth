@@ -4,18 +4,21 @@
     width: 100%;
     justify-content: center;
     padding-top: 60px;
-    min-height: calc(100dvh - 200px);
+    min-height: 100dvh;
     align-items: center;
     overflow: visible;
-    // @include down(md) {
-    //     padding-top: 77px;
-    // }
 
+    @include down(md) {
+        align-items: flex-start;
+    }
 }
 
 .exchange-layout {
     min-height: 641px;
-    padding: 0 20px;
+
+    @include down(md) {
+        padding: 0 20px;
+    }
 }
 
 

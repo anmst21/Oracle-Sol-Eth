@@ -30,16 +30,27 @@
 
     &__navigation {
         display: flex;
+        position: relative;
 
         border-radius: 8px;
         border: 1px solid rgba(136, 150, 151, 0.10);
         background: rgba(136, 150, 151, 0.05);
         padding: 4px;
 
+        @include down(md) {
+            flex: 1;
+        }
 
 
 
 
+
+
+        .underline {
+            height: 26px;
+            top: 4px;
+            border-radius: 6px;
+        }
 
         &__button {
             width: 100px;
@@ -48,6 +59,11 @@
             position: relative;
             align-items: center;
             justify-content: center;
+
+            @include down(md) {
+                flex: 1;
+                width: auto;
+            }
             color: rgba(217, 241, 233, 0.80);
             font-size: 14px;
             font-style: normal;
@@ -74,22 +90,59 @@
 .coins-layout {
     display: flex;
     width: 100%;
-    max-width: 1480px;
-    padding: 124px;
+    max-width: 1000px;
     flex-direction: column;
     gap: 8px;
+
+    @include down(md) {
+        max-width: 1000px;
+        padding: 0 20px;
+        align-self: flex-start;
+        height: calc(100dvh - 60px - 160px);
+    }
 }
 
 
-.community-coins {
-    max-height: 925px;
-    height: 100%;
+.community-coins,
+.solana-coins,
+.ethereum-coins {
+    height: 600px;
+    max-height: 600px;
     display: flex;
     width: 100%;
+
+    @include down(md) {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+        max-height: none;
+    }
 
     .modal-table {
         flex: 1;
         border-radius: 12px;
         border: 1px solid rgba(136, 150, 151, 0.20);
+    }
+}
+
+.pools-modal__header__sparkline {
+    width: 100px;
+    min-width: 100px;
+
+    div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.pool-item__sparkline {
+    width: 100px;
+    min-width: 100px;
+
+    div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }

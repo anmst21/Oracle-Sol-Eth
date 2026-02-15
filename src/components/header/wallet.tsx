@@ -79,11 +79,12 @@ const HeaderWalletButton = () => {
         {isOpen && (
           <motion.div
             key="wallets-key"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="header__wallet__wrapper"
+            style={{ transformOrigin: "center center" }}
           >
             <Wallets callback={() => setIsOpen(false)} linkCallback={closeIfOpen} />
           </motion.div>
@@ -91,11 +92,12 @@ const HeaderWalletButton = () => {
         {isOpenChains && (
           <motion.div
             key="chains-key"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="header__wallet__wrapper"
+            style={{ transformOrigin: "center center" }}
           >
             <ChainList closeIfOpenChains={closeIfOpenChains} />
           </motion.div>

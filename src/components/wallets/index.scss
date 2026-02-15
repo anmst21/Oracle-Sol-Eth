@@ -19,6 +19,25 @@
 
     display: flex;
 
+    &--loading {
+        .wallet-header__address__provider,
+        .wallet-header__address__value,
+        .wallet-header__balance__chain,
+        .wallet-header__balance__number {
+            padding: 0;
+            border: none;
+            background: none;
+            overflow: hidden;
+        }
+
+        .wallet-header__address__value {
+            min-width: 120px;
+        }
+
+        .wallet-header__balance__number {
+            min-width: 100px;
+        }
+    }
 
     .wallet-item__connect {
         width: 330px;

@@ -20,6 +20,8 @@ type Props = {
   callback: () => void;
   isActive: boolean;
   activeToken: UnifiedToken | undefined;
+  afterFdv?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const PoolItem = ({
@@ -29,6 +31,8 @@ const PoolItem = ({
   chainName,
   callback,
   isActive,
+  afterFdv,
+  children,
 }: Props) => {
   const [fromTicker, , toTicker] = (item.attributes.name ?? "").split(" ");
 
@@ -111,6 +115,7 @@ const PoolItem = ({
           </div>
         </div>
       </td>
+      {afterFdv}
       <td className="pool-item__created">
         <div>
           <span>{timeElapsed[0]}</span>
@@ -145,6 +150,7 @@ const PoolItem = ({
           </span>
         </div>
       </td>
+      {children}
     </tr>
   );
 };

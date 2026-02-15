@@ -54,14 +54,49 @@ const WalletHeader = ({
   const showSkeleton = !ready || (authenticated && !activeWallet);
 
   return (
-    <div className="wallet-header">
+    <div className={classNames("wallet-header", { "wallet-header--loading": showSkeleton })}>
       {showSkeleton ? (
-        <SkeletonLoaderWrapper
-          radius={4}
-          height={36}
-          width={120}
-          isLoading={true}
-        />
+        <>
+          <div className="wallet-header__address">
+            <div className="wallet-header__address__provider">
+              <SkeletonLoaderWrapper
+                radius={6}
+                width="100%"
+                height="100%"
+                isLoading={true}
+              />
+            </div>
+            <div className="wallet-header__address__value">
+              <SkeletonLoaderWrapper
+                radius={6}
+                height="100%"
+                isLoading={true}
+                flex
+              />
+            </div>
+          </div>
+          <div className="divider">
+            <div />
+          </div>
+          <div className="wallet-header__balance">
+            <div className="wallet-header__balance__chain">
+              <SkeletonLoaderWrapper
+                radius={6}
+                width="100%"
+                height="100%"
+                isLoading={true}
+              />
+            </div>
+            <div className="wallet-header__balance__number">
+              <SkeletonLoaderWrapper
+                radius={6}
+                height="100%"
+                isLoading={true}
+                flex
+              />
+            </div>
+          </div>
+        </>
       ) : !authenticated ? (
         <button
           disabled={disableLogin}

@@ -5,9 +5,11 @@ import ChangePercentage from "./change-percentage";
 
 type Props = {
   index: number;
+  afterFdv?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
-const PoolItemSkeleton = ({ index }: Props) => {
+const PoolItemSkeleton = ({ index, afterFdv, children }: Props) => {
   const randomIntOne = useMemo(() => getRandomInt(30, 50), []);
   const randomIntTwo = useMemo(() => getRandomInt(30, 50), []);
   const randomIntThree = useMemo(() => getRandomInt(30, 50), []);
@@ -76,6 +78,7 @@ const PoolItemSkeleton = ({ index }: Props) => {
           </div>
         </div>
       </td>
+      {afterFdv}
       <td className="pool-item__created">
         <div>
           <SkeletonLoaderWrapper
@@ -120,6 +123,7 @@ const PoolItemSkeleton = ({ index }: Props) => {
           />
         </div>
       </td>
+      {children}
     </tr>
   );
 };
