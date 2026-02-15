@@ -89,6 +89,9 @@
         // z-index: 1;
         // position: relative;
 
+        @include down(md) {
+            overflow: hidden;
+        }
 
     }
 

@@ -21,10 +21,11 @@ const HomeBlog = () => {
       align: "center",
       containScroll: false,
     },
-    [Autoplay({ playOnInit: true, delay: ANIMATION_TIME })]
+    [Autoplay({ playOnInit: false, delay: ANIMATION_TIME })]
   );
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
 
   const isDesktop = useIsDesktop();
 
@@ -59,6 +60,29 @@ const HomeBlog = () => {
     return () => {
       emblaApi.off("pointerUp", scheduleRestart);
     };
+  }, [emblaApi, isDesktop]);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport || !emblaApi || isDesktop) return;
+
+    const autoplay = emblaApi.plugins()?.autoplay;
+    if (!autoplay) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          emblaApi.scrollTo(0, true);
+          autoplay.play();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(viewport);
+
+    return () => observer.disconnect();
   }, [emblaApi, isDesktop]);
 
   useEffect(() => {
@@ -125,7 +149,7 @@ const HomeBlog = () => {
     <div id="features" className="home-blog">
       <HomeSectionHeader type={HomeHeaderType.Blog} />
 
-      <div className="home-blog__viewport" ref={emblaRef}>
+      <div className="home-blog__viewport" ref={(node) => { emblaRef(node); viewportRef.current = node; }}>
         <div ref={containerRef} className="home-blog__container">
           {homeBlogPosts.map((post, i) => (
             <Link
