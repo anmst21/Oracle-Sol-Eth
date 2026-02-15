@@ -4,12 +4,15 @@ import { fetchCoinsPage } from "@/actions/fetch-coins-page";
 import { normalizeEthereumCoins } from "@/helpers/normalize-coins";
 import { MergedToken } from "@/types/GeckoTerminalCoins";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import CoinsTable, { CoinTokenMeta } from "./coins-table";
 
 const SOLANA_CHAIN_ID = 792703809;
 const ITEMS_PER_PAGE = 20;
 
 export default function SolanaCoinsLoader() {
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("q") ?? "";
   const [allData, setAllData] = useState<MergedToken[]>([]);
   const [totalPages, setTotalPages] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -115,6 +118,7 @@ export default function SolanaCoinsLoader() {
         fetchPage(1);
       }}
       tokenMeta={tokenMeta}
+      searchTerm={searchTerm}
       defaultChainId={SOLANA_CHAIN_ID}
       paginationMode="server"
       totalPages={totalPages}

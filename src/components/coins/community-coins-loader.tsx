@@ -4,9 +4,12 @@ import { fetchCommunityCoinsRaw } from "@/actions/fetch-community-coins-full";
 import { normalizeCommunityCoins } from "@/helpers/normalize-coins";
 import { FetchedCoin } from "@/types/CommunityCoins";
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import CoinsTable, { CoinTokenMeta } from "./coins-table";
 
 export default function CommunityCoinsLoader() {
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("q") ?? "";
   const [data, setData] = useState<FetchedCoin[] | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isError, setIsError] = useState(false);
@@ -66,6 +69,7 @@ export default function CommunityCoinsLoader() {
       isLoading={isPending && !data}
       isError={isError}
       onRetry={fetchData}
+      searchTerm={searchTerm}
       showSparkline
       sparklineData={sparklineData}
       tokenMeta={tokenMeta}

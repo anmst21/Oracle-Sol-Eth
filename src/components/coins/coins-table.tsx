@@ -28,6 +28,7 @@ type BaseProps = {
   sparklineData?: Map<string, SparklineEntry>;
   tokenMeta?: Map<string, CoinTokenMeta>;
   defaultChainId?: number;
+  searchTerm?: string;
 };
 
 type ClientPaginationProps = BaseProps & {
@@ -75,6 +76,7 @@ const CoinsTable = (props: Props) => {
     sparklineData,
     tokenMeta,
     defaultChainId,
+    searchTerm,
   } = props;
 
   const isServer = props.paginationMode === "server";
@@ -93,7 +95,25 @@ const CoinsTable = (props: Props) => {
   const totalPages = isServer ? props.totalPages : clientPages.length;
 
   // Current items: server mode uses data directly; client mode uses chunk
-  const currentItems = isServer ? (data ?? []) : (clientPages[currentPage - 1] ?? []);
+  const rawItems = useMemo(
+    () => (isServer ? (data ?? []) : (clientPages[currentPage - 1] ?? [])),
+    [isServer, data, clientPages, currentPage]
+  );
+
+  const currentItems = useMemo(() => {
+    const term = searchTerm?.toLowerCase();
+    if (!term) return rawItems;
+    return rawItems.filter((item) => {
+      const meta = tokenMeta?.get(item.attributes.address);
+      return (
+        item.attributes.name?.toLowerCase().includes(term) ||
+        item.attributes.address?.toLowerCase().includes(term) ||
+        meta?.name?.toLowerCase().includes(term) ||
+        meta?.symbol?.toLowerCase().includes(term)
+      );
+    });
+  }, [rawItems, searchTerm, tokenMeta]);
+
   const pageOffset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   const showSkeleton = isLoading || (isServer && props.isLoadingMore);

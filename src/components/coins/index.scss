@@ -2,6 +2,7 @@
 
     display: flex;
     align-items: center;
+    gap: 8px;
     padding: 12px;
     border-radius: 12px;
     border: 1px solid rgba(136, 150, 151, 0.20);
@@ -27,6 +28,36 @@
         margin-left: auto;
     }
 
+    &__search {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+
+        .chain-sidebar__input {
+            width: 200px;
+        }
+
+        .chain-sidebar__input--search-btn {
+            width: 36px;
+            height: 36px;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        @include down(md) {
+            margin-left: 0;
+            overflow: hidden;
+            flex-basis: 36px;
+
+            .chain-sidebar__input {
+                width: 100%;
+            }
+        }
+    }
+
 
     &__navigation {
         display: flex;
@@ -39,6 +70,7 @@
 
         @include down(md) {
             flex: 1;
+            overflow: hidden;
         }
 
 
