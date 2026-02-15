@@ -226,6 +226,10 @@ const AnimatedSquares: React.FC = () => {
     };
 
     const $squares = gridRef.current.querySelectorAll(".square");
+    // Immediately hide the center glow so it doesn't linger during stagger delay
+    $squares.forEach((sq) => {
+      (sq as HTMLElement).style.opacity = "0";
+    });
     animInstanceRef.current = animate($squares, {
       opacity: [{ to: 1 }, { to: 0 }],
       delay: stagger(200, { grid: [gridWidth, gridHeight], from }),
