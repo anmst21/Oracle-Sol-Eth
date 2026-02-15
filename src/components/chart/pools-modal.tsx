@@ -114,8 +114,8 @@ const PoolsModal = ({ closeModal }: Props) => {
             </button>
           </div>
         </div>
-        <div className="modal-table">
-          {isErrorMorePools && !tokenPools2D[currentPage - 1] && (
+        {isErrorMorePools && !tokenPools2D[currentPage - 1] ? (
+          <div className="modal-table" style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1 }}>
             <ChartError
               btnLeftCallback={goBack}
               btnLeftHeader={"Go Back"}
@@ -126,7 +126,9 @@ const PoolsModal = ({ closeModal }: Props) => {
                 "We encountered an issue retrieving the latest pools data. This may be due to a temporary network problem or unavailable data from the source."
               }
             />
-          )}
+          </div>
+        ) : (
+        <div className="modal-table">
           <table>
             <thead>
               <tr>
@@ -235,6 +237,7 @@ const PoolsModal = ({ closeModal }: Props) => {
             }
           />
         </div>
+        )}
       </motion.div>
     </div>
   );
