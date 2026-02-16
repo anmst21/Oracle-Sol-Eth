@@ -846,7 +846,6 @@
     border-radius: 12px;
     border: 1px solid rgba(136, 150, 151, 0.20);
     background: rgba(136, 150, 151, 0.05);
-    backdrop-filter: blur(30px);
     width: 1000px;
     height: 500px;
     padding: 12px;
@@ -908,11 +907,7 @@
     table thead {
         position: sticky;
         top: 0;
-        background: rgba(136, 150, 151, 0.05);
-        //  backdrop-filter: blur(30px);
-        background: rgba(136, 150, 151, 0.05);
-        -webkit-backdrop-filter: blur(30px);
-        backdrop-filter: blur(30px);
+        background: #0f1315;
 
 
         z-index: 10;
@@ -1360,9 +1355,7 @@
     min-height: 48px;
     z-index: 10;
     position: sticky;
-    background: rgba(136, 150, 151, 0.05);
-    -webkit-backdrop-filter: blur(30px);
-    backdrop-filter: blur(30px);
+    background: #0f1315;
     z-index: 10;
 }
 

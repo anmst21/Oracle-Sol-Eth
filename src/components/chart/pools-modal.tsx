@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InputCross } from "../icons";
-import { modalAnimation } from "../shared/animation";
+import { TRANSITION } from "../shared/animation";
 import { useChart } from "@/context/ChartProvider";
 import PoolItem from "./pool-item";
 import { PoolItem as PoolItemType } from "@/types/token-pools";
@@ -99,7 +99,10 @@ const PoolsModal = ({ closeModal }: Props) => {
   return (
     <div onClick={closeModal} className="pools-modal__wrapper">
       <motion.div
-        {...modalAnimation}
+        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+        animate={{ opacity: 1, backdropFilter: "blur(30px)" }}
+        exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+        transition={TRANSITION}
         onClick={(e) => e.stopPropagation()}
         className="trades-modal pools-modal pools-modal-cursor"
       >
