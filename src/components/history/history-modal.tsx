@@ -225,14 +225,15 @@ const HistoryModal = ({ closeModal, type, setType }: Props) => {
             key="wallet-wrapper"
             className="chain-sidebar__contianer"
           >
-            <div className="address-modal__use">
+            <div key="label" className="address-modal__use">
               <span>Use connected wallet</span>
             </div>
             <ConnectedWallets
+              key="wallets"
               activeAddress={activeWallet?.address}
               setWallet={setWallet}
             />
-            <button onClick={handleSave} className="address-modal__cta">
+            <button key="save" onClick={handleSave} className="address-modal__cta">
               <SaveDisk />
               <span>Save</span>
             </button>

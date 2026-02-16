@@ -149,9 +149,7 @@ const BuyWindowInput = ({
           onMouseLeave={() => {
             if (isOpenModal) setIsOpenModal(false);
           }}
-          onClick={() => {
-            if (!isOpenModal) setIsOpenModal(true);
-          }}
+          onClick={() => setIsOpenModal((prev) => !prev)}
           className={classNames("buy-window-input__switch", {
             "buy-window-input__switch--active": isOpenModal,
           })}

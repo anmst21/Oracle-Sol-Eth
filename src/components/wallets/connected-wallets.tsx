@@ -33,7 +33,7 @@ const ConnectedWallets = ({ setWallet, activeAddress }: Props) => {
     <>
       {pastedWallets.map((w, i) => (
         <WalletItem
-          key={i}
+          key={`pasted-${i}-${w.address}`}
           name={undefined}
           id={w.chainId === 792703809 ? "792703809" : `:${w.chainId}`}
           // icon={getIconUri(w.chainId)}
@@ -57,7 +57,7 @@ const ConnectedWallets = ({ setWallet, activeAddress }: Props) => {
     <>
       {ethLinked.map((w, i) => (
         <WalletItem
-          key={i}
+          key={`eth-${i}-${w.address}`}
           name={w.meta.name}
           id={w.meta.id}
           icon={w.meta.icon}
@@ -80,7 +80,7 @@ const ConnectedWallets = ({ setWallet, activeAddress }: Props) => {
     <>
       {solLinked.map((w, i) => (
         <WalletItem
-          key={i}
+          key={`sol-${i}-${w.address}`}
           name={w.meta.name}
           id={w.meta.id}
           icon={w.meta.icon}

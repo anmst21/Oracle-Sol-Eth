@@ -62,6 +62,7 @@ const SwapHeader = () => {
       <div
         className={classNames("swap-header__nav", {
           "swap-header__nav--end": scrolledToEnd,
+          "swap-header__nav--no-overflow": !activeWallet,
         })}
         ref={navRef}
         onScroll={handleNavScroll}
