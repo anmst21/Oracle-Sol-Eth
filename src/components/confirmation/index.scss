@@ -251,17 +251,22 @@
         width: auto !important;
         right: 20px !important;
         bottom: calc(102px + 36px + 16px) !important;
+        top: 60px !important;
         z-index: 50 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-end !important;
     }
 }
 
 .confirmation__wrapper {
     @include down(md) {
-        border-radius: 12px;
+        border-radius: 8px;
         border: 1px solid rgba(136, 150, 151, 0.20);
         background: rgba(136, 150, 151, 0.05);
         backdrop-filter: blur(30px);
         padding: 12px;
+        width: 100%;
     }
 }
 
@@ -543,6 +548,12 @@
         background: rgba(136, 150, 151, 0.05);
         gap: 4px;
         backdrop-filter: blur(30px);
+
+        @include down(md) {
+            width: 100%;
+            border-radius: 8px;
+            flex-direction: column;
+        }
     }
 }
 
