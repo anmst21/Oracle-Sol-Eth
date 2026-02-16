@@ -25,10 +25,6 @@ const containerVariants = {
   },
 };
 
-const buttonVariants = {
-  enter: { opacity: 1, transition: { duration: 0.2, ease: "easeOut" as const } },
-  exit: { opacity: 0, transition: { duration: 0.2, ease: "easeOut" as const } },
-};
 
 type Props = {
   mode: "buy" | "sell";
@@ -285,18 +281,27 @@ const SwapWindow = ({
           setIsOpenCallback={isOpenCallback}
           enableLayout
         >
-          {isOpenAddressModal && (
-            <div className="swap-window__wallet" onClick={(e) => e.stopPropagation()}>
-              <WalletModal
-                isBuy={mode === "buy"}
-                callback={(wallet) => {
-                  callback(wallet);
-                }}
-                swapWindow
-                activeAddress={activeWallet?.address}
-              />
-            </div>
-          )}
+          <AnimatePresence>
+            {isOpenAddressModal && (
+              <motion.div
+                className="swap-window__wallet"
+                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                animate={{ opacity: 1, backdropFilter: "blur(30px)" }}
+                exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <WalletModal
+                  isBuy={mode === "buy"}
+                  callback={(wallet) => {
+                    callback(wallet);
+                  }}
+                  swapWindow
+                  activeAddress={activeWallet?.address}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </WalletButton>
 
         {/* </div> */}
@@ -362,17 +367,13 @@ const SwapWindow = ({
             >
               {(mode === "sell" ? presetOptions : buyPresetOptions).map(
                 (option) => (
-                  <motion.button
-                    key={option.value} // unique key per option
-                    variants={buttonVariants}
-                    initial="exit"
-                    animate="enter"
-                    exit="exit"
+                  <button
+                    key={option.value}
                     onClick={() => onOptionClick(option.multiplier)}
                     className="swap-window__token__ammount__option"
                   >
                     <span>{option.value}</span>
-                  </motion.button>
+                  </button>
                 )
               )}
             </motion.div>

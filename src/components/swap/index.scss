@@ -24,6 +24,7 @@
         right: -2px;
         z-index: 50;
         width: 250px;
+        border-radius: 12px;
 
 
         &::before {
@@ -37,7 +38,9 @@
 
         .wallets {
             color: #D9F1E9;
-            border-radius: 6px;
+            border-radius: 12px;
+            backdrop-filter: none;
+            overflow: hidden;
         }
     }
 
@@ -405,7 +408,8 @@
             -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
             transition: mask-image .2s ease-out, -webkit-mask-image .2s ease-out;
 
-            &--end {
+            &--end,
+            &--no-overflow {
                 mask-image: none;
                 -webkit-mask-image: none;
             }
@@ -482,7 +486,7 @@
 .swap-window__token__ammount__option,
 .swap-header__settings {
 
-    transition: all .2s ease-out;
+    transition: color .2s ease-out, border-color .2s ease-out, background .2s ease-out;
 
     .recipient-window__address__arrow,
     .token-to-buy__token__arrow {

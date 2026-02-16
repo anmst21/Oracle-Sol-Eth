@@ -25,7 +25,7 @@ const BuyInputWallet = ({ isError, activeWallet, setActiveWallet }: Props) => {
   const { ready } = usePrivy();
 
   const isOpenCallback = useCallback(
-    (value: boolean) => setIsOpenAddressModal(value),
+    (value: boolean) => setIsOpenAddressModal(prev => value ? !prev : false),
     [setIsOpenAddressModal]
   );
 
@@ -60,9 +60,9 @@ const BuyInputWallet = ({ isError, activeWallet, setActiveWallet }: Props) => {
             <AnimatePresence mode="wait">
               {isOpenAddressModal && (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                  initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                  animate={{ opacity: 1, backdropFilter: "blur(30px)" }}
+                  exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="swap-window__wallet"
                 >

@@ -31,6 +31,8 @@
         top: 50%;
         transform: translate(-50%, -50%);
         max-width: 507px;
+        border-radius: 12px;
+        border: 1px solid rgba(136, 150, 151, 0.20);
 
         @include down(md) {
             max-width: initial;
@@ -38,6 +40,10 @@
     }
 
     .wallets {
+        backdrop-filter: none;
+        border: none;
+        border-radius: 0;
+
         .modal__header {
             display: flex !important;
         }
