@@ -16,20 +16,23 @@ const SlippageModal = ({ closeModal }: Props) => {
   useBodyScrollLock();
   const { isCustomSlippage, setIsCustomSlippage } = useSlippage();
   const [isOpenInfo, setIsOpenInfo] = useState(false);
-
+  const isTouchRef = useRef(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   return (
-    <motion.div
+    <div
       ref={wrapperRef}
       className="slippage-modal__wrapper"
       id="modal-root"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
     >
-      <div className="slippage-modal__container" onClick={(e) => e.stopPropagation()}>
+      <motion.div
+        className="slippage-modal__container"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+        animate={{ opacity: 1, backdropFilter: "blur(30px)" }}
+        exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+      >
         <div className="slippage-modal">
           <div className="slippage-modal__header">
             <span className="slippage-modal__header__h1">Max Slippage</span>
@@ -37,12 +40,10 @@ const SlippageModal = ({ closeModal }: Props) => {
               className={classNames("slippage-modal__header__item info-hover", {
                 "info-active": isOpenInfo,
               })}
-              onMouseLeave={() => {
-                if (isOpenInfo) setIsOpenInfo(false);
-              }}
-              onMouseEnter={() => {
-                if (!isOpenInfo) setIsOpenInfo(true);
-              }}
+              onTouchStart={() => { isTouchRef.current = true; }}
+              onMouseEnter={() => { if (!isTouchRef.current) setIsOpenInfo(true); }}
+              onMouseLeave={() => { if (!isTouchRef.current) setIsOpenInfo(false); }}
+              onClick={(e) => { e.stopPropagation(); if (isTouchRef.current) setIsOpenInfo((prev) => !prev); }}
             >
               <Info />
               {wrapperRef.current && (
@@ -128,8 +129,8 @@ const SlippageModal = ({ closeModal }: Props) => {
             </AnimatePresence>
           </motion.div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 
