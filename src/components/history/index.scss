@@ -535,17 +535,7 @@
         top: 30px;
     }
 
-    &::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background: rgba(136, 150, 151, 0.05);
-        backdrop-filter: blur(30px);
-        z-index: -1;
-    }
+    background: rgba(136, 150, 151, 0.05);
 
     &__wrapper {
         position: fixed;

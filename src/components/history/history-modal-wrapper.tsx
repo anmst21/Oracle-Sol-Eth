@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { motion } from "motion/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { InputCross, ModalInfo as Info } from "../icons";
 import ModalInfo from "../slippage-modal/modal-info";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
@@ -22,6 +22,7 @@ const HistoryModalWrapper = ({
 }: Props) => {
   useBodyScrollLock();
   const [isOpenInfo, setIsOpenInfo] = useState(false);
+  const isTouchRef = useRef(false);
   return (
     <div
       onClick={closeModal}
@@ -30,11 +31,14 @@ const HistoryModalWrapper = ({
       })}
     >
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+        animate={{ opacity: 1, backdropFilter: "blur(30px)" }}
+        exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (isOpenInfo) setIsOpenInfo(false);
+        }}
         className="history-modal"
       >
         <div className="history-modal__inner">
@@ -45,12 +49,10 @@ const HistoryModalWrapper = ({
               className={classNames("slippage-modal__header__item info-hover", {
                 "info-active": isOpenInfo,
               })}
-              onMouseLeave={() => {
-                if (isOpenInfo) setIsOpenInfo(false);
-              }}
-              onMouseEnter={() => {
-                if (!isOpenInfo) setIsOpenInfo(true);
-              }}
+              onTouchStart={() => { isTouchRef.current = true; }}
+              onMouseEnter={() => { if (!isTouchRef.current) setIsOpenInfo(true); }}
+              onMouseLeave={() => { if (!isTouchRef.current) setIsOpenInfo(false); }}
+              onClick={(e) => { e.stopPropagation(); if (isTouchRef.current) setIsOpenInfo((prev) => !prev); }}
             >
               <Info />
 

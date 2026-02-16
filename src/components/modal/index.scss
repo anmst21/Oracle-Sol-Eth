@@ -279,7 +279,6 @@
 
     background: rgba(136, 150, 151, 0.05);
     padding: 12px;
-    backdrop-filter: blur(75px);
 
     @include down(md) {
         width: 100%;

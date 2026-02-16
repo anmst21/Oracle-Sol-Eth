@@ -16,7 +16,7 @@ const ModalInfo = ({ header, closeModal, paragraph }: Props) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        onClick={() => closeModal()}
+        onClick={(e) => { e.stopPropagation(); closeModal(); }}
         className="modal-info"
       >
         <div className="modal-info__header">
