@@ -1,0 +1,175 @@
+.main:has(.not-found-page) {
+    min-height: calc(100dvh - 60px);
+    padding-top: 120px;
+    padding-bottom: 20px;
+
+    @include down(md) {
+        min-height: initial;
+        padding-top: 60px;
+        padding-bottom: 0;
+    }
+}
+
+.not-found-page {
+    display: flex;
+    position: relative;
+    width: 640px;
+    height: 640px;
+
+    @include down(md) {
+        width: 100%;
+        height: auto;
+        margin: 0 20px;
+    }
+
+    &__artwork {
+        position: relative;
+        overflow: hidden;
+        width: 640px;
+        height: 640px;
+        display: flex;
+        padding: 67px;
+        transform: translateX(-100px);
+
+        @include down(md) {
+            position: absolute;
+            padding: 0;
+            border-radius: 36px;
+            width: auto;
+            height: auto;
+            inset: 0;
+            transform: none;
+        }
+    }
+
+    &__window {
+        right: -100px;
+        display: flex;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        align-items: center;
+
+        @include down(md) {
+            right: initial;
+            position: relative;
+            width: 100%;
+            padding: 170px 16px 16px 16px;
+            top: auto;
+            bottom: auto;
+        }
+    }
+
+    &__card {
+        position: relative;
+        z-index: 1;
+        border-radius: 24px;
+        background: rgba(18, 18, 18, 0.95);
+        backdrop-filter: blur(5px);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        width: 340px;
+        height: 506px;
+        padding: 30px;
+
+        @include down(md) {
+            width: 100%;
+            height: auto;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        h3 {
+            margin-top: auto;
+            color: #D9F1E9;
+            font-family: var(--font-funnel-display);
+            font-size: 36px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+
+            @include down(md) {
+                font-size: 24px;
+            }
+        }
+
+        &__paragraph {
+            color: #ABBDB6;
+            font-family: var(--font-funnel-sans);
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 300;
+            line-height: 30px;
+
+            @include down(md) {
+                font-size: 14px;
+                line-height: 22px;
+            }
+        }
+
+        &__badge {
+            width: fit-content;
+            display: flex;
+            padding: 0 4px;
+            color: rgba(217, 241, 233, 0.80);
+            font-family: var(--font-funnel-display);
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            border-radius: 2px;
+            background: rgba(217, 241, 233, 0.10);
+
+            @include down(md) {
+                font-size: 12px;
+            }
+        }
+
+        &__cta {
+            height: 44px;
+            padding: 0 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            font-family: var(--font-funnel-display);
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 20px;
+
+            border: 1px solid rgba(174, 233, 0, 0.40);
+            background: rgba(174, 233, 0, 0.10);
+            color: #AEE900;
+            cursor: pointer;
+            transition: all .2s ease-out;
+
+            @include down(md) {
+                font-size: 16px;
+            }
+
+            &:hover {
+                border-color: #AEE900;
+            }
+
+            &:active {
+                background: #AEE900;
+                color: black;
+            }
+
+            &__mid {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                @include down(md) {
+                    svg {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
