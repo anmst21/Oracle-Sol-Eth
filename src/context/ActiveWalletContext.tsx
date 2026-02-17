@@ -156,6 +156,7 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
         });
 
         // 3. adapt & set state
+        console.log("[wallet-debug] adapting wallet, chainId:", activeWallet.chainId);
         setAdaptedWallet(adaptViemWallet(walletClient));
       }
       if (activeWallet?.type === "solana" && connection) {

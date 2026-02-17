@@ -582,8 +582,20 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   const onBuy = useCallback(async () => {
     if (quote && adaptedWallet && sellToken?.chainId) {
       const chainId = await adaptedWallet.getChainId();
-      if (chainId !== sellToken?.chainId)
-        adaptedWallet.switchChain(sellToken?.chainId);
+      console.log("[swap-debug] wallet chainId:", chainId, "| expected:", sellToken.chainId);
+
+      if (chainId !== sellToken?.chainId) {
+        console.log("[swap-debug] switching chain from", chainId, "to", sellToken.chainId);
+        try {
+          await adaptedWallet.switchChain(sellToken.chainId);
+          const newChainId = await adaptedWallet.getChainId();
+          console.log("[swap-debug] chain after switch:", newChainId);
+        } catch (switchErr) {
+          console.error("[swap-debug] switchChain failed:", switchErr);
+          triggerNotif("Failed to switch network", "error");
+          return;
+        }
+      }
 
       // The SDK's configureDynamicChains() can overwrite getClient().chains
       // with objects that lack viemChain. Wrap wallet handlers so we restore
@@ -608,6 +620,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         }),
       };
 
+      console.log("[swap-debug] executing quote...");
       try {
         await client.actions.execute({
           quote,
@@ -615,6 +628,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
           onProgress: (progress) => setProgress(progress),
         });
       } catch (err) {
+        console.error("[swap-debug] execute error:", err);
         setProgress(null);
         const msg =
           err instanceof Error ? err.message : typeof err === "string" ? err : "";
