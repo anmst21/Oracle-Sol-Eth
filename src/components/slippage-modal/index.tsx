@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { InputCross, ModalInfo as Info } from "../icons";
 import classNames from "classnames";
 import ModalInfo from "./modal-info";
@@ -7,6 +7,7 @@ import ModalInput from "./modal-input";
 import { useSlippage } from "@/context/SlippageContext";
 import { AnimatePresence, motion } from "motion/react";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { useInfoToggle } from "@/hooks/useInfoToggle";
 
 type Props = {
   closeModal: () => void;
@@ -15,8 +16,7 @@ type Props = {
 const SlippageModal = ({ closeModal }: Props) => {
   useBodyScrollLock();
   const { isCustomSlippage, setIsCustomSlippage } = useSlippage();
-  const [isOpenInfo, setIsOpenInfo] = useState(false);
-  const isTouchRef = useRef(false);
+  const [isOpenInfo, setIsOpenInfo, infoBind] = useInfoToggle();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -40,10 +40,7 @@ const SlippageModal = ({ closeModal }: Props) => {
               className={classNames("slippage-modal__header__item info-hover", {
                 "info-active": isOpenInfo,
               })}
-              onTouchStart={() => { isTouchRef.current = true; }}
-              onMouseEnter={() => { if (!isTouchRef.current) setIsOpenInfo(true); }}
-              onMouseLeave={() => { if (!isTouchRef.current) setIsOpenInfo(false); }}
-              onClick={(e) => { e.stopPropagation(); if (isTouchRef.current) setIsOpenInfo((prev) => !prev); }}
+              {...infoBind}
             >
               <Info />
               {wrapperRef.current && (

@@ -10,6 +10,7 @@ import classNames from "classnames";
 import { formatUnits } from "viem";
 import Link from "next/link";
 import ClockInfo from "../icons/ClockInfo";
+import { useInfoToggle } from "@/hooks/useInfoToggle";
 
 const relayDocUri = "https://docs.relay.link/what-is-relay";
 
@@ -20,11 +21,10 @@ type Props = {
 
 const SwapMeta = ({ quote, isLoading }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isOpenInfo, setIsOpenInfo] = useState(false);
-  const [isOpenSlippage, setIsOpenSlippage] = useState(false);
+  const [isOpenInfo, , impactBind] = useInfoToggle();
+  const [isOpenSlippage, , slippageBind] = useInfoToggle();
 
   const { isCustomSlippage, value } = useSlippage();
-  const isTouchRef = useRef(false);
 
   const totalImpactPercent = quote?.details?.totalImpact?.percent || "0";
   const totalImpactUsd = Number(
@@ -238,10 +238,7 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
                             {item.key === "cost" && <SlippageGas />}
                             {item.key === "slippage" && (
                               <div
-                                onTouchStart={() => { isTouchRef.current = true; }}
-                                onMouseLeave={() => { if (!isTouchRef.current && isOpenSlippage) setIsOpenSlippage(false); }}
-                                onMouseEnter={() => { if (!isTouchRef.current && !isOpenSlippage) setIsOpenSlippage(true); }}
-                                onClick={(e) => { e.stopPropagation(); if (isTouchRef.current) setIsOpenSlippage((prev) => !prev); }}
+                                {...slippageBind}
                                 className="slippage-badge swap-meta-item__value__text--modal"
                               >
                                 {isCustomSlippage ? "Custom" : "Auto"}
@@ -252,14 +249,6 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
                                 item.key === "route" ? "_blank" : undefined
                               }
                               href={item.key === "route" ? relayDocUri : {}}
-                              onMouseLeave={() => {
-                                if (!isTouchRef.current && isOpenSlippage && item.key === "slippage")
-                                  setIsOpenSlippage(false);
-                              }}
-                              onMouseEnter={() => {
-                                if (!isTouchRef.current && !isOpenSlippage && item.key === "slippage")
-                                  setIsOpenSlippage(true);
-                              }}
                               className={classNames(
                                 "swap-meta-item__value__text",
                                 {
@@ -296,10 +285,7 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
                             </Link>
                             {item.key === "impact" && (
                               <div
-                                onTouchStart={() => { isTouchRef.current = true; }}
-                                onMouseLeave={() => { if (!isTouchRef.current && isOpenInfo) setIsOpenInfo(false); }}
-                                onMouseEnter={() => { if (!isTouchRef.current && !isOpenInfo) setIsOpenInfo(true); }}
-                                onClick={(e) => { e.stopPropagation(); if (isTouchRef.current) setIsOpenInfo((prev) => !prev); }}
+                                {...impactBind}
                                 className="swap-meta-item__impact"
                               >
                                 <div

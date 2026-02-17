@@ -1,9 +1,10 @@
 import classNames from "classnames";
 import { motion } from "motion/react";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { InputCross, ModalInfo as Info } from "../icons";
 import ModalInfo from "../slippage-modal/modal-info";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { useInfoToggle } from "@/hooks/useInfoToggle";
 
 type Props = {
   closeModal: () => void;
@@ -21,8 +22,7 @@ const HistoryModalWrapper = ({
   modalCenter,
 }: Props) => {
   useBodyScrollLock();
-  const [isOpenInfo, setIsOpenInfo] = useState(false);
-  const isTouchRef = useRef(false);
+  const [isOpenInfo, setIsOpenInfo, infoBind] = useInfoToggle();
   return (
     <div
       onClick={closeModal}
@@ -49,10 +49,7 @@ const HistoryModalWrapper = ({
               className={classNames("slippage-modal__header__item info-hover", {
                 "info-active": isOpenInfo,
               })}
-              onTouchStart={() => { isTouchRef.current = true; }}
-              onMouseEnter={() => { if (!isTouchRef.current) setIsOpenInfo(true); }}
-              onMouseLeave={() => { if (!isTouchRef.current) setIsOpenInfo(false); }}
-              onClick={(e) => { e.stopPropagation(); if (isTouchRef.current) setIsOpenInfo((prev) => !prev); }}
+              {...infoBind}
             >
               <Info />
 
