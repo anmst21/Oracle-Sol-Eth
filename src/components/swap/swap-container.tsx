@@ -621,6 +621,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       };
 
       console.log("[swap-debug] executing quote...");
+      ensureChains();
       try {
         await client.actions.execute({
           quote,
