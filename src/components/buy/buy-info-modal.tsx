@@ -21,6 +21,7 @@ const BuyInfoModal = ({ isOpen, closeModal, modalItems }: Props) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
           className="document-item-modal__wrapper"
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={closeModal}
         >
           {modalItems.map((item, i) => {
