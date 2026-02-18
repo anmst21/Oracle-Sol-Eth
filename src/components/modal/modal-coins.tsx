@@ -12,11 +12,11 @@ import { getIconUri } from "@/helpers/get-icon-uri";
 import { ModalMode } from "@/types/modal-mode";
 import NativeCoinSkeleton from "./native-coin-skeleton";
 import { useOnRamp } from "@/context/OnRampProvider";
-import { MOONPAY_CHAIN_ID } from "./modal-chains";
+import { COINBASE_CHAIN_ID } from "./modal-chains";
 import {
-  getMoonpayChainId,
-  supportedMoonpayNetworks,
-} from "@/helpers/moonpay-chain-map";
+  getCoinbaseChainId,
+  supportedCoinbaseNetworks,
+} from "@/helpers/coinbase-chain-map";
 
 type Props = {
   activeChainId: number;
@@ -80,110 +80,134 @@ Props) => {
   const { chains } = useRelayChains();
   const chainIds = useMemo(() => chains?.map((chain) => chain.id), [chains]);
 
-  // --- MoonPay supported tokens ---
-  const { moonpayCryptos } = useOnRamp();
-  const isMoonpayActive = activeChainId === MOONPAY_CHAIN_ID;
-  const [moonpayTokens, setMoonpayTokens] = useState<UnifiedToken[]>([]);
-  const [isLoadingMoonpay, setIsLoadingMoonpay] = useState(false);
-  const moonpayFetched = useRef(false);
+  // --- Coinbase supported tokens ---
+  const { coinbaseCryptos } = useOnRamp();
+  const isCoinbaseActive = activeChainId === COINBASE_CHAIN_ID;
+  const [coinbaseTokens, setCoinbaseTokens] = useState<UnifiedToken[]>([]);
+  const [isLoadingCoinbase, setIsLoadingCoinbase] = useState(false);
+  const coinbaseFetched = useRef(false);
 
-  const filteredMoonpayCryptos = useMemo(() => {
-    return moonpayCryptos.filter(
-      (c) => !c.isSuspended && supportedMoonpayNetworks.has(c.metadata.networkCode)
+  const filteredCoinbaseCryptos = useMemo(() => {
+    return coinbaseCryptos.flatMap((currency) =>
+      currency.networks
+        .filter((n) => supportedCoinbaseNetworks.has(n.name))
+        .map((network) => ({
+          symbol: currency.symbol,
+          name: currency.name,
+          icon_url: currency.icon_url,
+          network_name: network.name,
+          contract_address: network.contract_address,
+          chain_id: network.chain_id,
+        }))
     );
-  }, [moonpayCryptos]);
+  }, [coinbaseCryptos]);
 
-  const fetchMoonpayTokens = useCallback(async () => {
-    if (moonpayFetched.current || filteredMoonpayCryptos.length === 0) return;
-    moonpayFetched.current = true;
-    setIsLoadingMoonpay(true);
+  const fetchCoinbaseTokens = useCallback(async () => {
+    if (coinbaseFetched.current || filteredCoinbaseCryptos.length === 0) return;
+    coinbaseFetched.current = true;
+    setIsLoadingCoinbase(true);
 
-    const tokens: UnifiedToken[] = [];
+    // Dedupe and build lookup structures
     const seen = new Set<string>();
+    const deduped: typeof filteredCoinbaseCryptos = [];
 
-    const promises = filteredMoonpayCryptos.map(async (crypto) => {
-      const chainId = getMoonpayChainId(crypto.metadata.networkCode);
-      if (!chainId) return;
-
-      const raw = crypto.metadata.contractAddress;
-      const addr = raw != null ? String(raw) : "";
-      const isNative = !addr || addr === "0";
+    for (const crypto of filteredCoinbaseCryptos) {
+      const chainId = getCoinbaseChainId(crypto.network_name);
+      if (!chainId) continue;
+      const addr = crypto.contract_address ?? "";
+      const isNative = !addr || addr === "0" || addr === "";
       const key = `${chainId}:${isNative ? "native" : addr.toLowerCase()}`;
-      if (seen.has(key)) return;
+      if (seen.has(key)) continue;
       seen.add(key);
+      deduped.push(crypto);
+    }
 
-      try {
-        const [relayToken] = await queryTokenList("https://api.relay.link", {
-          limit: 1,
-          chainIds: [chainId],
-          ...(!isNative
-            ? { address: addr }
-            : { term: crypto.code.split("_")[0] }),
-        });
+    // Build bulk token keys for a single API call
+    const tokenKeys: string[] = deduped.map((crypto) => {
+      const chainId = getCoinbaseChainId(crypto.network_name)!;
+      const addr = crypto.contract_address ?? "";
+      const isNative = !addr || addr === "0" || addr === "";
+      return `${chainId}:${isNative ? zeroAddress : addr.toLowerCase()}`;
+    });
 
-        // cross-reference user balances + prices
-        let balance: number | undefined;
-        let priceUsd: number | undefined;
-        const resolvedAddr = relayToken?.address || (isNative ? zeroAddress : addr);
+    // Single bulk fetch
+    let relayResults: RelayToken[] = [];
+    try {
+      relayResults = await queryTokenList("https://api.relay.link", {
+        tokens: tokenKeys,
+        limit: tokenKeys.length,
+      });
+    } catch {
+      // Relay lookup failed — we'll fall back to Coinbase metadata below
+    }
 
-        if (chainId === 792703809) {
-          if (isNative && nativeSolBalance) {
-            balance = nativeSolBalance.balance;
-            priceUsd = nativeSolBalance.solUsdPrice ?? undefined;
-          } else {
-            const found = userSolanaTokens?.find(
-              (t) => t.address.toLowerCase() === resolvedAddr.toLowerCase()
-            );
-            if (found) {
-              balance = found.balance;
-              priceUsd = found.priceUsd;
-            }
-          }
+    // Index relay results by chainId:address for fast lookup
+    const relayByKey = new Map<string, RelayToken>();
+    for (const rt of relayResults) {
+      if (rt.chainId && rt.address) {
+        relayByKey.set(`${rt.chainId}:${rt.address.toLowerCase()}`, rt);
+      }
+    }
+
+    const tokens: UnifiedToken[] = deduped.map((crypto) => {
+      const chainId = getCoinbaseChainId(crypto.network_name)!;
+      const addr = crypto.contract_address ?? "";
+      const isNative = !addr || addr === "0" || addr === "";
+      const lookupKey = `${chainId}:${isNative ? zeroAddress : addr.toLowerCase()}`;
+      const relayToken = relayByKey.get(lookupKey);
+
+      const resolvedAddr = relayToken?.address || (isNative ? zeroAddress : addr);
+
+      // Cross-reference user balances + prices
+      let balance: number | undefined;
+      let priceUsd: number | undefined;
+
+      if (chainId === 792703809) {
+        if (isNative && nativeSolBalance) {
+          balance = nativeSolBalance.balance;
+          priceUsd = nativeSolBalance.solUsdPrice ?? undefined;
         } else {
-          const found = userEthTokens?.find(
-            (t) =>
-              t.address.toLowerCase() === resolvedAddr.toLowerCase() &&
-              t.chainId === chainId
+          const found = userSolanaTokens?.find(
+            (t) => t.address.toLowerCase() === resolvedAddr.toLowerCase()
           );
           if (found) {
             balance = found.balance;
             priceUsd = found.priceUsd;
           }
         }
-
-        tokens.push({
-          source: "moonpay",
-          chainId,
-          address: relayToken?.address || (isNative ? zeroAddress : addr),
-          symbol: relayToken?.symbol || crypto.code.split("_")[0].toUpperCase(),
-          name: relayToken?.name || crypto.name,
-          logo: relayToken?.metadata?.logoURI || crypto.icon,
-          balance: balance ?? 0,
-          priceUsd: priceUsd ?? undefined,
-        });
-      } catch {
-        tokens.push({
-          source: "moonpay",
-          chainId,
-          address: isNative ? zeroAddress : addr,
-          symbol: crypto.code.split("_")[0].toUpperCase(),
-          name: crypto.name,
-          logo: crypto.icon,
-          balance: 0,
-        });
+      } else {
+        const found = userEthTokens?.find(
+          (t) =>
+            t.address.toLowerCase() === resolvedAddr.toLowerCase() &&
+            t.chainId === chainId
+        );
+        if (found) {
+          balance = found.balance;
+          priceUsd = found.priceUsd;
+        }
       }
+
+      return {
+        source: "coinbase" as const,
+        chainId,
+        address: resolvedAddr,
+        symbol: relayToken?.symbol || crypto.symbol.toUpperCase(),
+        name: relayToken?.name || crypto.name,
+        logo: relayToken?.metadata?.logoURI || crypto.icon_url,
+        balance: balance ?? 0,
+        priceUsd: priceUsd ?? undefined,
+      };
     });
 
-    await Promise.allSettled(promises);
-    setMoonpayTokens(tokens);
-    setIsLoadingMoonpay(false);
-  }, [filteredMoonpayCryptos, nativeSolBalance, userSolanaTokens, userEthTokens]);
+    setCoinbaseTokens(tokens);
+    setIsLoadingCoinbase(false);
+  }, [filteredCoinbaseCryptos, nativeSolBalance, userSolanaTokens, userEthTokens]);
 
   useEffect(() => {
-    if (modalMode === "onramp" && moonpayTokens.length === 0) {
-      fetchMoonpayTokens();
+    if (modalMode === "onramp" && coinbaseTokens.length === 0) {
+      fetchCoinbaseTokens();
     }
-  }, [modalMode, moonpayTokens.length, fetchMoonpayTokens]);
+  }, [modalMode, coinbaseTokens.length, fetchCoinbaseTokens]);
 
   useEffect(() => {
     if (!debouncedTerm) {
@@ -328,7 +352,7 @@ Props) => {
       : nativeTokens.filter((t) => t.chainId === activeChainId);
   }, [nativeTokens, activeChainId]);
 
-  // same for the “other” ERC-20s
+  // same for the "other" ERC-20s
   const ethOtherList = useMemo(() => {
     if (!nonNativeUserEthTokens) return [];
     return activeChainId === 0
@@ -343,20 +367,18 @@ Props) => {
       : communityCoins.filter((c) => c.chainId === activeChainId);
   }, [communityCoins, activeChainId]);
 
-  const moonpayLookup = useMemo(() => {
+  const coinbaseLookup = useMemo(() => {
     const set = new Set<string>();
-    for (const t of moonpayTokens) {
+    for (const t of coinbaseTokens) {
       set.add(`${t.chainId}:${t.address.toLowerCase()}`);
     }
     return set;
-  }, [moonpayTokens]);
+  }, [coinbaseTokens]);
 
-  const getMoonpaySource = (chainId: number | undefined, address: string) => {
+  const getCoinbaseSource = (chainId: number | undefined, address: string) => {
     if (modalMode !== "onramp" || !chainId) return undefined;
-    return moonpayLookup.has(`${chainId}:${address.toLowerCase()}`) ? "moonpay" as const : undefined;
+    return coinbaseLookup.has(`${chainId}:${address.toLowerCase()}`) ? "coinbase" as const : undefined;
   };
-
-  // const { activeWallet } = useActiveWallet();
 
   return (
     <div className="coins-list">
@@ -381,18 +403,18 @@ Props) => {
       </div>
 
       <div className="modal-native-coins">
-        {/* MoonPay Supported Tokens — only when MoonPay filter is active */}
-        {isMoonpayActive && !searchTerm.length && (
+        {/* Coinbase Supported Tokens — only when Coinbase filter is active */}
+        {isCoinbaseActive && !searchTerm.length && (
           <div className="modal-native-coins__container">
             <div className="chain-sidebar__header">
-              <h2>MoonPay Supported</h2>
+              <h2>Coinbase Supported</h2>
               <h2>Balance/Native</h2>
             </div>
-            {isLoadingMoonpay
+            {isLoadingCoinbase
               ? Array.from({ length: 7 }, (_, idx) => (
                   <NativeCoinSkeleton key={idx} />
                 ))
-              : moonpayTokens.map((token, i) => (
+              : coinbaseTokens.map((token, i) => (
                   <ModalCoinItem
                     key={i}
                     userBalance={token.balance}
@@ -407,7 +429,7 @@ Props) => {
                     onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={token.chainId}
-                    tokenSource="moonpay"
+                    tokenSource="coinbase"
                   />
                 ))}
           </div>
@@ -435,15 +457,15 @@ Props) => {
                     onSelect={onSelect}
                     modalMode={modalMode}
                     chainId={t.chainId}
-                    tokenSource={getMoonpaySource(t.chainId, t.address)}
+                    tokenSource={getCoinbaseSource(t.chainId, t.address)}
                   />
                 );
               })}
           </div>
         )}
 
-        {/* Standard sections — hidden when MoonPay filter is active */}
-        {!isMoonpayActive && (
+        {/* Standard sections — hidden when Coinbase filter is active */}
+        {!isCoinbaseActive && (
           <>
             {ethNativeList.length > 0 &&
               (activeChainId === 1 || activeChainId === 0) &&
@@ -475,7 +497,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
-                        tokenSource={getMoonpaySource(token.chainId, token.address === "native" ? zeroAddress : token.address)}
+                        tokenSource={getCoinbaseSource(token.chainId, token.address === "native" ? zeroAddress : token.address)}
                       />
                     );
                   })}
@@ -504,7 +526,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={792703809}
-                        tokenSource={getMoonpaySource(792703809, solanaChain.currency?.address ?? "")}
+                        tokenSource={getCoinbaseSource(792703809, solanaChain.currency?.address ?? "")}
                       />
                     )}
                 </div>
@@ -538,7 +560,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
-                        tokenSource={getMoonpaySource(token.chainId, token.address === "native" ? zeroAddress : token.address)}
+                        tokenSource={getCoinbaseSource(token.chainId, token.address === "native" ? zeroAddress : token.address)}
                       />
                     );
                   })}
@@ -568,7 +590,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={792703809}
-                        tokenSource={getMoonpaySource(792703809, token.address)}
+                        tokenSource={getCoinbaseSource(792703809, token.address)}
                       />
                     );
                   })}
@@ -595,7 +617,7 @@ Props) => {
                         chainId={activeChainId}
                         onSelect={onSelect}
                         modalMode={modalMode}
-                        tokenSource={getMoonpaySource(activeChainId, token.address)}
+                        tokenSource={getCoinbaseSource(activeChainId, token.address)}
                       />
                     );
                   })}
@@ -627,7 +649,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
-                        tokenSource={getMoonpaySource(token.chainId, token.address)}
+                        tokenSource={getCoinbaseSource(token.chainId, token.address)}
                       />
                     );
                   })}
@@ -661,7 +683,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
-                        tokenSource={getMoonpaySource(token.chainId, token.address)}
+                        tokenSource={getCoinbaseSource(token.chainId, token.address)}
                       />
                     );
                   })}
@@ -696,7 +718,7 @@ Props) => {
                         onSelect={onSelect}
                         modalMode={modalMode}
                         chainId={token.chainId}
-                        tokenSource={getMoonpaySource(token.chainId, token.address)}
+                        tokenSource={getCoinbaseSource(token.chainId, token.address)}
                       />
                     );
                   })}

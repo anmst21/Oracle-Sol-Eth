@@ -9,7 +9,7 @@ import { ModalMode } from "@/types/modal-mode";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { motion } from "motion/react";
 
-export const MOONPAY_CHAIN_ID = -1;
+export const COINBASE_CHAIN_ID = -1;
 
 type Props = {
   activeChainId: number;
@@ -183,17 +183,17 @@ const ModalChains = ({
         </div>
       )}
       <div className="modal-chains__scroll">
-        {/* MoonPay button — only in onramp mode */}
+        {/* Coinbase button — only in onramp mode */}
         {modalMode === "onramp" && (
           <div className="chain-sidebar__contianer">
             <button
               className={classNames("chain-sidebar", {
-                "chain-sidebar--active": activeChainId === MOONPAY_CHAIN_ID,
+                "chain-sidebar--active": activeChainId === COINBASE_CHAIN_ID,
               })}
-              onClick={() => handleChainSelect(MOONPAY_CHAIN_ID)}
+              onClick={() => handleChainSelect(COINBASE_CHAIN_ID)}
             >
-              <HexChain uri="https://cryptoiconsstorage.blob.core.windows.net/crypto-icons/moonpay-logo-lg.png" />
-              <span>MoonPay</span>
+              <HexChain uri="https://cryptoiconsstorage.blob.core.windows.net/crypto-icons/coinbase-onramp-logo.jpg" />
+              <span>Coinbase</span>
             </button>
           </div>
         )}
@@ -255,7 +255,7 @@ const ModalChains = ({
                 );
               })
             : Array.from({ length: 7 }, (_, idx) => (
-                <ChainSkeleton key={idx} />
+                <ChainSkeleton key={idx} index={idx} />
               ))}
         </div>
 
