@@ -1,4 +1,4 @@
-import { MoonpayFiatCurrency } from "@/types/moonpay-api";
+import { OnrampFiatCurrency } from "@/types/coinbase-onramp";
 import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { UnifiedToken } from "@/types/coin-types";
@@ -24,9 +24,9 @@ import { useRouter } from "next/navigation";
 import { useOnRamp } from "@/context/OnRampProvider";
 
 type Props = {
-  fiatCurrencies: MoonpayFiatCurrency[];
-  fiatCurrency: MoonpayFiatCurrency;
-  setFiatCurrency: Dispatch<SetStateAction<MoonpayFiatCurrency>>;
+  fiatCurrencies: OnrampFiatCurrency[];
+  fiatCurrency: OnrampFiatCurrency;
+  setFiatCurrency: Dispatch<SetStateAction<OnrampFiatCurrency>>;
   setValue: (value: string) => void;
   value: string;
   activeToken: UnifiedToken;
@@ -40,6 +40,7 @@ type Props = {
   countryName: string;
   conversionValue?: string;
   isLoadingQuote?: boolean;
+  onPresetClick: (amt: string) => void;
 };
 
 const presets = [5, 12.5, 25, 50];
@@ -61,6 +62,7 @@ const BuyWindowInput = ({
   countryName,
   conversionValue,
   isLoadingQuote,
+  onPresetClick,
 }: Props) => {
   // console.log("fiatCurrencies", fiatCurrencies);
 
@@ -74,7 +76,7 @@ const BuyWindowInput = ({
       name: "Direct Buy",
       icon: <BuyDirect />,
       description:
-        "Buy the token straight from MoonPay. Fast and simple—works only for assets MoonPay supports.",
+        "Buy the token straight from Coinbase. Fast and simple—works only for assets Coinbase supports.",
     },
   ];
   const sortedItems = useMemo(() => {
@@ -201,29 +203,22 @@ const BuyWindowInput = ({
               <BuySwitch />
             </button>
             <div className="buy-window-input__input__value">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={conversionValue || "empty"}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                >
-                  {inputType === "crypto" &&
-                    getSymbolFromCurrency(fiatCurrency.code)}
-                  <span>
-                    {isLoadingQuote
-                      ? "..."
-                      : conversionValue
-                        ? parseFloat(conversionValue).toLocaleString(
-                            undefined,
-                            { maximumFractionDigits: 6 }
-                          )
-                        : "0.00"}
-                  </span>
-                  {inputType === "fiat" && ` ${activeToken.symbol}`}
-                </motion.span>
-              </AnimatePresence>
+              <motion.span
+                animate={{ opacity: isLoadingQuote ? 0 : 1 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                {inputType === "crypto" &&
+                  getSymbolFromCurrency(fiatCurrency.code)}
+                <span>
+                  {conversionValue
+                    ? parseFloat(conversionValue).toLocaleString(
+                        undefined,
+                        { maximumFractionDigits: 6 }
+                      )
+                    : "0.00"}
+                </span>
+                {inputType === "fiat" && ` ${activeToken.symbol}`}
+              </motion.span>
             </div>
           </div>
         </label>
@@ -246,7 +241,7 @@ const BuyWindowInput = ({
             return (
               <button
                 className="buy-window-input__preset"
-                onClick={() => setValue(amt)}
+                onClick={() => onPresetClick(amt)}
                 key={i}
               >
                 <span>

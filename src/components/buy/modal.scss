@@ -4,14 +4,13 @@
         background-color: rgba(174, 233, 0, 0.1) !important;
     }
 
-    .pool-item__pool__name__bottom {
-        span {
-            display: inline-block; // inline elements ignore width/max-width
-            width: 17ch; // or keep max-width if you prefer
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
+    .pool-item__pool__name__top span,
+    .pool-item__pool__name__bottom span {
+        overflow: visible;
+        white-space: nowrap;
+        text-overflow: unset;
+        width: auto;
+        max-width: none;
     }
 
 
@@ -76,7 +75,7 @@
     &__wrapper {
         border-radius: 12px;
         border: 1px solid rgba(136, 150, 151, 0.20);
-        backdrop-filter: none;
+        backdrop-filter: blur(16px);
         display: flex;
         flex-direction: column;
         gap: 12px;
@@ -96,7 +95,7 @@
             top: 0;
             bottom: 0;
             position: absolute;
-            background: #0f1315;
+            background: rgba(136, 150, 151, 0.05);
             z-index: -1;
         }
 

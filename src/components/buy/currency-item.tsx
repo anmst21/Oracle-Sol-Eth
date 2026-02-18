@@ -1,8 +1,8 @@
-import { MoonpayFiatCurrency } from "@/types/moonpay-api";
+import { OnrampFiatCurrency } from "@/types/coinbase-onramp";
 import classNames from "classnames";
 import Image from "next/image";
 type Props = {
-  currency: MoonpayFiatCurrency;
+  currency: OnrampFiatCurrency;
   isActive: boolean;
   callback: () => void;
 };

@@ -1,14 +1,14 @@
 import HistoryModalWrapper from "../history/history-modal-wrapper";
-import { MoonpayFiatCurrency } from "@/types/moonpay-api";
+import { OnrampFiatCurrency } from "@/types/coinbase-onramp";
 import CurrencyItem from "./currency-item";
 import { InputCross, SearchGlass } from "../icons";
 import { useEffect, useState } from "react";
 
 type Props = {
   closeModal: () => void;
-  fiatCurrencies: MoonpayFiatCurrency[];
-  fiatCurrency: MoonpayFiatCurrency;
-  onCurrencyChange: (value: MoonpayFiatCurrency) => void;
+  fiatCurrencies: OnrampFiatCurrency[];
+  fiatCurrency: OnrampFiatCurrency;
+  onCurrencyChange: (value: OnrampFiatCurrency) => void;
 };
 
 const CurrenciesModal = ({
@@ -19,7 +19,7 @@ const CurrenciesModal = ({
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCurrencies, setFilteredCurrencies] =
-    useState<MoonpayFiatCurrency[]>(fiatCurrencies);
+    useState<OnrampFiatCurrency[]>(fiatCurrencies);
 
   // fiatCurrency.name;
   // fiatCurrency.code;

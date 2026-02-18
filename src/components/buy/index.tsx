@@ -1,16 +1,13 @@
 "use client";
 
 import {
-  MoonpayBuyQuoteResponse,
-  MoonpayCountriesResponse,
-  MoonpayCryptoCurrency,
-  MoonpayFiatCurrency,
-  MoonpayIpResponse,
-} from "@/types/moonpay-api";
+  CoinbasePurchaseCurrency,
+  OnrampFiatCurrency,
+} from "@/types/coinbase-onramp";
 import BuyWindowInput from "./buy-window-input";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { usdCurrency } from "@/helpers/moonpay-usd-currency";
 import { baseEthToken } from "@/helpers/base-eth-token";
+import { solanaToken } from "@/helpers/solana-token";
 import { UnifiedToken } from "@/types/coin-types";
 import { InputType, OracleRouteType } from "./types";
 import { AnimatePresence } from "motion/react";
@@ -21,9 +18,10 @@ import RegionsModal from "@/components/buy/regions-modal";
 import BuyInputWallet from "./buy-input-wallet";
 import BuyWindowCta from "./buy-window-cta";
 
-import { fetchMoonpayBuyQuote } from "@/actions/fetch-moonpay-quote";
+import { fetchCoinbaseQuote } from "@/actions/fetch-coinbase-quote";
+import { fetchCoinbaseSessionToken } from "@/actions/fetch-coinbase-session-token";
 import { fetchRelayPrice } from "@/helpers/fetch-relay-price";
-import { getMoonpayCode } from "@/helpers/get-moonpay-code";
+import { getCoinbaseNetworkName } from "@/helpers/coinbase-chain-map";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import {
   ConnectedSolanaWallet,
@@ -31,40 +29,54 @@ import {
 } from "@privy-io/react-auth";
 import { SwapWallet } from "../swap/types";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
+import DynamicNotification from "../dynamic-notification";
 
-const MoonPayBuyWidget = dynamic(
-  () => import("@moonpay/moonpay-react").then((mod) => mod.MoonPayBuyWidget),
-  { ssr: false }
-);
+const USD_CURRENCY: OnrampFiatCurrency = {
+  id: "USD",
+  code: "usd",
+  name: "US Dollar",
+  icon: "https://flagcdn.com/us.svg",
+  minBuyAmount: 20,
+  maxBuyAmount: 10000,
+};
 
 type Props = {
-  moonpayIp: MoonpayIpResponse;
-  fiatCurrencies: MoonpayFiatCurrency[];
-  cryptoCurrencies: MoonpayCryptoCurrency[];
-  countries: MoonpayCountriesResponse;
+  country: string;
+  fiatCurrencies: OnrampFiatCurrency[];
+  purchaseCurrencies: CoinbasePurchaseCurrency[];
+  isSupported: boolean;
 };
 
 const BuyWindow = ({
-  moonpayIp,
+  country,
   fiatCurrencies,
-  cryptoCurrencies,
-  countries,
+  purchaseCurrencies,
+  isSupported,
 }: Props) => {
-  const { setMoonpayCryptos } = useOnRamp();
+  const {
+    setCoinbaseCryptos,
+    setUserCountry,
+    setIsSupported,
+    isOpenRegions,
+    setIsOpenRegions,
+  } = useOnRamp();
   const router = useRouter();
 
   useEffect(() => {
-    if (cryptoCurrencies.length > 0) {
-      setMoonpayCryptos(cryptoCurrencies);
+    if (purchaseCurrencies.length > 0) {
+      setCoinbaseCryptos(purchaseCurrencies);
     }
-  }, [cryptoCurrencies, setMoonpayCryptos]);
+    setUserCountry(country);
+    setIsSupported(isSupported);
+  }, [purchaseCurrencies, setCoinbaseCryptos, country, setUserCountry, isSupported, setIsSupported]);
 
-  const [fiatCurrency, setFiatCurrency] =
-    useState<MoonpayFiatCurrency>(usdCurrency);
+  const defaultFiat = fiatCurrencies.find((f) => f.code === "usd") ?? fiatCurrencies[0] ?? USD_CURRENCY;
+
+  const [fiatCurrency, setFiatCurrency] = useState<OnrampFiatCurrency>(defaultFiat);
   const [activeToken, setActiveToken] = useState<UnifiedToken>(baseEthToken);
   const [inputType, setInputType] = useState<InputType>("fiat");
   const [value, setValue] = useState("20");
+  const [debouncedValue, setDebouncedValue] = useState("20");
   const [isOpenCurrencies, setIsOpenCurrencies] = useState(false);
 
   // Wallet state (lifted from BuyInputWallet)
@@ -73,21 +85,52 @@ const BuyWindow = ({
     SwapWallet | ConnectedWallet | ConnectedSolanaWallet | null
   >(null);
 
+  const handleWalletChange = useCallback(
+    (wallet: SwapWallet | ConnectedWallet | ConnectedSolanaWallet | null) => {
+      setBuyWallet(wallet);
+      if (!wallet) return;
+      const walletType = (wallet as SwapWallet).type;
+      if (walletType === "solana") {
+        setActiveToken(solanaToken);
+      } else if (walletType === "ethereum") {
+        setActiveToken(baseEthToken);
+      }
+    },
+    []
+  );
+
   useEffect(() => {
-    if (!buyWallet && defaultWallet) setBuyWallet(defaultWallet);
-  }, [buyWallet, defaultWallet]);
+    if (!buyWallet && defaultWallet) handleWalletChange(defaultWallet);
+  }, [buyWallet, defaultWallet, handleWalletChange]);
 
   // Quote state
-  const [quote, setQuote] = useState<MoonpayBuyQuoteResponse | null>(null);
+  const [quoteData, setQuoteData] = useState<{
+    purchaseAmount: number;
+    paymentTotal: number;
+    fee: number;
+  } | null>(null);
   const [relayEstimate, setRelayEstimate] = useState<string>("");
-  const [isLoadingQuote, setIsLoadingQuote] = useState(false);
+  const [isLoadingQuote, setIsLoadingQuote] = useState(true);
   const [quoteError, setQuoteError] = useState<string | null>(null);
 
-  // MoonPay widget state
-  const [showWidget, setShowWidget] = useState(false);
+  // Notification state
+  const [notifMessage, setNotifMessage] = useState("");
+  const [notifType, setNotifType] = useState<"error" | "success" | null>(null);
+
+  const triggerNotif = useCallback(
+    (message: string, type: "error" | "success") => {
+      setNotifMessage("");
+      setNotifType(null);
+      setTimeout(() => {
+        setNotifMessage(message);
+        setNotifType(type);
+      }, 0);
+    },
+    []
+  );
 
   const routeType =
-    activeToken.source === "moonpay"
+    activeToken.source === "coinbase"
       ? OracleRouteType.DIRECT
       : OracleRouteType.ORACLE;
 
@@ -105,41 +148,95 @@ const BuyWindow = ({
     [setActiveToken]
   );
 
-  const isBuyAllowed = useMemo(
-    () => moonpayIp.isAllowed && moonpayIp.isBuyAllowed,
-    [moonpayIp]
-  );
+  const isBuyAllowed = isSupported;
+
+  // Conversion display value (must be above onInputTypeChange)
+  const conversionValue = useMemo(() => {
+    if (inputType === "crypto" && quoteData) {
+      // In crypto mode, show the fiat total as conversion
+      return String(quoteData.paymentTotal);
+    }
+    if (routeType === OracleRouteType.DIRECT && quoteData) {
+      return String(quoteData.purchaseAmount);
+    }
+    if (routeType === OracleRouteType.ORACLE && relayEstimate) {
+      return relayEstimate;
+    }
+    return "";
+  }, [inputType, routeType, quoteData, relayEstimate]);
 
   const onInputTypeChange = useCallback(() => {
-    if (inputType === "crypto") setInputType("fiat");
-    if (inputType === "fiat") setInputType("crypto");
-  }, [setInputType, inputType]);
+    if (conversionValue) {
+      const num = parseFloat(conversionValue);
+      setValue(isNaN(num) ? conversionValue : parseFloat(num.toFixed(6)).toString());
+    }
+    setInputType((prev) => (prev === "fiat" ? "crypto" : "fiat"));
+  }, [conversionValue]);
+
+  const onPresetClick = useCallback((amt: string) => {
+    setInputType("fiat");
+    setValue(amt);
+  }, []);
 
   const onCurrenciesOpen = useCallback(() => setIsOpenCurrencies(true), []);
 
   const onCurrencyChange = useCallback(
-    (value: MoonpayFiatCurrency) => {
+    (value: OnrampFiatCurrency) => {
       setFiatCurrency(value);
       setIsOpenCurrencies(false);
       setInputType("fiat");
-      setValue(String(value.minAmount));
+      setValue(String(value.minBuyAmount));
     },
     [setFiatCurrency]
   );
 
-  const { isOpenRegions, setIsOpenRegions } = useOnRamp();
-
-  // Debounced quote fetching
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  // Debounce input value (500ms)
   useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    const numVal = parseFloat(value);
+    if (!value || isNaN(numVal) || numVal <= 0) {
+      setDebouncedValue("");
+      return;
+    }
+    const id = setTimeout(() => setDebouncedValue(value), 500);
+    return () => clearTimeout(id);
+  }, [value]);
 
-    const fiatAmount = parseFloat(value);
-    if (!value || isNaN(fiatAmount) || fiatAmount <= 0) {
-      setQuote(null);
+  // Track fiat-per-crypto rate from last successful quote
+  const rateRef = useRef<number>(0);
+
+  // Fetch quote when debounced value settles
+  useEffect(() => {
+    let cancelled = false;
+
+    const numVal = parseFloat(debouncedValue);
+    if (!debouncedValue || isNaN(numVal) || numVal <= 0) {
+      setQuoteData(null);
       setRelayEstimate("");
       setQuoteError(null);
+      setIsLoadingQuote(false);
+      return;
+    }
+
+    // Compute the fiat amount to send to Coinbase
+    let fiatAmount: string;
+    if (inputType === "fiat") {
+      fiatAmount = debouncedValue;
+    } else {
+      // Crypto mode: estimate fiat from last rate
+      if (rateRef.current > 0) {
+        fiatAmount = String(Math.max(numVal * rateRef.current, fiatCurrency.minBuyAmount));
+      } else {
+        // No rate yet — can't quote
+        setIsLoadingQuote(false);
+        return;
+      }
+    }
+
+    // Skip if outside payment limits
+    const fiatNum = parseFloat(fiatAmount);
+    if (fiatNum < fiatCurrency.minBuyAmount || fiatNum > fiatCurrency.maxBuyAmount) {
+      setQuoteData(null);
+      setRelayEstimate("");
       setIsLoadingQuote(false);
       return;
     }
@@ -147,94 +244,174 @@ const BuyWindow = ({
     setIsLoadingQuote(true);
     setQuoteError(null);
 
-    debounceRef.current = setTimeout(async () => {
+    (async () => {
       try {
-        const moonpayCode = getMoonpayCode(activeToken, cryptoCurrencies);
-        if (!moonpayCode) {
-          setQuoteError("Token not supported");
-          setIsLoadingQuote(false);
-          return;
+        // Always quote ETH on base for Oracle route;
+        // for Direct, try the token's network, fall back to ETH if not tradeable
+        let purchaseCurrency =
+          routeType === OracleRouteType.DIRECT
+            ? activeToken.symbol
+            : "ETH";
+        let purchaseNetwork =
+          routeType === OracleRouteType.DIRECT && activeToken.chainId
+            ? getCoinbaseNetworkName(activeToken.chainId) ?? undefined
+            : "base";
+        let fallbackToOracle = false;
+
+        let q: Awaited<ReturnType<typeof fetchCoinbaseQuote>>;
+        try {
+          q = await fetchCoinbaseQuote({
+            purchaseCurrency,
+            purchaseNetwork,
+            paymentAmount: fiatAmount,
+            paymentCurrency: fiatCurrency.code.toUpperCase(),
+            country,
+          });
+        } catch (directErr: any) {
+          // If network not tradeable, fall back to buying ETH on base
+          if (directErr?.message?.includes("NETWORK_NOT_TRADABLE") ||
+              directErr?.message?.includes("NOT_TRADABLE")) {
+            purchaseCurrency = "ETH";
+            purchaseNetwork = "base";
+            fallbackToOracle = true;
+            q = await fetchCoinbaseQuote({
+              purchaseCurrency,
+              purchaseNetwork,
+              paymentAmount: fiatAmount,
+              paymentCurrency: fiatCurrency.code.toUpperCase(),
+              country,
+            });
+          } else {
+            throw directErr;
+          }
         }
 
-        if (routeType === OracleRouteType.DIRECT) {
-          // DIRECT: fetch MoonPay quote for the token directly
-          const q = await fetchMoonpayBuyQuote({
-            currencyCode: moonpayCode,
-            baseCurrencyCode: fiatCurrency.code,
-            baseCurrencyAmount: value,
-          });
-          setQuote(q);
+        if (cancelled) return;
+
+        const purchaseAmount = parseFloat(q.purchase_amount.value);
+        const paymentTotal = parseFloat(q.payment_total.value);
+        const fee = parseFloat(q.coinbase_fee.value);
+
+        setQuoteData({ purchaseAmount, paymentTotal, fee });
+
+        // Update rate for crypto→fiat conversion
+        if (purchaseAmount > 0) {
+          rateRef.current = paymentTotal / purchaseAmount;
+        }
+
+        if (routeType === OracleRouteType.DIRECT && !fallbackToOracle) {
           setRelayEstimate("");
         } else {
-          // ORACLE: fetch MoonPay quote for eth_base, then Relay price
-          const q = await fetchMoonpayBuyQuote({
-            currencyCode: "eth_base",
-            baseCurrencyCode: fiatCurrency.code,
-            baseCurrencyAmount: value,
-          });
-          setQuote(q);
-
-          // Now estimate swap from base ETH → target token
-          if (q.quoteCurrencyAmount > 0 && activeToken.chainId) {
+          // ORACLE or fallback: estimate swap from ETH -> target token
+          if (purchaseAmount > 0 && activeToken.chainId) {
             const estimate = await fetchRelayPrice({
-              originChainId: 8453,
+              originChainId: 1,
               originCurrency: "0x0000000000000000000000000000000000000000",
               destinationChainId: activeToken.chainId,
               destinationCurrency: activeToken.address,
-              amount: String(q.quoteCurrencyAmount),
+              amount: String(purchaseAmount),
               originDecimals: 18,
             });
+            if (cancelled) return;
             setRelayEstimate(estimate ?? "");
           }
         }
 
         setQuoteError(null);
       } catch (e) {
-        const msg = e instanceof Error ? e.message : "Failed to fetch quote";
+        if (cancelled) return;
+        console.error("Buy quote error:", e);
+        const raw = e instanceof Error ? e.message : "Failed to fetch quote";
+        let msg = raw;
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          try {
+            const parsed = JSON.parse(jsonMatch[0]);
+            msg = parsed.message || parsed.error || raw;
+          } catch {
+            // keep raw
+          }
+        }
         setQuoteError(msg);
-        setQuote(null);
+        triggerNotif(msg, "error");
+        setQuoteData(null);
         setRelayEstimate("");
       } finally {
-        setIsLoadingQuote(false);
+        if (!cancelled) setIsLoadingQuote(false);
       }
-    }, 500);
+    })();
 
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [value, activeToken, fiatCurrency.code, routeType, cryptoCurrencies]);
+    return () => { cancelled = true; };
+  }, [debouncedValue, inputType, activeToken, fiatCurrency.code, routeType, country]);
 
-  // Conversion display value
-  const conversionValue = useMemo(() => {
-    if (routeType === OracleRouteType.DIRECT && quote) {
-      return String(quote.quoteCurrencyAmount);
+  const handleBuy = useCallback(async () => {
+    if (!buyWallet?.address) {
+      triggerNotif("No wallet connected", "error");
+      return;
     }
-    if (routeType === OracleRouteType.ORACLE && relayEstimate) {
-      return relayEstimate;
-    }
-    return "";
-  }, [routeType, quote, relayEstimate]);
 
-  // MoonPay widget currency code
-  const widgetCurrencyCode = useMemo(() => {
-    if (routeType === OracleRouteType.DIRECT) {
-      return getMoonpayCode(activeToken, cryptoCurrencies) ?? undefined;
-    }
-    return "eth_base";
-  }, [routeType, activeToken, cryptoCurrencies]);
+    // Open popup immediately to avoid popup blockers
+    const popup = window.open("about:blank", "coinbase-onramp", "width=460,height=720");
 
-  const handleBuy = useCallback(() => {
-    setShowWidget(true);
-  }, []);
+    try {
+      const chainName = activeToken.chainId
+        ? getCoinbaseNetworkName(activeToken.chainId)
+        : "ethereum";
+      const blockchains = [chainName ?? "ethereum"];
+      const assets =
+        routeType === OracleRouteType.DIRECT
+          ? [activeToken.symbol]
+          : ["ETH"];
+
+      const { token } = await fetchCoinbaseSessionToken({
+        address: buyWallet.address,
+        blockchains,
+        assets,
+      });
+
+      const isSandbox = process.env.NEXT_PUBLIC_COINBASE_SANDBOX === "true";
+      const baseUrl = isSandbox
+        ? "https://pay.coinbase.com/buy/select-asset"
+        : "https://pay.coinbase.com/buy/select-asset";
+
+      const params = new URLSearchParams({
+        sessionToken: token,
+        defaultAsset: routeType === OracleRouteType.DIRECT ? activeToken.symbol : "ETH",
+        fiatCurrency: fiatCurrency.code.toUpperCase(),
+        presetFiatAmount: value,
+      });
+
+      if (popup) {
+        popup.location.href = `${baseUrl}?${params.toString()}`;
+
+        // Poll for popup close
+        const pollTimer = setInterval(() => {
+          if (popup.closed) {
+            clearInterval(pollTimer);
+            handleTransactionCompleted();
+          }
+        }, 1000);
+      } else {
+        triggerNotif("Popup blocked — please allow popups for this site", "error");
+      }
+    } catch (e) {
+      console.error("Coinbase session error:", e);
+      popup?.close();
+      const msg = e instanceof Error ? e.message : "Failed to start checkout";
+      triggerNotif(msg, "error");
+    }
+  }, [routeType, value, activeToken, fiatCurrency.code, buyWallet]);
 
   const handleTransactionCompleted = useCallback(async () => {
-    setShowWidget(false);
-    if (routeType === OracleRouteType.ORACLE) {
+    if (routeType === OracleRouteType.DIRECT) {
+      triggerNotif(`Successfully purchased ${activeToken.symbol}!`, "success");
+    } else {
+      triggerNotif("ETH purchased — redirecting to swap...", "success");
       router.push(
-        `/swap?sellAddress=0x0000000000000000000000000000000000000000&sellChainId=8453&buyAddress=${activeToken.address}&buyChainId=${activeToken.chainId}`
+        `/swap?sellAddress=0x0000000000000000000000000000000000000000&sellChainId=1&buyAddress=${activeToken.address}&buyChainId=${activeToken.chainId}`
       );
     }
-  }, [routeType, activeToken, router]);
+  }, [routeType, activeToken, router, triggerNotif]);
 
   return (
     <div className="buy-window">
@@ -251,38 +428,27 @@ const BuyWindow = ({
         switchInputType={onInputTypeChange}
         onCurrenciesOpen={onCurrenciesOpen}
         routeType={routeType}
-        isError={!moonpayIp.isBuyAllowed}
-        countryName={moonpayIp.country}
+        isError={!isSupported}
+        countryName={country}
         conversionValue={conversionValue}
         isLoadingQuote={isLoadingQuote}
+        onPresetClick={onPresetClick}
       />
       <BuyInputWallet
-        isError={!moonpayIp.isBuyAllowed}
+        isError={!isSupported}
         activeWallet={buyWallet}
-        setActiveWallet={setBuyWallet}
+        setActiveWallet={handleWalletChange}
       />
       <BuyWindowCta
-        isError={!moonpayIp.isBuyAllowed}
+        isError={!isSupported}
         isLoadingQuote={isLoadingQuote}
         quoteError={quoteError}
-        hasQuote={!!quote}
+        hasQuote={!!quoteData}
         hasValue={!!value && parseFloat(value) > 0}
         hasWallet={!!buyWallet}
         routeType={routeType}
         onBuy={handleBuy}
       />
-      {showWidget && widgetCurrencyCode && (
-        <MoonPayBuyWidget
-          variant="overlay"
-          currencyCode={widgetCurrencyCode}
-          baseCurrencyCode={fiatCurrency.code}
-          baseCurrencyAmount={value}
-          walletAddress={buyWallet?.address}
-          visible={showWidget}
-          onTransactionCompleted={handleTransactionCompleted}
-          onCloseOverlay={() => setShowWidget(false)}
-        />
-      )}
       <AnimatePresence mode="wait">
         {isOpenCurrencies && (
           <CurrenciesModal
@@ -296,12 +462,12 @@ const BuyWindow = ({
       <AnimatePresence mode="wait">
         {isOpenRegions && (
           <RegionsModal
-            moonpayIp={moonpayIp}
-            countries={countries}
+            country={country}
             closeModal={() => setIsOpenRegions(false)}
           />
         )}
       </AnimatePresence>
+      <DynamicNotification message={notifMessage} type={notifType} time={5} />
     </div>
   );
 };

@@ -78,7 +78,7 @@ const BuyWindowCta = ({
     handleClick = login;
     icon = <ButtonPrivy />;
   } else if (quoteError) {
-    label = "Error";
+    label = quoteError.length > 30 ? "Quote Error" : quoteError;
     disabled = true;
     icon = <InputCross />;
   } else if (!hasValue) {
@@ -91,7 +91,7 @@ const BuyWindowCta = ({
     icon = <ButtonWallet />;
   } else if (hasQuote && !isLoading) {
     label =
-      routeType === OracleRouteType.ORACLE ? "Buy ETH on Base" : "Buy";
+      routeType === OracleRouteType.ORACLE ? "Buy ETH" : "Buy";
     disabled = false;
     handleClick = onBuy;
     icon = <ButtonSwap />;

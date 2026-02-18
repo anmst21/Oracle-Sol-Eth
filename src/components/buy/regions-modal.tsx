@@ -1,46 +1,40 @@
 import React, { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { InputCross } from "../icons";
-
 import { TRANSITION } from "../shared/animation";
-import {
-  MoonpayCountriesResponse,
-  MoonpayIpResponse,
-} from "@/types/moonpay-api";
-import ChartError from "../chart/chart-error";
 import ModalPagination from "../chart/modal-pagination";
-import RegionItem from "./region-item";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { COUNTRY_LIST } from "./country-list";
+import Image from "next/image";
+import { flagCdnUri } from "@/types/flag-cdn-uri";
+import classNames from "classnames";
 
 type Props = {
   closeModal: () => void;
-  countries: MoonpayCountriesResponse;
-  moonpayIp: MoonpayIpResponse;
+  country: string;
 };
 
-const RegionsModal = ({ closeModal, countries, moonpayIp }: Props) => {
+const RegionsModal = ({ closeModal, country }: Props) => {
   useBodyScrollLock();
-  // console.log({ moonpayIp, countries });
   const [itemsPerPage, setItemsPerPage] = useState(12);
-
   const [currentPage, setCurrentPage] = useState(1);
-  const sortedCountries = useMemo(() => {
-    if (!Array.isArray(countries) || countries.length === 0) return [];
-    const activeA3 = moonpayIp?.alpha3?.toUpperCase?.();
-    const arr = countries.slice(); // copy to avoid mutation
-    if (!activeA3) return arr;
 
-    const idx = arr.findIndex((c) => c.alpha3?.toUpperCase?.() === activeA3);
+  console.log("RegionsModal data:", COUNTRY_LIST);
+
+  const sortedCountries = useMemo(() => {
+    const arr = [...COUNTRY_LIST];
+    const idx = arr.findIndex(
+      (c) => c.alpha2.toUpperCase() === country.toUpperCase()
+    );
     if (idx > 0) {
       const [active] = arr.splice(idx, 1);
       arr.unshift(active);
     }
     return arr;
-  }, [countries, moonpayIp?.alpha3]);
+  }, [country]);
 
   const totalPages = Math.ceil(sortedCountries.length / itemsPerPage);
 
-  // 2) Paginate *after* sorting
   const paginatedCountries = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return sortedCountries.slice(start, start + itemsPerPage);
@@ -58,7 +52,7 @@ const RegionsModal = ({ closeModal, countries, moonpayIp }: Props) => {
       >
         <div className="modal__header">
           <div className="modal__header__inner">
-            <span>Available Regions</span>
+            <span>Select Region</span>
             <button
               onClick={() => closeModal()}
               className="chain-sidebar__input__abandon"
@@ -69,24 +63,12 @@ const RegionsModal = ({ closeModal, countries, moonpayIp }: Props) => {
         </div>
 
         <div className="modal-table">
-          {!countries && (
-            <ChartError
-              btnLeftCallback={() => {}}
-              btnLeftHeader={"Reload Data"}
-              btnRightCallback={() => closeModal()}
-              btnRightHeader={"Close Window"}
-              mainHeader={"Unable to Load Trades"}
-              paragraph={
-                "We encountered an issue retrieving the latest trades data. This may be due to a temporary network problem or unavailable data from the source."
-              }
-            />
-          )}
           <table>
             <thead>
               <tr>
                 <th className="modal-table__header__index">
                   <div>
-                    <span>№</span>
+                    <span>#</span>
                   </div>
                 </th>
                 <th className="modal-table__header__time">
@@ -96,41 +78,55 @@ const RegionsModal = ({ closeModal, countries, moonpayIp }: Props) => {
                 </th>
                 <th className="modal-table__header__type">
                   <div>
-                    <span>Buy</span>
-                  </div>
-                </th>
-                <th className="modal-table__header__price">
-                  <div>
-                    <span>Sell</span>
-                  </div>
-                </th>
-                <th className="pools-modal__header__txn">
-                  <div>
-                    <span>Supported Docs</span>
-                  </div>
-                </th>
-                <th className="pools-modal__header__vol">
-                  <div>
-                    <span>Suggested Docs</span>
+                    <span>Code</span>
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {/* {isLoadingTrades &&
-                Array.from({ length: 12 }, (_, i) => (
-                  <TradeItemSkeleton index={i + 1} key={i} />
-                ))} */}
-              {paginatedCountries.map((country, i) => (
-                <RegionItem
-                  isActive={country.alpha3 === moonpayIp.alpha3}
-                  key={i}
-                  country={country}
-                  index={i + 1}
-                />
-              ))}
-
-              {/* <RegionItem key={1} country={paginatedCountries[0]} index={1} /> */}
+              {paginatedCountries.map((c, i) => {
+                const isActive =
+                  c.alpha2.toUpperCase() === country.toUpperCase();
+                return (
+                  <tr
+                    key={c.alpha2}
+                    className={classNames(
+                      "trade-item pool-item region-item",
+                      { "region-item--active": isActive }
+                    )}
+                  >
+                    <td className="trade-item__index">
+                      <div>
+                        <span>
+                          {(currentPage - 1) * itemsPerPage + i + 1}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="pool-item__pool">
+                        <div className="pool-item__pool__image">
+                          <Image
+                            width={32}
+                            height={32}
+                            alt={`${c.name} flag`}
+                            src={flagCdnUri(c.alpha2)}
+                          />
+                        </div>
+                        <div className="pool-item__pool__name">
+                          <div className="pool-item__pool__name__top">
+                            <span>{c.name}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="trade-item__kind">
+                      <div className="trade-item__kind__block">
+                        <span>{c.alpha2}</span>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <ModalPagination
