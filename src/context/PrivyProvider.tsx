@@ -5,9 +5,9 @@ import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";
 
 import { useRelayChains } from "@reservoir0x/relay-kit-hooks";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
-  const solanaConnectors = toSolanaWalletConnectors();
+const solanaConnectors = toSolanaWalletConnectors();
 
+export default function Providers({ children }: { children: React.ReactNode }) {
   const { viemChains } = useRelayChains();
 
   return (

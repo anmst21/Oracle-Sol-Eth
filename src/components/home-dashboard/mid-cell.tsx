@@ -23,7 +23,7 @@ const MidCell = ({ type, index = 0, value }: Props) => {
   const isBase = type === "base";
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const valueRef = useRef<HTMLDivElement>(null);
-  const [display, setDisplay] = useState(scrambleValue(value));
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!lottieRef.current) return;

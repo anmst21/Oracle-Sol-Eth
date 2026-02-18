@@ -18,22 +18,26 @@ const HeroCarousel = () => {
     AutoScroll({ playOnInit: true, speed: 0.8 }),
   ]);
 
-  const [opacities, setOpacities] = useState(
-    Array.from({ length: RECT_COUNT }, () => ({
-      top: getRandomOpacity(colorStages),
-      bot: getRandomOpacity(colorStages),
-    }))
+  const [opacities, setOpacities] = useState(() =>
+    Array.from({ length: RECT_COUNT }, () => ({ top: 0, bot: 0 }))
   );
 
   useEffect(() => {
+    // Randomise immediately on mount (client-only) to avoid hydration mismatch
+    setOpacities(
+      Array.from({ length: RECT_COUNT }, () => ({
+        top: getRandomOpacity(colorStages),
+        bot: getRandomOpacity(colorStages),
+      }))
+    );
     const interval = setInterval(() => {
-      setOpacities((prev) =>
-        prev.map(() => ({
+      setOpacities(
+        Array.from({ length: RECT_COUNT }, () => ({
           top: getRandomOpacity(colorStages),
           bot: getRandomOpacity(colorStages),
         }))
       );
-    }, 2500); // change every 2s
+    }, 2500);
     return () => clearInterval(interval);
   }, []);
 
