@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import CoinsHeader from "@/components/coins/coins-header";
 
 export default async function CoinsLayout({

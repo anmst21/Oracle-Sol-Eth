@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { GeckoChain } from "@/components/chart/types";
 import SwapHeader from "@/components/swap/swap-header";
 import ChartProvider from "@/context/ChartProvider";
