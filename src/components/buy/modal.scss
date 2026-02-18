@@ -76,8 +76,7 @@
     &__wrapper {
         border-radius: 12px;
         border: 1px solid rgba(136, 150, 151, 0.20);
-        background: rgba(136, 150, 151, 0.05);
-        backdrop-filter: blur(30px);
+        backdrop-filter: none;
         display: flex;
         flex-direction: column;
         gap: 12px;
@@ -88,8 +87,20 @@
         right: 0;
         z-index: 10;
         min-width: 200px;
+        overflow: hidden;
 
         &::before {
+            content: "";
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            background: #0f1315;
+            z-index: -1;
+        }
+
+        &::after {
             content: "";
             position: absolute;
             bottom: 100%;
@@ -134,5 +145,14 @@
         font-style: normal;
         font-weight: 400;
         line-height: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .pools-modal__header__txn,
+    .pools-modal__header__vol {
+        span {
+            font-size: 9px;
+        }
     }
 }
