@@ -14,13 +14,14 @@ export const getPoolsForToken = async (
     );
 
     if (!res.ok) {
-      throw new Error("Error fetching token pools: HTTP " + res.status);
+      console.error("Error fetching token pools: HTTP", res.status);
+      return [];
     }
 
     const json: PoolResponse = await res.json();
     return json.data;
   } catch (err) {
     console.error("Error fetching token pools:", err);
-    throw err;
+    return [];
   }
 };

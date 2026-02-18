@@ -38,9 +38,8 @@ export const getTokenHistoricalData = async (
     const res = await fetch(url, { next: { revalidate: 30 } });
 
     if (!res.ok) {
-      const body = await res.text();
-      console.error("OHLCV fetch error:", body);
-      throw new Error(`Failed to fetch OHLCV: ${res.status}`);
+      console.error("OHLCV fetch error:", res.status);
+      return [];
     }
 
     const result: OHLCVResponse = await res.json();
@@ -49,6 +48,6 @@ export const getTokenHistoricalData = async (
     return result.data.attributes.ohlcv_list;
   } catch (err) {
     console.error("getTokenHistoricalData error:", err);
-    throw err;
+    return [];
   }
 };
