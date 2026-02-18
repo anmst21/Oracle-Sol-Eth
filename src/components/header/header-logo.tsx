@@ -5,13 +5,11 @@ import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import animationData from "@/animations/logo-animation.json";
 // import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useCategory } from "@/hooks/useCategory";
 // import Link from "next/link";
 
 const HeaderLogo = ({ isRedirect }: { isRedirect?: boolean }) => {
   const lottieRef = useRef<LottieRefCurrentProps | null>(null);
   const [, setIsAnimating] = useState(false);
-  const { activeCategory } = useCategory();
 
   const handlePlay = () => {
     if (lottieRef.current) {
@@ -28,7 +26,7 @@ const HeaderLogo = ({ isRedirect }: { isRedirect?: boolean }) => {
 
   useEffect(() => {
     handlePlay();
-  }, [pathname, activeCategory]);
+  }, [pathname]);
 
   return (
     <button

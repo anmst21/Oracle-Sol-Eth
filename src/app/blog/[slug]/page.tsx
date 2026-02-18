@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getBlogpost, getBlogposts } from "../../../../sanity/sanity-utils";
 import BlogSubscribe from "@/components/blog/blog-subscribe";
 import PostHeader from "@/components/blog/post-header";
@@ -99,13 +100,15 @@ export default async function Page({
       <PostHeader name={name} subheader={subheader} slug={slug} />
 
       <div className="post-title">
-        <PostCategory
-          r={r}
-          g={g}
-          b={b}
-          slug={category.slug}
-          title={category.title}
-        />
+        <Suspense>
+          <PostCategory
+            r={r}
+            g={g}
+            b={b}
+            slug={category.slug}
+            title={category.title}
+          />
+        </Suspense>
 
         <h1>{name}</h1>
 
@@ -130,13 +133,15 @@ export default async function Page({
       <TagsDivider />
       <PostAuthor
         category={
-          <PostCategory
-            r={r}
-            g={g}
-            b={b}
-            slug={category.slug}
-            title={category.title}
-          />
+          <Suspense>
+            <PostCategory
+              r={r}
+              g={g}
+              b={b}
+              slug={category.slug}
+              title={category.title}
+            />
+          </Suspense>
         }
         author={author}
         createdAt={_createdAt}

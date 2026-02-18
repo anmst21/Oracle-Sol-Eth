@@ -5,13 +5,11 @@ import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import menuAnimationData from "@/animations/menu-logo-animation.json";
 // import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useCategory } from "@/hooks/useCategory";
 // import Link from "next/link";
 
 const MenuLogo = ({ isRedirect }: { isRedirect?: boolean }) => {
   const lottieRef = useRef<LottieRefCurrentProps | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const { activeCategory } = useCategory();
 
   console.log("isAnimating", isAnimating);
   const handlePlay = () => {
@@ -29,7 +27,7 @@ const MenuLogo = ({ isRedirect }: { isRedirect?: boolean }) => {
 
   useEffect(() => {
     handlePlay();
-  }, [pathname, activeCategory]);
+  }, [pathname]);
 
   return (
     <button

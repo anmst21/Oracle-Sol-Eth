@@ -12,7 +12,6 @@ import React, {
   useMemo,
   useCallback,
   useRef,
-  Suspense,
 } from "react";
 import { useCommunityCoins } from "./FarcasterCommunityTokensProvider";
 import { useSolanaCoins } from "./DexScreenerTrendingSolataTokensProvider";
@@ -24,7 +23,7 @@ import { RelayChain } from "@/types/relay-query-chain-type";
 import { getTokenAccountsWithMetadata as getUserEthTokens } from "@/actions/get-user-owned-ethereum-tokens";
 import { getTokenAccountsWithMetadata as getUserSolTokens } from "@/actions/get-user-owned-solana-tokens";
 import { useActiveWallet } from "./ActiveWalletContext";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { queryTokenList } from "@reservoir0x/relay-kit-hooks";
 import { isAddress } from "viem";
 import { isValidSolanaAddress } from "@/helpers/is-valid-solana-address";
@@ -239,14 +238,12 @@ export const TokenModalProvider: FC<TokenModalProviderProps> = ({
         selectToken,
       }}
     >
-      <Suspense>
-        <SearchParamsSync
-          sellToken={sellToken}
-          buyToken={buyToken}
-          setSellToken={setSellToken}
-          setBuyToken={setBuyToken}
-        />
-      </Suspense>
+      <SearchParamsSync
+        sellToken={sellToken}
+        buyToken={buyToken}
+        setSellToken={setSellToken}
+        setBuyToken={setBuyToken}
+      />
       {children}
       <AnimatePresence mode="wait">
         {isOpen && (
@@ -299,22 +296,36 @@ function SearchParamsSync({
   setBuyToken: React.Dispatch<React.SetStateAction<UnifiedToken | null>>;
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
-  // Capture initial URL params once (ref avoids stale closure issues)
-  const initialParams = useRef({
-    sellChain: searchParams.get("sellTokenChain"),
-    sellAddr: searchParams.get("sellTokenAddress"),
-    buyChain: searchParams.get("buyTokenChain"),
-    buyAddr: searchParams.get("buyTokenAddress"),
-  });
+  // Capture initial URL params once on mount (avoids useSearchParams SSR issues)
+  const initialParams = useRef<{
+    sellChain: string | null;
+    sellAddr: string | null;
+    buyChain: string | null;
+    buyAddr: string | null;
+  } | null>(null);
+
+  if (initialParams.current === null && typeof window !== "undefined") {
+    const sp = new URLSearchParams(window.location.search);
+    initialParams.current = {
+      sellChain: sp.get("sellTokenChain"),
+      sellAddr: sp.get("sellTokenAddress"),
+      buyChain: sp.get("buyTokenChain"),
+      buyAddr: sp.get("buyTokenAddress"),
+    };
+  }
 
   // Gate: block state→URL writes until the initial URL→State load finishes
   const [urlLoaded, setUrlLoaded] = useState(false);
 
   // ── URL → State (once on mount) ───────────────────────────────
   useEffect(() => {
-    const { sellChain, sellAddr, buyChain, buyAddr } = initialParams.current;
+    const params = initialParams.current;
+    if (!params) {
+      setUrlLoaded(true);
+      return;
+    }
+    const { sellChain, sellAddr, buyChain, buyAddr } = params;
 
     // Nothing to restore from URL
     if (!sellChain && !sellAddr && !buyChain && !buyAddr) {

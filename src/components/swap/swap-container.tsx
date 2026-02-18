@@ -29,7 +29,7 @@ import BuyBtn from "./buy-btn";
 // import { usePrivy } from "@privy-io/react-auth";
 // import { SendTransactionError } from "@solana/web3.js";
 // import { connection } from "../connects";
-import { useSearchParams } from "next/navigation";
+// useSearchParams replaced with window.location.search to avoid SSG bailout
 import Confirmation from "../confirmation";
 import { AnimatePresence } from "motion/react";
 // import DeepLink from "../deep-link";
@@ -653,15 +653,15 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   // console.log("progress", progress, quote, adaptedWallet);
 
   ////// url deeplinking logic
-  const searchParams = useSearchParams();
   const deepLinked = useRef(false);
 
   useEffect(() => {
     if (deepLinked.current) return;
-    const sellAddress = searchParams.get("sellAddress");
-    const sellChainId = searchParams.get("sellChainId");
-    const buyAddress = searchParams.get("buyAddress");
-    const buyChainId = searchParams.get("buyChainId");
+    const sp = new URLSearchParams(window.location.search);
+    const sellAddress = sp.get("sellAddress");
+    const sellChainId = sp.get("sellChainId");
+    const buyAddress = sp.get("buyAddress");
+    const buyChainId = sp.get("buyChainId");
 
     if (sellAddress && sellChainId && buyAddress && buyChainId) {
       deepLinked.current = true;
@@ -704,7 +704,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         }
       });
     }
-  }, [searchParams, setSellToken, setBuyToken]);
+  }, [setSellToken, setBuyToken]);
 
   const clearProgressState = useCallback(() => {
     setProgress(null);

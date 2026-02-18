@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { useCategory } from "@/hooks/useCategory";
 
 const FRAMES = Array.from({ length: 20 }, (_, i) => `/favicon/f${i + 1}.png`);
 const INTERVAL_MS = 50; // 50ms per frame
@@ -78,11 +77,9 @@ export default function FaviconAnimator() {
     };
   }, [play, clearTimer]);
 
-  const { activeCategory } = useCategory();
-
   useEffect(() => {
     play(); // auto-play on route change
-  }, [pathname, play, activeCategory]);
+  }, [pathname, play]);
 
   return null;
 }
