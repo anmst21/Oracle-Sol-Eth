@@ -4,6 +4,8 @@ import BlogSubscribe from "@/components/blog/blog-subscribe";
 import BlogHeader from "@/components/blog/blog-header";
 import BlogCard from "@/components/blog/blog-card";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Blog",
   description:
