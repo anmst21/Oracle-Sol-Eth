@@ -33,7 +33,7 @@ const HoverCircle = ({ handleItemClick }: Props) => {
         d="M532.952 208.683C523.934 169.995 506.49 133.773 481.864 102.601L439.491 136.076C459.192 161.013 473.147 189.991 480.361 220.941L532.952 208.683Z"
         fill="red"
         fillOpacity="0"
-        onMouseEnter={() => handleItemClick("swap", "moonpay")}
+        onMouseEnter={() => handleItemClick("swap", "coinbase")}
       />
 
       <path

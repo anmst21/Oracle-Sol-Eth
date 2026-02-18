@@ -58,7 +58,7 @@ const aboutList = [
     object: "/objects/buy.glb",
     header: "Buy",
     paragraph:
-      "Purchase crypto directly inside Oracle using MoonPay's widget. If the token isn't purchasable outright, Oracle offers a follow-up swap immediately after checkout for a seamless finish.",
+      "Purchase crypto directly inside Oracle using Coinbase Onramp. If the token isn't purchasable outright, Oracle offers a follow-up swap immediately after checkout for a seamless finish.",
   },
   {
     colorTop: "#00B0EB",

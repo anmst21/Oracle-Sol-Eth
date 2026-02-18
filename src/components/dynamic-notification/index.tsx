@@ -45,6 +45,8 @@ const DynamicNotification = ({ message, type, time }: Props) => {
     }
   }, [message, type, time]);
 
+  if (typeof document === "undefined") return null;
+
   return createPortal(
     <AnimatePresence mode="sync">
       {toasts.map((t) => {

@@ -10,7 +10,7 @@ import { PortableText } from "next-sanity";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Understand how Oracle collects, processes, and protects your data. Learn about our non-custodial model, use of public blockchain information, integration with partners like Relay, MoonPay, and Privy, and your rights regarding privacy, security, and data access. Stay informed on how Oracle ensures transparency and safety across every transaction.",
+    "Understand how Oracle collects, processes, and protects your data. Learn about our non-custodial model, use of public blockchain information, integration with partners like Relay, Coinbase, and Privy, and your rights regarding privacy, security, and data access. Stay informed on how Oracle ensures transparency and safety across every transaction.",
   openGraph: {
     title: "Privacy Policy | Oracle",
     description:

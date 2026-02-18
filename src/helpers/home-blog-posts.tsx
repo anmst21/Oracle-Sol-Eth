@@ -58,7 +58,7 @@ export const homeBlogPosts: HomeBlogPost[] = [
   {
     title: "Transparency & Safety",
     leadLine:
-      "Non-custodial flows, clear fee breakdowns, and explorer links on every action. MoonPay handles KYC/AML.",
+      "Non-custodial flows, clear fee breakdowns, and explorer links on every action. Coinbase handles KYC/AML.",
     icon: <TransparencySafety />,
     href: "/transparency-safety",
   },

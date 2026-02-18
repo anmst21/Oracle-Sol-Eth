@@ -104,7 +104,7 @@ const ChainList = ({ isChart, chainId, setChainId }: Props) => {
               );
             }
           )
-        : Array.from({ length: 13 }, (_, idx) => <ChainSkeleton key={idx} />)}
+        : Array.from({ length: 13 }, (_, idx) => <ChainSkeleton key={idx} index={idx} />)}
       {!isChart && (
         <button
           onClick={() => setIsShowAll(!isShowAll)}

@@ -86,21 +86,21 @@ const Circle = ({ activeType, activeItem, rotation }: Props) => {
         className="stakeholders-circle__swap__relay"
       />
       <path
-        opacity={isItemActive("swap", "moonpay") ? 1 : 0.5}
+        opacity={isItemActive("swap", "coinbase") ? 1 : 0.5}
         d="M483.54 151.444C485.478 151.444 487.049 149.873 487.049 147.935C487.049 145.997 485.478 144.427 483.54 144.427C481.602 144.427 480.031 145.997 480.031 147.935C480.031 149.873 481.602 151.444 483.54 151.444Z"
         fill={
-          isItemActive("swap", "moonpay") || isTypeActive("swap")
+          isItemActive("swap", "coinbase") || isTypeActive("swap")
             ? "#00B0EB"
             : "white"
         }
         fillOpacity="0.2"
         stroke={
-          isItemActive("swap", "moonpay") || isTypeActive("swap")
+          isItemActive("swap", "coinbase") || isTypeActive("swap")
             ? "#00B0EB"
             : "white"
         }
         strokeMiterlimit="10"
-        className="stakeholders-circle__swap__moonpay"
+        className="stakeholders-circle__swap__coinbase"
       />
       <path
         opacity={isItemActive("swap", "privy") ? 1 : 0.5}

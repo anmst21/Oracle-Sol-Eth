@@ -36,15 +36,15 @@ export const stakeholdersList = [
     height: 82,
   },
   {
-    header: "MoonPay",
-    key: "moonpay",
+    header: "Coinbase Onramp",
+    key: "coinbase",
 
-    uri: "https://www.moonpay.com",
+    uri: "https://www.coinbase.com/developer-platform/products/onramp",
     description:
-      "Buy crypto with cards, bank transfers, or mobile pay. Handles account checks where required and sends assets to your wallet.",
+      "Buy crypto with cards, bank transfers, or mobile pay. Low fees (0-2.5%), 250+ tokens, and Coinbase handles KYC internally.",
     type: "swap",
 
-    icon: "/carousel-logos/moonpay-logo.svg",
+    icon: "/carousel-logos/base-onramp.svg",
     width: 120,
     height: 120,
   },

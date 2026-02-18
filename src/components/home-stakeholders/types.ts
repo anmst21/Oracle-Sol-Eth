@@ -19,7 +19,7 @@ export const STAKEHOLDER_TYPES: StakeholderType[] = [
 
 export const STAKEHOLDER_ITEMS: Record<StakeholderType, string[]> = {
   featured: ["swap"], // change to whatever items you want
-  swap: ["relay", "moonpay", "privy"],
+  swap: ["relay", "coinbase", "privy"],
   coins: ["geckoterminal", "dexscreener", "farcasterin"],
   social: ["warpcast"],
   creator: ["nexus"],
@@ -30,7 +30,7 @@ export const STAKEHOLDER_ITEMS: Record<StakeholderType, string[]> = {
 export const stakeholderItems = [
   { category: "featured", key: "base" },
   { category: "swap", key: "relay" },
-  { category: "swap", key: "moonpay" },
+  { category: "swap", key: "coinbase" },
   { category: "swap", key: "privy" },
   { category: "coins", key: "geckoterminal" },
   { category: "coins", key: "dexscreener" },

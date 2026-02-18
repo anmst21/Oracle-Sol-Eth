@@ -80,17 +80,17 @@ describe("SlippageProvider", () => {
 // ─── OnRampProvider ──────────────────────────────────────────────────
 describe("OnRampProvider", () => {
   function TestConsumer() {
-    const { isOpenRegions, setIsOpenRegions, moonpayCryptos, setMoonpayCryptos } =
+    const { isOpenRegions, setIsOpenRegions, coinbaseCryptos, setCoinbaseCryptos } =
       useOnRamp();
     return (
       <div>
         <span data-testid="open">{String(isOpenRegions)}</span>
-        <span data-testid="crypto-count">{moonpayCryptos.length}</span>
+        <span data-testid="crypto-count">{coinbaseCryptos.length}</span>
         <button data-testid="toggle-open" onClick={() => setIsOpenRegions(true)} />
         <button
           data-testid="set-cryptos"
           onClick={() =>
-            setMoonpayCryptos([{ code: "BTC" } as never, { code: "ETH" } as never])
+            setCoinbaseCryptos([{ symbol: "BTC" } as never, { symbol: "ETH" } as never])
           }
         />
       </div>
@@ -119,7 +119,7 @@ describe("OnRampProvider", () => {
     expect(screen.getByTestId("open").textContent).toBe("true");
   });
 
-  it("sets moonpay cryptos", async () => {
+  it("sets coinbase cryptos", async () => {
     render(
       <OnRampProvider>
         <TestConsumer />
