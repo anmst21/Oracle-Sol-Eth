@@ -21,6 +21,6 @@ export type UnifiedToken = {
   priceUsd?: number;
   priceNative?: number;
   balance?: number;
-  source: "relay" | "eth" | "sol" | "community" | "gecko" | "solTrending" | "moonpay";
+  source: "relay" | "eth" | "sol" | "community" | "gecko" | "solTrending" | "coinbase";
   decimals?: number;
 };

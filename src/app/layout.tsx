@@ -11,7 +11,6 @@ import "../styles/index.scss";
 import { CommunityCoinsProvider } from "@/context/FarcasterCommunityTokensProvider";
 import { SolanaCoinsProvider } from "@/context/DexScreenerTrendingSolataTokensProvider";
 import { GeckoTokensProvider } from "@/context/GeckoTerminalCoinsProvider";
-import MoonPayContextProvider from "@/context/MoonpayProvider";
 import { TokenModalProvider } from "@/context/TokenModalProvider";
 import { ActiveWalletProvider } from "@/context/ActiveWalletContext";
 import { SlippageProvider } from "@/context/SlippageContext";
@@ -65,7 +64,7 @@ export const metadata: Metadata = {
     "token trading",
     "Oracle",
     "Relay",
-    "MoonPay",
+    "Coinbase",
     "on-ramp",
   ],
   authors: [{ name: "Oracle" }],
@@ -134,7 +133,6 @@ export default async function RootLayout({
               <SolanaCoinsProvider>
                 <CommunityCoinsProvider>
                   <GeckoTokensProvider>
-                    <MoonPayContextProvider>
                       <ActiveWalletProvider>
                         <OnRampProvider>
                           <TokenModalProvider>
@@ -161,7 +159,6 @@ export default async function RootLayout({
                           </TokenModalProvider>
                         </OnRampProvider>
                       </ActiveWalletProvider>
-                    </MoonPayContextProvider>
                   </GeckoTokensProvider>
                 </CommunityCoinsProvider>
               </SolanaCoinsProvider>

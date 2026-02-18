@@ -1,7 +1,7 @@
 import { UnifiedToken } from "@/types/coin-types";
 
 export const solanaToken: UnifiedToken = {
-  source: "eth",
+  source: "coinbase",
   chainId: 792703809,
   address: "11111111111111111111111111111111",
   symbol: "SOL",

@@ -1,6 +1,6 @@
 "use client";
 
-import { MoonpayCryptoCurrency } from "@/types/moonpay-api";
+import { CoinbasePurchaseCurrency } from "@/types/coinbase-onramp";
 import React, {
   createContext,
   useContext,
@@ -11,10 +11,14 @@ import React, {
 export interface OnRampContextType {
   isOpenRegions: boolean;
   setIsOpenRegions: React.Dispatch<React.SetStateAction<boolean>>;
-  moonpayCryptos: MoonpayCryptoCurrency[];
-  setMoonpayCryptos: React.Dispatch<
-    React.SetStateAction<MoonpayCryptoCurrency[]>
+  coinbaseCryptos: CoinbasePurchaseCurrency[];
+  setCoinbaseCryptos: React.Dispatch<
+    React.SetStateAction<CoinbasePurchaseCurrency[]>
   >;
+  userCountry: string;
+  setUserCountry: React.Dispatch<React.SetStateAction<string>>;
+  isSupported: boolean;
+  setIsSupported: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const OnRampContext = createContext<OnRampContextType | undefined>(undefined);
@@ -25,13 +29,24 @@ export interface OnRampProviderProps {
 
 export const OnRampProvider: React.FC<OnRampProviderProps> = ({ children }) => {
   const [isOpenRegions, setIsOpenRegions] = useState(false);
-  const [moonpayCryptos, setMoonpayCryptos] = useState<
-    MoonpayCryptoCurrency[]
+  const [coinbaseCryptos, setCoinbaseCryptos] = useState<
+    CoinbasePurchaseCurrency[]
   >([]);
+  const [userCountry, setUserCountry] = useState("US");
+  const [isSupported, setIsSupported] = useState(true);
 
   return (
     <OnRampContext.Provider
-      value={{ isOpenRegions, setIsOpenRegions, moonpayCryptos, setMoonpayCryptos }}
+      value={{
+        isOpenRegions,
+        setIsOpenRegions,
+        coinbaseCryptos,
+        setCoinbaseCryptos,
+        userCountry,
+        setUserCountry,
+        isSupported,
+        setIsSupported,
+      }}
     >
       {children}
     </OnRampContext.Provider>
