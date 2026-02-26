@@ -82,7 +82,13 @@ const PostHeader = ({ slug, name, subheader }: Props) => {
               className="slippage-modal__wrapper"
               id="modal-root"
             >
-              <div className="slippage-modal__container">
+              <motion.div
+                className="slippage-modal__container"
+                initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                animate={{ opacity: 1, backdropFilter: "blur(30px)" }}
+                exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
                 <div className="share-btns">
                   {shareBtns.map((btn) => {
                     return (
@@ -93,7 +99,7 @@ const PostHeader = ({ slug, name, subheader }: Props) => {
                     );
                   })}
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

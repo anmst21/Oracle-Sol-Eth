@@ -24,6 +24,7 @@
 .blog-header.posts-header {
     margin-bottom: 80px !important;
     overflow: visible !important;
+    overflow-y: visible !important;
 
     @include down(md) {
         margin-bottom: 36px !important;
@@ -154,7 +155,7 @@
             width: 300px;
             border: 1px solid rgba(136, 150, 151, 0.20);
             background: rgba(136, 150, 151, 0.05);
-            //   backdrop-filter: blur(30px);
+            // backdrop-filter animated via motion
 
         }
 
