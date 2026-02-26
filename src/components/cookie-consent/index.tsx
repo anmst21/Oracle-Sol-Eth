@@ -6,15 +6,19 @@ import { useCallback, useEffect, useState } from "react";
 import ConsentBtn from "./consent-btn";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavigationPrivacy, InputCross } from "../icons";
+import { useMobilePrompt } from "@/context/MobilePromptContext";
 
 const CookieConsentBanner = () => {
   const cookieValue = getCookieConsentValue("cookieConsentOracle");
   const [showModal, setShowModal] = useState(!cookieValue ? true : false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const { pwaPromptActive, isReady } = useMobilePrompt();
 
   useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+    if (isReady && !pwaPromptActive) {
+      setIsLoaded(true);
+    }
+  }, [isReady, pwaPromptActive]);
 
   const closeModal = useCallback(() => {
     setShowModal(false);

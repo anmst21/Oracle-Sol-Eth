@@ -25,6 +25,8 @@ import Footer from "@/components/footer";
 import { getHeaderModal } from "../../sanity/sanity-utils";
 import MenuBar from "@/components/menu";
 import CookieConsentBanner from "@/components/cookie-consent";
+import PwaPrompt from "@/components/pwa-prompt";
+import { MobilePromptProvider } from "@/context/MobilePromptContext";
 import PullToRefresh from "@/components/pull-to-refresh";
 import { CapchaProvider } from "@/context/CapchaProvier";
 // import FarcasterAuthProvider from "@/context/FarcasterAuthProvider";
@@ -144,12 +146,14 @@ export default async function RootLayout({
                                     blogposts={blogposts}
                                   />
                                   <div className="main">{children}</div>
-                                  <CookieConsentBanner />
-
-                                  <MenuBar
-                                    categories={categories}
-                                    blogposts={blogposts}
-                                  />
+                                  <MobilePromptProvider>
+                                    <PwaPrompt />
+                                    <CookieConsentBanner />
+                                    <MenuBar
+                                      categories={categories}
+                                      blogposts={blogposts}
+                                    />
+                                  </MobilePromptProvider>
                                   <Footer />
 
                                   {/* <HeaderFooter /> */}

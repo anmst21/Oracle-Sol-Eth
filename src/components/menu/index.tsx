@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Wallet from "../header/wallet";
 import { BtnPolygons, MenuHome } from "../icons";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouteOptions } from "@/hooks/useRouteOptions";
 import { Blogpost, Category } from "@/types/blogpost-types";
 import MenuItem from "./menu-item";
@@ -12,12 +12,24 @@ import { AnimatePresence, motion } from "motion/react";
 import Wallets from "../wallets/wallet-modal";
 import ChainList from "../wallets/chain-list";
 import MenuLogo from "./menu-logo";
+import { useMobilePrompt } from "@/context/MobilePromptContext";
 
 type Props = { blogposts: Blogpost[]; categories: Category[] };
 
 const MenuBar = ({ categories, blogposts }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenChains, setIsOpenChains] = useState(false);
+  const { pwaPromptActive, isReady } = useMobilePrompt();
+  const wasBlocked = useRef(false);
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    if (pwaPromptActive) {
+      wasBlocked.current = true;
+    } else if (wasBlocked.current) {
+      setAnimateIn(true);
+    }
+  }, [pwaPromptActive]);
 
   const pathname = usePathname();
   const { push } = useRouter();
@@ -49,8 +61,15 @@ const MenuBar = ({ categories, blogposts }: Props) => {
     pathname.includes("/privacy") ||
     pathname === "/";
 
+  if (!isReady || pwaPromptActive) return null;
+
   return (
-    <div className="menu-bar">
+    <motion.div
+      className="menu-bar"
+      initial={animateIn ? { y: -20, opacity: 0 } : false}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
       <AnimatePresence mode="wait">
         {isOpen && (
           <motion.div
@@ -112,7 +131,7 @@ const MenuBar = ({ categories, blogposts }: Props) => {
       {/* <div className="menu-bar__logo">
         <MenuLogoDefault />
       </div> */}
-    </div>
+    </motion.div>
   );
 };
 

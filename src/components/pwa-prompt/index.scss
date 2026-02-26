@@ -1,0 +1,196 @@
+.pwa-prompt {
+    border-radius: 12px;
+    border: 1px solid rgba(136, 150, 151, 0.20);
+    background: rgba(136, 150, 151, 0.05);
+    backdrop-filter: blur(75px);
+    padding: 10px 12px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 360px;
+
+    @include down(md) {
+        width: 100%;
+    }
+
+    &__status {
+        display: flex;
+        grid-area: 4px;
+        align-items: center;
+
+        &__bar {
+            display: flex;
+            flex: 1;
+            gap: 4px;
+        }
+
+        .status-line {
+
+            &__white,
+            &__grey {
+                display: flex;
+                height: 3px;
+                border-radius: 1px;
+            }
+
+            &__white {
+                width: 100px;
+                background: rgba(217, 241, 233, 0.80);
+            }
+
+            &__grey {
+                background: #333;
+                flex: 1;
+            }
+        }
+
+        &__close {
+            display: flex;
+            transition: all .2s ease-out;
+            margin-left: 4px;
+
+            &:hover {
+                color: rgba(217, 241, 233, 0.8);
+            }
+
+            &:active {
+                color: #AEE900;
+            }
+        }
+    }
+
+    &__header {
+        display: flex;
+        gap: 4px;
+
+        &__tag {
+            align-items: center;
+            border: 1px solid #889697;
+            background: rgba(136, 150, 151, 0.05);
+            padding: 0 10px;
+            color: rgba(217, 241, 233, 0.80);
+            font-family: var(--font-handjet);
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            text-transform: uppercase;
+        }
+
+        &__value {
+            flex: 1;
+            padding: 0 7px 0 2px;
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            border: 1px solid rgba(136, 150, 151, 0.10);
+            background: rgba(136, 150, 151, 0.05);
+            color: rgba(217, 241, 233, 0.80);
+            font-family: var(--font-funnel-display);
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+
+        &__value,
+        &__tag {
+            display: flex;
+            height: 28px;
+            border-radius: 6px;
+        }
+    }
+
+    &__warning {
+        display: flex;
+        border-radius: 6px;
+        background: rgba(136, 150, 151, 0.05);
+        color: #889697;
+        font-family: var(--font-funnel-sans);
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 16px;
+        padding: 4px 8px;
+        padding-bottom: 16px;
+        height: 100px;
+    }
+
+    &__inline-icon {
+        display: inline-flex;
+        vertical-align: middle;
+        margin: 0 2px;
+        transform: translateY(-2px);
+    }
+
+    &__buttons {
+        display: flex;
+        flex: 1;
+        font-family: var(--font-funnel-display);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        gap: 4px;
+    }
+
+    &__btn-deny,
+    &__btn-ok {
+        height: 28px;
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        border: 1px solid rgba(136, 150, 151, 0.10);
+        background: rgba(217, 241, 233, 0.05);
+        color: rgba(217, 241, 233, 0.80);
+        transition: all .2s ease-out;
+    }
+
+    &__btn-deny {
+        &:hover {
+            border: 1px solid rgba(217, 241, 233, 0.15);
+            background: rgba(217, 241, 233, 0.1);
+        }
+
+        &:active {
+            color: rgba(174, 233, 0, 0.8);
+            border: 1px solid rgba(174, 233, 0, 0.15);
+            background: rgba(174, 233, 0, 0.1);
+        }
+    }
+
+    &__btn-ok {
+        border-radius: 5px;
+        border: 1px solid rgba(174, 233, 0, 0.80);
+        background: rgba(174, 233, 0, 0.20);
+        color: #AEE900;
+
+        &:hover {
+            border: 1px solid rgba(174, 233, 0, 0.8);
+            color: black;
+            background-color: #BEFF00;
+        }
+
+        &:active {
+            color: #BEFF00;
+            background-color: #000;
+        }
+    }
+
+    &__container {
+        display: flex;
+        position: fixed;
+        z-index: 9999;
+        right: 42px;
+        bottom: 80px;
+        gap: 10px;
+
+        @include down(md) {
+            bottom: 36px;
+            left: 20px;
+            right: 20px;
+        }
+    }
+}

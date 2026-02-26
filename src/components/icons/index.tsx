@@ -129,8 +129,14 @@ import SocialLinkedin from "./social-linkedin";
 import SocialMail from "./social-mail";
 import SocialNexus from "./social-nexus";
 import SocialTwitter from "./social-twitter";
+import PwaShare from "./PwaShare";
+import PwaBulb from "./PwaBulb";
+import PwaAdd from "./PwaAdd";
 
 export {
+  PwaShare,
+  PwaBulb,
+  PwaAdd,
   SocialLinkedin,
   SocialMail,
   SocialNexus,
