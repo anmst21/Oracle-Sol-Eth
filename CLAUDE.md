@@ -9,3 +9,4 @@ The following sibling projects contain working TSL (Three.js Shading Language) e
   - Key files: `src/app.js`, `src/getMaterial.js`
 
 When implementing Three.js/TSL features, read these files for patterns and working examples.
+
