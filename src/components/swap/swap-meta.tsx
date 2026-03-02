@@ -147,9 +147,9 @@ const SwapMeta = ({ quote, isLoading }: Props) => {
   // };
 
   useEffect(() => {
-    if (isOpen && !quote && !isLoading) {
-      setIsOpen(false);
-    }
+    if (!isOpen || quote || isLoading) return;
+    const t = setTimeout(() => setIsOpen(false), 600);
+    return () => clearTimeout(t);
   }, [quote, isOpen, isLoading]);
 
   return (

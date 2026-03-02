@@ -6,6 +6,7 @@ import React, {
   useState,
   useEffect,
   useMemo,
+  useRef,
   ReactNode,
 } from "react";
 import {
@@ -101,35 +102,99 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
     return sortByUserFirst(linked, userAddress);
   }, [solanaWallets, userAddress]);
 
+  // Tracks whether the initial wallet selection driven by a deep-link chain has fired.
+  // Prevents subsequent effect re-runs from falling through to the ETH fallback.
+  const deepLinkWalletPicked = useRef(false);
+
   // auto-select active wallet on auth
   useEffect(() => {
-    if (ready && authenticated && userAddress && (readyEth || readySol)) {
-      let found: ConnectedWallet | ConnectedSolanaWallet | undefined;
-      if (readyEth) {
-        found = ethereumWallets.find(
-          (w) =>
-            w.address?.toLowerCase() === userAddress.toLowerCase() &&
-            w.meta.name !== "Browser Extension"
-        );
-      }
-      if (!found && readySol) {
-        found = solanaWallets.find(
-          (w) =>
-            w.address?.toLowerCase() === userAddress.toLowerCase() &&
-            w.meta.name !== "Browser Extension"
-        );
-      }
-      if (found) {
-        setActiveWallet(found);
+    if (!ready || !authenticated || !userAddress || (!readyEth && !readySol)) return;
+
+    const sp = new URLSearchParams(window.location.search);
+    const sellIsSolana =
+      sp.get("sellChainId") === "792703809" ||
+      sp.get("sellTokenChain") === "792703809";
+    const buyIsSolana =
+      sp.get("buyChainId") === "792703809" ||
+      sp.get("buyTokenChain") === "792703809";
+
+    if (sellIsSolana) {
+      // Wait until Solana wallets are ready
+      if (!readySol) return;
+      // Already handled — don't let subsequent fires fall through to ETH fallback
+      if (deepLinkWalletPicked.current) return;
+      // SOL wallets not populated yet (readySol fired before wallets loaded) — wait
+      if (solLinked.length === 0) return;
+
+      deepLinkWalletPicked.current = true;
+      setActiveWallet(solLinked[0]);
+      // Buy wallet follows buy chain: ETH if buy token is on ETH, SOL otherwise
+      if (!buyIsSolana && ethLinked.length > 0) {
         setActiveBuyWallet({
-          address: found.address,
-          type: found.type,
-          chainId:
-            found.type === "ethereum"
-              ? Number(found.chainId.split(":")[1])
-              : 792703809,
+          address: ethLinked[0].address,
+          chainId: Number(ethLinked[0].chainId.split(":")[1]),
+          type: "ethereum",
+        });
+      } else {
+        setActiveBuyWallet({
+          address: solLinked[0].address,
+          type: "solana",
+          chainId: 792703809,
         });
       }
+      return;
+    }
+
+    if (buyIsSolana) {
+      // Sell is ETH, buy is SOL — need both chains ready
+      if (!readySol || !readyEth) return;
+      if (deepLinkWalletPicked.current) return;
+      if (solLinked.length === 0 || ethLinked.length === 0) return;
+
+      deepLinkWalletPicked.current = true;
+      const ethSellWallet =
+        ethereumWallets.find(
+          (w) =>
+            w.address?.toLowerCase() === userAddress.toLowerCase() &&
+            w.meta.name !== "Browser Extension"
+        ) ?? ethLinked[0];
+      setActiveWallet(ethSellWallet);
+      setActiveBuyWallet({
+        address: solLinked[0].address,
+        type: "solana",
+        chainId: 792703809,
+      });
+      return;
+    }
+
+    // Standard wallet auto-selection for non-deep-link case
+    if (activeWallet) return; // already initialized, don't override
+
+    let found: ConnectedWallet | ConnectedSolanaWallet | undefined;
+    if (readyEth) {
+      found = ethereumWallets.find(
+        (w) =>
+          w.address?.toLowerCase() === userAddress.toLowerCase() &&
+          w.meta.name !== "Browser Extension"
+      );
+    }
+    if (!found && readySol) {
+      found = solanaWallets.find(
+        (w) =>
+          w.address?.toLowerCase() === userAddress.toLowerCase() &&
+          w.meta.name !== "Browser Extension"
+      );
+    }
+    if (found) {
+      setActiveWallet(found);
+      setActiveBuyWallet({
+        address: found.address,
+        type: found.type,
+        chainId:
+          found.type === "ethereum"
+            ? Number(found.chainId.split(":")[1])
+            : 792703809,
+      });
     }
   }, [
     ready,
@@ -139,6 +204,9 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
     readySol,
     ethereumWallets,
     solanaWallets,
+    activeWallet,
+    solLinked,
+    ethLinked,
   ]);
 
   //active wallet privider

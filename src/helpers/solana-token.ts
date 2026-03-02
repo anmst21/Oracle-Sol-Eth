@@ -15,7 +15,7 @@ export const getEthToken = (chainId: number): UnifiedToken => {
     chainId,
     address: "0x0000000000000000000000000000000000000000",
     symbol: "ETH",
-    logo: `https://api.sim.dune.com/v1/token/logo/${chainId}`,
+    logo: "https://assets.relay.link/icons/1/light.png",
     priceUsd: 2587.158951,
     balance: 0.005108842283747209,
     name: "Ether",

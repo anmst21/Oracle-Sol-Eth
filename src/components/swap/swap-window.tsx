@@ -168,12 +168,14 @@ const SwapWindow = ({
 
   const { ready, authenticated } = usePrivy();
 
+  const isWalletsLoading = !ready || isSwitching || (authenticated && !activeWallet);
   const isWalletError =
-    (token?.chainId === solanaChain.id && activeWallet?.type !== "solana") ||
-    (token?.chainId !== solanaChain.id &&
-      activeWallet?.type !== "ethereum" &&
-      token !== null &&
-      activeWallet !== null);
+    !isWalletsLoading &&
+    ((token?.chainId === solanaChain.id && activeWallet?.type !== "solana") ||
+      (token?.chainId !== solanaChain.id &&
+        activeWallet?.type !== "ethereum" &&
+        token !== null &&
+        activeWallet !== null));
 
   const isOpenCallback = useCallback(
     (value: boolean) => setIsOpenAddressModal(prev => value ? !prev : false),

@@ -51,6 +51,10 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   const prevSolSellToken = useRef<UnifiedToken | null>(null);
   const prevEthBuyToken = useRef<UnifiedToken | null>(null);
   const prevSolBuyToken = useRef<UnifiedToken | null>(null);
+  // First-run guards: skip the token→wallet sync effects on mount to prevent
+  // ping-pong loops when both wallet and token are mismatched at the same time.
+  const sellTokenEffectMounted = useRef(false);
+  const buyTokenEffectMounted = useRef(false);
 
   const {
     isCustomSlippage,
@@ -135,14 +139,15 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         }
       }
 
-      setSellToken(getEthToken(chainId));
-      setBuyToken(getEthToken(chainId));
+      if (!sellToken) setSellToken(getEthToken(chainId));
+      if (!buyToken) setBuyToken(getEthToken(chainId));
     }
   }, [
     activeWallet,
     activeBuyWallet,
     setSellToken,
     setActiveWallet,
+    sellToken,
     buyToken,
     ethLinked,
     solLinked,
@@ -167,6 +172,10 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
 
   // When buy token chain changes → switch buy wallet to match
   useEffect(() => {
+    if (!buyTokenEffectMounted.current) {
+      buyTokenEffectMounted.current = true;
+      return;
+    }
     if (
       activeBuyWallet?.type === "ethereum" &&
       buyToken?.chainId === solanaChain.id &&
@@ -216,6 +225,10 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
 
   // When sell token chain changes → switch wallet to match
   useEffect(() => {
+    if (!sellTokenEffectMounted.current) {
+      sellTokenEffectMounted.current = true;
+      return;
+    }
     if (
       activeWallet?.type === "ethereum" &&
       sellToken?.chainId === solanaChain.id &&
@@ -234,7 +247,41 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   }, [sellToken]);
 
   // When wallet changes → switch sell token to match
+  // Exception: on initial deep-link restore, prefer switching wallet to match
+  // the URL token rather than overriding the URL token to match the default wallet.
+  const deepLinkSynced = useRef(false);
+
   useEffect(() => {
+    if (deepLinked.current && !deepLinkSynced.current) {
+      // Deep link set the sell token. The auto-selected wallet may not match it.
+      // Prefer switching the wallet to match the token.
+      if (
+        activeWallet?.type === "ethereum" &&
+        sellToken?.chainId === solanaChain.id
+      ) {
+        if (solLinked[0]) {
+          deepLinkSynced.current = true;
+          setActiveWallet(solLinked[0]);
+        }
+        // SOL wallet not ready yet — skip token override, wait for solLinked effect
+        return;
+      }
+      if (
+        activeWallet?.type === "solana" &&
+        sellToken?.chainId !== solanaChain.id
+      ) {
+        if (ethLinked[0]) {
+          deepLinkSynced.current = true;
+          setActiveWallet(ethLinked[0]);
+        }
+        return;
+      }
+      // Wallet and token are already consistent — mark synced
+      deepLinkSynced.current = true;
+      return;
+    }
+
+    // Normal behavior: wallet changed manually, switch sell token to match
     if (
       activeWallet?.type === "ethereum" &&
       sellToken?.chainId === solanaChain.id
@@ -254,6 +301,20 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       setSellToken(prevSolSellToken.current ?? solanaToken);
     }
   }, [activeWallet]);
+
+  // When SOL wallets load asynchronously during deep-link init, complete the sync
+  useEffect(() => {
+    if (
+      deepLinked.current &&
+      !deepLinkSynced.current &&
+      activeWallet?.type === "ethereum" &&
+      sellToken?.chainId === solanaChain.id &&
+      solLinked[0]
+    ) {
+      deepLinkSynced.current = true;
+      setActiveWallet(solLinked[0]);
+    }
+  }, [solLinked]);
 
   // useEffect(() => {
   //   if (
@@ -679,6 +740,15 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   useEffect(() => {
     if (deepLinked.current) return;
     const sp = new URLSearchParams(window.location.search);
+
+    // New format written by SearchParamsSync on subsequent loads (sellTokenChain/sellTokenAddress).
+    // Tokens are restored by SearchParamsSync itself; we only set the flag so the
+    // wallet-changes effect doesn't override the token with the default wallet's chain.
+    if (sp.get("sellTokenChain") && sp.get("sellTokenAddress")) {
+      deepLinked.current = true;
+      return;
+    }
+
     const sellAddress = sp.get("sellAddress");
     const sellChainId = sp.get("sellChainId");
     const buyAddress = sp.get("buyAddress");
