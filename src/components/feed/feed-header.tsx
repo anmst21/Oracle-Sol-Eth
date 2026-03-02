@@ -29,6 +29,9 @@ const FeedHeader = () => {
 
   const activeTab = isFollowing ? "following" : "featured";
 
+  const { user, ready, linkFarcaster, unlinkFarcaster, login } = usePrivy();
+  const hasFarcaster = !!user?.farcaster;
+
   useEffect(() => {
     const node = btnRefs.current.get(activeTab);
     if (node && containerRef.current) {
@@ -40,9 +43,7 @@ const FeedHeader = () => {
       });
       setUnderlineReady(true);
     }
-  }, [activeTab]);
-
-  const { user, ready, linkFarcaster, unlinkFarcaster, login } = usePrivy();
+  }, [activeTab, hasFarcaster]);
   const onFeedChange = useCallback(
     (value: boolean) => {
       setIsFollowing(value);
@@ -173,15 +174,17 @@ const FeedHeader = () => {
         </button>
         <AnimatePresence mode="wait">
           {isModalOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+            <div
               className="slippage-modal__wrapper"
               id="feed-modal-root"
             >
-              <div className="slippage-modal__container">
+              <motion.div
+                className="slippage-modal__container"
+                initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                animate={{ opacity: 1, backdropFilter: "blur(30px)" }}
+                exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
                 <button onClick={onProfile}>
                   <FeedProfile />
                   <span>Profile</span>
@@ -190,8 +193,8 @@ const FeedHeader = () => {
                   <FeedUnlink />
                   <span>Unlink</span>
                 </button>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
       </div>
