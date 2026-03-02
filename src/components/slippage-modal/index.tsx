@@ -45,12 +45,14 @@ const SlippageModal = ({ closeModal }: Props) => {
               <Info />
               {wrapperRef.current && (
                 <Portal>
-                  {isOpenInfo && (
-                    <ModalInfo
-                      paragraph="If the price exceeds the maximum slippage percentage, the transaction will revert."
-                      closeModal={() => setIsOpenInfo(false)}
-                    />
-                  )}
+                  <AnimatePresence>
+                    {isOpenInfo && (
+                      <ModalInfo
+                        paragraph="If the price exceeds the maximum slippage percentage, the transaction will revert."
+                        closeModal={() => setIsOpenInfo(false)}
+                      />
+                    )}
+                  </AnimatePresence>
                 </Portal>
               )}
             </div>

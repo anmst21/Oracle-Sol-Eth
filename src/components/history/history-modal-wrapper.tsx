@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 import { InputCross, ModalInfo as Info } from "../icons";
 import ModalInfo from "../slippage-modal/modal-info";
@@ -53,12 +53,14 @@ const HistoryModalWrapper = ({
             >
               <Info />
 
-              {isOpenInfo && (
-                <ModalInfo
-                  paragraph={info}
-                  closeModal={() => setIsOpenInfo(false)}
-                />
-              )}
+              <AnimatePresence>
+                {isOpenInfo && (
+                  <ModalInfo
+                    paragraph={info}
+                    closeModal={() => setIsOpenInfo(false)}
+                  />
+                )}
+              </AnimatePresence>
             </div>
             <button
               onClick={() => closeModal()}
