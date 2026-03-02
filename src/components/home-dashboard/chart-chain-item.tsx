@@ -48,6 +48,7 @@ const ChartChainItem = ({ activeChain, data, setChainId, date }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [isLeft, setIsLeft] = useState(true);
   const [modalChain, setModalChain] = useState<RelayChainFetch | null>(null);
+  const [barRect, setBarRect] = useState<DOMRect | null>(null);
 
   useEffect(() => {
     const el = lineRef.current;
@@ -82,6 +83,8 @@ const ChartChainItem = ({ activeChain, data, setChainId, date }: Props) => {
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
+    setBarRect(value ? rect : null);
+
     const elementCenterX = rect.left + rect.width / 2;
     const viewportCenterX = window.innerWidth / 2;
 
@@ -121,6 +124,7 @@ const ChartChainItem = ({ activeChain, data, setChainId, date }: Props) => {
             callback={() => (onClick(data.chain), setShowModal(false))}
             modalChain={modalChain}
             isLeft={isLeft}
+            rect={barRect}
           />
         )}
       </AnimatePresence>
