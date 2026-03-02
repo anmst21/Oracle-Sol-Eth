@@ -151,6 +151,9 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
     // bail early if we have nothing to adapt
     if (!activeWallet) return;
 
+    // clear immediately so swap-container's fetchQuote guard blocks stale calls
+    setAdaptedWallet(null);
+
     // async IIFE so we can await getEthereumProvider()
     (async () => {
       if (activeWallet.type === "ethereum") {

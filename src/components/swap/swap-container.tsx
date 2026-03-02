@@ -436,6 +436,25 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       return setIsLoading(false);
     }
 
+    // Guard: wallet type must match sell/buy chain to prevent invalid address errors
+    const isSolana = (chainId: number) => chainId === solanaChain.id;
+    if (activeWallet.type === "solana" && !isSolana(sellToken.chainId as number)) {
+      setQuote(null);
+      return setIsLoading(false);
+    }
+    if (activeWallet.type === "ethereum" && isSolana(sellToken.chainId as number)) {
+      setQuote(null);
+      return setIsLoading(false);
+    }
+    if (activeBuyWallet.type === "solana" && !isSolana(buyToken.chainId as number)) {
+      setQuote(null);
+      return setIsLoading(false);
+    }
+    if (activeBuyWallet.type === "ethereum" && isSolana(buyToken.chainId as number)) {
+      setQuote(null);
+      return setIsLoading(false);
+    }
+
     try {
       //   const client = getClient();
       if (!client) {
@@ -487,12 +506,14 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
         recipient: activeBuyWallet.address,
         tradeType,
         options: {
-          appFees: [
-            {
-              fee: "100",
-              recipient: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
-            },
-          ],
+          ...(!isSolana(sellToken.chainId as number) && {
+            appFees: [
+              {
+                fee: "100",
+                recipient: "0x1334429526Fa8B41BC2CfFF3a33C5762c5eD0Bce",
+              },
+            ],
+          }),
           slippageTolerance: isCustomSlippage
             ? Math.round(slippageValue * 100).toString()
             : undefined,
