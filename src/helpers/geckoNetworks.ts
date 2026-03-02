@@ -123,6 +123,11 @@ export const geckoNetworks: GeckoNetwork[] = [
   },
 ];
 
+export function chainIdToGeckoId(chainId: number | undefined): string | undefined {
+  if (!chainId) return undefined;
+  return geckoNetworks.find((n) => n.numId === chainId)?.id;
+}
+
 export const restNetworksImg = {
   666666666: "https://assets.relay.link/icons/square/666666666/light.png",
   7777777: "https://assets.relay.link/icons/square/7777777/light.png",

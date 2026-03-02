@@ -22,6 +22,7 @@ type Props = {
   activeToken: UnifiedToken | undefined;
   afterFdv?: React.ReactNode;
   children?: React.ReactNode;
+  externalUrl?: string;
 };
 
 const PoolItem = ({
@@ -33,6 +34,7 @@ const PoolItem = ({
   isActive,
   afterFdv,
   children,
+  externalUrl,
 }: Props) => {
   const [fromTicker, , toTicker] = (item.attributes.name ?? "").split(" ");
 
@@ -97,11 +99,8 @@ const PoolItem = ({
             </div>
             <Link
               href={
-                geckoPoolsBase +
-                "/" +
-                chainName +
-                "/pools/" +
-                activeToken?.address
+                externalUrl ??
+                geckoPoolsBase + chainName + "/pools/" + activeToken?.address
               }
               target="_blank"
               className="pool-item__pool__name__bottom"

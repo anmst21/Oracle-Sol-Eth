@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import { PoolItem as PoolItemType } from "@/types/token-pools";
 import { UnifiedToken } from "@/types/coin-types";
 import PoolItem from "@/components/chart/pool-item";
+import { chainIdToGeckoId } from "@/helpers/geckoNetworks";
 import PoolItemSkeleton from "@/components/chart/pool-item-skeleton";
 import ModalPagination from "@/components/chart/modal-pagination";
 import ChartError from "@/components/chart/chart-error";
@@ -17,6 +18,7 @@ export type CoinTokenMeta = {
   chainId: number;
   name: string;
   symbol: string;
+  externalUrl?: string;
 };
 
 type BaseProps = {
@@ -265,11 +267,13 @@ const CoinsTable = (props: Props) => {
                       source: "gecko",
                     }
                   : undefined;
+              const chainName = chainIdToGeckoId(activeToken?.chainId);
               return (
               <PoolItem
                 isActive={false}
                 callback={() => {}}
-                chainName={undefined}
+                chainName={chainName}
+                externalUrl={meta?.externalUrl}
                 index={pageOffset + i + 1}
                 item={item}
                 activeToken={activeToken}

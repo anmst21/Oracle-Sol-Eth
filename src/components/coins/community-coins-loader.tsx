@@ -57,6 +57,7 @@ export default function CommunityCoinsLoader() {
           chainId: coin.chain_id,
           name: coin.name,
           symbol: symbol ?? coin.name,
+          externalUrl: `https://www.farcaster.in/tokens/${coin.id}`,
         });
       }
     }
