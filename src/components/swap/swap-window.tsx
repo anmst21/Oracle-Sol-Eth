@@ -153,6 +153,19 @@ const SwapWindow = ({
     (tradeType === TradeType.EXACT_INPUT && mode === "buy" && isLoadingQuote) ||
     (tradeType === TradeType.EXACT_OUTPUT && mode === "sell" && isLoadingQuote);
 
+  // Delayed version of isLoadingQuote to keep preset buttons in sync with
+  // SkeletonLoaderWrapper (which also uses a 500ms delay before revealing content)
+  const [isLoadingQuoteDelayed, setIsLoadingQuoteDelayed] = useState(isLoadingQuote);
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    if (isLoadingQuote) {
+      setIsLoadingQuoteDelayed(true);
+    } else {
+      t = setTimeout(() => setIsLoadingQuoteDelayed(false), 500);
+    }
+    return () => clearTimeout(t);
+  }, [isLoadingQuote]);
+
   const { ready, authenticated } = usePrivy();
 
   const isWalletError =
@@ -356,7 +369,7 @@ const SwapWindow = ({
         </button> */}
         <AnimatePresence mode="wait">
           {(mode === "sell" && Number(tokenBalance) !== 0) ||
-          (mode === "buy" && token && inputValue.length > 0 && !isLoadingQuote) ? (
+          (mode === "buy" && token && inputValue.length > 0 && !isLoadingQuoteDelayed) ? (
             <motion.div
               key="options"
               variants={containerVariants}
