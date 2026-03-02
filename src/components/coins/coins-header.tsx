@@ -50,6 +50,13 @@ const CoinsHeader = () => {
     recalcUnderline();
   }, [recalcUnderline]);
 
+  // Recalc underline as nav container resizes (during mobile expand/collapse CSS transition)
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver(recalcUnderline);
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [recalcUnderline]);
 
   // Clear search when tab changes
   const prevPathRef = useRef(pathname);
@@ -103,19 +110,8 @@ const CoinsHeader = () => {
   const isMobileCollapsed = !isDesktop && !isExpanded;
 
   return (
-    <div className="coins-header">
-      <motion.div
-        className="coins-header__navigation"
-        ref={containerRef}
-        initial={false}
-        animate={
-          !isDesktop
-            ? { flex: isExpanded ? "1 0 0px" : "1 1 auto" }
-            : undefined
-        }
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        onUpdate={!isDesktop ? recalcUnderline : undefined}
-      >
+    <div className={classNames("coins-header", { "coins-header--expanded": !isDesktop && isExpanded })}>
+      <div className="coins-header__navigation" ref={containerRef}>
         {btnsArray.map((btn) => {
           const toPath = "/coins" + btn.href;
           return (
@@ -141,19 +137,9 @@ const CoinsHeader = () => {
             style={{ position: "absolute", bottom: 0 }}
           />
         )}
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="coins-header__search"
-        ref={searchWrapperRef}
-        initial={false}
-        animate={
-          !isDesktop
-            ? { width: isExpanded ? 200 : 36, flex: "0 0 auto" }
-            : undefined
-        }
-        transition={{ duration: 0.2, ease: "easeOut" }}
-      >
+      <div className="coins-header__search" ref={searchWrapperRef}>
         {isMobileCollapsed ? (
           <button
             className="chain-sidebar__input chain-sidebar__input--search-btn"
@@ -189,7 +175,7 @@ const CoinsHeader = () => {
             )}
           </label>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 };

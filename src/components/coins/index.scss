@@ -57,9 +57,25 @@
             margin-left: 0;
             overflow: hidden;
             flex-basis: 36px;
+            flex-shrink: 0;
+            transition: flex-basis 0.2s ease-out;
 
             .chain-sidebar__input {
                 width: 100%;
+            }
+        }
+    }
+
+    &--expanded {
+        .coins-header__navigation {
+            @include down(md) {
+                flex: 1 0 0px;
+            }
+        }
+
+        .coins-header__search {
+            @include down(md) {
+                flex-basis: 200px;
             }
         }
     }
@@ -75,8 +91,9 @@
         padding: 4px;
 
         @include down(md) {
-            flex: 1;
+            flex: 1 1 auto;
             overflow: hidden;
+            transition: flex 0.2s ease-out;
         }
 
 

@@ -54,6 +54,7 @@ export default function SkeletonLoaderWrapper({
       style={style}
       layout={enableLayout || false}
       transition={{ type: "tween", duration: 0.2 }}
+      suppressHydrationWarning
     >
       <AnimatePresence initial={false} mode="popLayout">
         {showLoader ? (
