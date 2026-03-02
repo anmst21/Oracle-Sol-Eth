@@ -51,10 +51,15 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
   const prevSolSellToken = useRef<UnifiedToken | null>(null);
   const prevEthBuyToken = useRef<UnifiedToken | null>(null);
   const prevSolBuyToken = useRef<UnifiedToken | null>(null);
-  // First-run guards: skip the token→wallet sync effects on mount to prevent
-  // ping-pong loops when both wallet and token are mismatched at the same time.
+  // First-run guards: skip the token→wallet sync effects on mount so the
+  // wallet-wins direction (Effect B/D) runs first and establishes stable state.
   const sellTokenEffectMounted = useRef(false);
   const buyTokenEffectMounted = useRef(false);
+  // Sync-source refs: track which side last triggered a change so the responding
+  // effect can detect it is reacting to a sync (not a user action) and skip,
+  // breaking the ping-pong after mount when both deps change in the same render.
+  const sellSyncSource = useRef<"wallet" | "token" | null>(null);
+  const buySyncSource = useRef<"wallet" | "token" | null>(null);
 
   const {
     isCustomSlippage,
@@ -176,11 +181,18 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       buyTokenEffectMounted.current = true;
       return;
     }
+    if (!buyToken) return;
+    // If the token changed because the wallet synced it, don't re-sync the wallet.
+    if (buySyncSource.current === "wallet") {
+      buySyncSource.current = null;
+      return;
+    }
     if (
       activeBuyWallet?.type === "ethereum" &&
-      buyToken?.chainId === solanaChain.id &&
+      buyToken.chainId === solanaChain.id &&
       solLinked[0]
     ) {
+      buySyncSource.current = "token";
       setActiveBuyWallet({
         chainId: solanaChain.id,
         address: solLinked[0].address,
@@ -190,9 +202,10 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
 
     if (
       activeBuyWallet?.type === "solana" &&
-      buyToken?.chainId !== solanaChain.id &&
+      buyToken.chainId !== solanaChain.id &&
       ethLinked[0]
     ) {
+      buySyncSource.current = "token";
       setActiveBuyWallet({
         chainId: Number(ethLinked[0].chainId.split(":")[1]),
         address: ethLinked[0].address,
@@ -203,10 +216,16 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
 
   // When buy wallet changes → switch buy token to match
   useEffect(() => {
+    // If the wallet changed because the token synced it, don't re-sync the token.
+    if (buySyncSource.current === "token") {
+      buySyncSource.current = null;
+      return;
+    }
     if (
       activeBuyWallet?.type === "ethereum" &&
       buyToken?.chainId === solanaChain.id
     ) {
+      buySyncSource.current = "wallet";
       prevSolBuyToken.current = buyToken;
       setBuyToken(
         prevEthBuyToken.current ??
@@ -218,6 +237,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       activeBuyWallet?.type === "solana" &&
       buyToken?.chainId !== solanaChain.id
     ) {
+      buySyncSource.current = "wallet";
       prevEthBuyToken.current = buyToken;
       setBuyToken(prevSolBuyToken.current ?? solanaToken);
     }
@@ -229,19 +249,27 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       sellTokenEffectMounted.current = true;
       return;
     }
+    if (!sellToken) return;
+    // If the token changed because the wallet synced it, don't re-sync the wallet.
+    if (sellSyncSource.current === "wallet") {
+      sellSyncSource.current = null;
+      return;
+    }
     if (
       activeWallet?.type === "ethereum" &&
-      sellToken?.chainId === solanaChain.id &&
+      sellToken.chainId === solanaChain.id &&
       solLinked[0]
     ) {
+      sellSyncSource.current = "token";
       setActiveWallet(solLinked[0]);
     }
 
     if (
       activeWallet?.type === "solana" &&
-      sellToken?.chainId !== solanaChain.id &&
+      sellToken.chainId !== solanaChain.id &&
       ethLinked[0]
     ) {
+      sellSyncSource.current = "token";
       setActiveWallet(ethLinked[0]);
     }
   }, [sellToken]);
@@ -281,11 +309,18 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       return;
     }
 
+    // If the wallet changed because the token synced it, don't re-sync the token.
+    if (sellSyncSource.current === "token") {
+      sellSyncSource.current = null;
+      return;
+    }
+
     // Normal behavior: wallet changed manually, switch sell token to match
     if (
       activeWallet?.type === "ethereum" &&
       sellToken?.chainId === solanaChain.id
     ) {
+      sellSyncSource.current = "wallet";
       prevSolSellToken.current = sellToken;
       setSellToken(
         prevEthSellToken.current ??
@@ -297,6 +332,7 @@ const SwapContainer = ({ isHero }: { isHero?: boolean }) => {
       activeWallet?.type === "solana" &&
       sellToken?.chainId !== solanaChain.id
     ) {
+      sellSyncSource.current = "wallet";
       prevEthSellToken.current = sellToken;
       setSellToken(prevSolSellToken.current ?? solanaToken);
     }
