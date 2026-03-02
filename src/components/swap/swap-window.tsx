@@ -355,8 +355,8 @@ const SwapWindow = ({
           </div>
         </button> */}
         <AnimatePresence mode="wait">
-          {Number(tokenBalance) !== 0 ||
-          (token && mode === "buy" && inputValue.length > 0) ? (
+          {(mode === "sell" && Number(tokenBalance) !== 0) ||
+          (mode === "buy" && token && inputValue.length > 0 && !isLoadingQuote) ? (
             <motion.div
               key="options"
               variants={containerVariants}

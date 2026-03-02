@@ -88,12 +88,16 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
   const userAddress = user?.wallet?.address;
 
   const ethLinked = useMemo(() => {
-    const linked = ethereumWallets.filter((w) => w.linked);
+    const linked = ethereumWallets.filter(
+      (w) => w.linked && w.meta.name !== "Browser Extension"
+    );
     return sortByUserFirst(linked, userAddress);
   }, [ethereumWallets, userAddress]);
 
   const solLinked = useMemo(() => {
-    const linked = solanaWallets.filter((w) => w.linked);
+    const linked = solanaWallets.filter(
+      (w) => w.linked && w.meta.name !== "Browser Extension"
+    );
     return sortByUserFirst(linked, userAddress);
   }, [solanaWallets, userAddress]);
 
@@ -103,12 +107,16 @@ export function ActiveWalletProvider({ children }: { children: ReactNode }) {
       let found: ConnectedWallet | ConnectedSolanaWallet | undefined;
       if (readyEth) {
         found = ethereumWallets.find(
-          (w) => w.address?.toLowerCase() === userAddress.toLowerCase()
+          (w) =>
+            w.address?.toLowerCase() === userAddress.toLowerCase() &&
+            w.meta.name !== "Browser Extension"
         );
       }
       if (!found && readySol) {
         found = solanaWallets.find(
-          (w) => w.address?.toLowerCase() === userAddress.toLowerCase()
+          (w) =>
+            w.address?.toLowerCase() === userAddress.toLowerCase() &&
+            w.meta.name !== "Browser Extension"
         );
       }
       if (found) {

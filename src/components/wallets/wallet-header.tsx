@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { HexChain, PrivyLogo, UserQuestion, Wallet } from "../icons";
+import { HexChain, UserQuestion, Wallet } from "../icons";
 import { getIconUri } from "@/helpers/get-icon-uri";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import Image from "next/image";
@@ -49,138 +49,92 @@ const WalletHeader = ({
     activeBalance ? activeBalance?.toFixed(6) : "0.000000"
   ).split(".");
   const { ready, authenticated, login } = usePrivy();
-  const disableLogin = !ready || (ready && authenticated);
 
-  const showSkeleton = !ready || (authenticated && !activeWallet);
+  const isLoading = !ready || (authenticated && !activeWallet);
 
   return (
-    <div className={classNames("wallet-header", { "wallet-header--loading": showSkeleton })}>
-      {showSkeleton ? (
-        <>
-          <div className="wallet-header__address">
-            <div className="wallet-header__address__provider">
-              <SkeletonLoaderWrapper
-                radius={6}
-                width="100%"
-                height="100%"
-                isLoading={true}
-              />
-            </div>
-            <div className="wallet-header__address__value">
-              <SkeletonLoaderWrapper
-                radius={6}
-                height="100%"
-                isLoading={true}
-                flex
-              />
-            </div>
-          </div>
-          <div className="divider">
-            <div />
-          </div>
-          <div className="wallet-header__balance">
-            <div className="wallet-header__balance__chain">
-              <SkeletonLoaderWrapper
-                radius={6}
-                width="100%"
-                height="100%"
-                isLoading={true}
-              />
-            </div>
-            <div className="wallet-header__balance__number">
-              <SkeletonLoaderWrapper
-                radius={6}
-                height="100%"
-                isLoading={true}
-                flex
-              />
-            </div>
-          </div>
-        </>
-      ) : !authenticated ? (
-        <button
-          disabled={disableLogin}
-          onClick={() => login()}
-          className="wallet-item__connect"
+    <div className={classNames("wallet-header", { "wallet-header--loading": isLoading })}>
+      <button
+        onClick={() =>
+          !isLoading && (authenticated ? (callback(), closeIfOpenChains()) : login())
+        }
+        className="wallet-header__address"
+      >
+        <div className="wallet-header__address__provider">
+          <Wallet />
+        </div>
+        <div
+          className={classNames("wallet-header__address__value", {
+            "button--active": isOpenWallet && !isLoading,
+          })}
         >
-          <span>Login</span>
-          <PrivyLogo />
-        </button>
-      ) : (
-        <>
-          <button
-            onClick={() => (callback(), closeIfOpenChains())}
-            className="wallet-header__address"
-          >
-            <div className="wallet-header__address__provider">
-              <Wallet />
-            </div>
-            <div
-              className={classNames("wallet-header__address__value", {
-                "button--active": isOpenWallet,
-              })}
-            >
-              <div
-                key={activeWallet?.address}
-                className="wallet-header__address__value__image"
-              >
-                {activeWallet?.meta?.icon ? (
-                  <Image
-                    alt={activeWallet?.meta.id}
-                    src={activeWallet?.meta.icon.replace(/^\n+/, "").trimEnd()}
-                    width={20}
-                    height={20}
-                  />
-                ) : (
-                  <UserQuestion />
-                )}
-              </div>
-              <AnimatePresence mode="popLayout">
-                <motion.span
-                  key={activeWallet?.address}
-                  {...slidingTextAnimation}
-                >
-                  {activeWallet?.address
-                    ? truncateAddress(activeWallet?.address)
-                    : "Connect"}
-                </motion.span>
-              </AnimatePresence>
-            </div>
-          </button>
-          <div className="divider">
-            <div />
-          </div>
-          <button
-            onClick={() => (chainCallback(), closeIfOpen())}
-            className="wallet-header__balance"
-          >
+          <SkeletonLoaderWrapper width={20} height={20} isLoading={isLoading}>
             <div
               key={activeWallet?.address}
-              className="wallet-header__balance__chain"
+              className="wallet-header__address__value__image"
             >
-              <HexChain
-                width={20}
-                uri={
-                  activeWallet?.type === "ethereum"
-                    ? getIconUri(Number(activeWallet.chainId.split(":")[1]))
-                    : getIconUri(792703809)
-                }
-              />
+              {activeWallet?.meta?.icon ? (
+                <Image
+                  alt={activeWallet.meta.id}
+                  src={activeWallet.meta.icon.replace(/^\n+/, "").trimEnd()}
+                  width={20}
+                  height={20}
+                />
+              ) : (
+                <UserQuestion />
+              )}
             </div>
-            <div
-              className={classNames("wallet-header__balance__number", {
-                "button--active": isOpenChains,
-              })}
-            >
-              <AnimatePresence mode="popLayout">
-                <motion.span {...slidingTextAnimation} key={activeBalance}>
-                  <GreenDot int={balance[0]} dec={balance[1]} />
-                </motion.span>
-              </AnimatePresence>
-            </div>
-          </button>
-        </>
-      )}
+          </SkeletonLoaderWrapper>
+          <SkeletonLoaderWrapper height={20} isLoading={isLoading} flex>
+            <AnimatePresence mode="popLayout">
+              <motion.span
+                key={activeWallet?.address ?? "none"}
+                {...slidingTextAnimation}
+              >
+                {activeWallet?.address
+                  ? truncateAddress(activeWallet.address)
+                  : "Login"}
+              </motion.span>
+            </AnimatePresence>
+          </SkeletonLoaderWrapper>
+        </div>
+      </button>
+      <div className="divider">
+        <div />
+      </div>
+      <button
+        onClick={() => !isLoading && (chainCallback(), closeIfOpen())}
+        className="wallet-header__balance"
+      >
+        <div
+          key={activeWallet?.address}
+          className="wallet-header__balance__chain"
+        >
+          <SkeletonLoaderWrapper width={20} height={20} isLoading={isLoading}>
+            <HexChain
+              width={20}
+              uri={
+                activeWallet?.type === "ethereum"
+                  ? getIconUri(Number(activeWallet.chainId.split(":")[1]))
+                  : getIconUri(792703809)
+              }
+            />
+          </SkeletonLoaderWrapper>
+        </div>
+        <div
+          className={classNames("wallet-header__balance__number", {
+            "button--active": isOpenChains && !isLoading,
+          })}
+        >
+          <SkeletonLoaderWrapper height={20} isLoading={isLoading} flex>
+            <AnimatePresence mode="popLayout">
+              <motion.span {...slidingTextAnimation} key={activeBalance}>
+                <GreenDot int={balance[0]} dec={balance[1]} />
+              </motion.span>
+            </AnimatePresence>
+          </SkeletonLoaderWrapper>
+        </div>
+      </button>
     </div>
   );
 };

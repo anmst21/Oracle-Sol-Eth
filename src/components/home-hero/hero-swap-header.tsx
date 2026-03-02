@@ -7,11 +7,12 @@ import { AnimatePresence, motion } from "motion/react";
 import SwapCog from "../icons/SwapCog";
 import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
-import { PrivyLogo, UserQuestion, Wallet } from "../icons";
+import { UserQuestion, Wallet } from "../icons";
 import { useActiveWallet } from "@/context/ActiveWalletContext";
 import { slidingTextAnimation } from "../shared/animation";
 import { truncateAddress } from "@/helpers/truncate-address";
 import Wallets from "@/components/wallets/wallet-modal";
+import SkeletonLoaderWrapper from "../skeleton";
 
 const SwapHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +21,7 @@ const SwapHeader = () => {
   const { activeWallet } = useActiveWallet();
 
   const { authenticated, login, ready } = usePrivy();
-  const disableLogin = !ready || (ready && authenticated);
+  const isLoading = !ready || (authenticated && !activeWallet);
 
   useEffect(() => {
     if (!authenticated) setIsOpen(false);
@@ -97,25 +98,21 @@ const SwapHeader = () => {
       {/* </div> */}
       <div className="swap-header__badge">Wallet</div>
 
-      {!authenticated ? (
-        <button
-          disabled={disableLogin}
-          onClick={() => login()}
-          className="wallet-item__connect"
+      <button
+        onClick={() =>
+          !isLoading && (authenticated ? onClick() : login())
+        }
+        className="wallet-header__address"
+      >
+        <div className="wallet-header__address__provider">
+          <Wallet />
+        </div>
+        <div
+          className={classNames("wallet-header__address__value", {
+            "button--active": isOpen && !isLoading,
+          })}
         >
-          <span>Login</span>
-          <PrivyLogo />
-        </button>
-      ) : (
-        <button onClick={onClick} className="wallet-header__address">
-          <div className="wallet-header__address__provider">
-            <Wallet />
-          </div>
-          <div
-            className={classNames("wallet-header__address__value", {
-              "button--active": isOpen,
-            })}
-          >
+          <SkeletonLoaderWrapper width={24} height={24} isLoading={isLoading}>
             <div
               key={activeWallet?.address}
               className="wallet-header__address__value__image"
@@ -131,19 +128,21 @@ const SwapHeader = () => {
                 <UserQuestion />
               )}
             </div>
+          </SkeletonLoaderWrapper>
+          <SkeletonLoaderWrapper height={20} isLoading={isLoading} flex>
             <AnimatePresence mode="popLayout">
               <motion.span
-                key={activeWallet?.address}
+                key={activeWallet?.address ?? "none"}
                 {...slidingTextAnimation}
               >
                 {activeWallet?.address
-                  ? truncateAddress(activeWallet?.address)
-                  : "Connect"}
+                  ? truncateAddress(activeWallet.address)
+                  : "Login"}
               </motion.span>
             </AnimatePresence>
-          </div>
-        </button>
-      )}
+          </SkeletonLoaderWrapper>
+        </div>
+      </button>
       <div
         onMouseLeave={() => {
           if (isOpenSlippage) setIsOpenSlippage(false);

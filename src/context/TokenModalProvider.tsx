@@ -403,7 +403,7 @@ function SearchParamsSync({
     }
 
     const qs = params.toString();
-    window.history.replaceState(null, "", qs ? `${pathname}?${qs}` : pathname);
+    window.history.replaceState(window.history.state, "", qs ? `${pathname}?${qs}` : pathname);
   }, [sellToken, buyToken, pathname, urlLoaded]);
 
   return null;

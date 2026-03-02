@@ -97,7 +97,7 @@ export default function Wallets({
   );
   const EthSection = readyEth && authenticated && ethLinked.length > 0 && (
     <>
-      {ethLinked.map((w, i) => (
+      {ethLinked.filter((w) => w.meta.name !== "Browser Extension").map((w, i) => (
         <WalletItem
           key={i}
           name={w.meta.name}
@@ -122,7 +122,7 @@ export default function Wallets({
 
   const SolSection = readySol && authenticated && solLinked.length > 0 && (
     <>
-      {solLinked.map((w, i) => (
+      {solLinked.filter((w) => w.meta.name !== "Browser Extension").map((w, i) => (
         <WalletItem
           key={i}
           name={w.meta.name}
