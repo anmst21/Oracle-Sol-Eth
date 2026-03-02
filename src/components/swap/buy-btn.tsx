@@ -79,8 +79,14 @@ const BuyBtn = ({
   let handleClick: (() => void) | undefined = undefined;
   let icon = <LoaderIcon />;
 
-  if (!ready || isLoading || (authenticated && !globalWallet)) {
+
+  if (!ready || (authenticated && !globalWallet)) {
     // 1. still initializing the SDK or wallet hasn't loaded yet
+    label = "Loading";
+    disabled = true;
+    icon = <LoaderIcon />;
+  } else if (isLoading) {
+    // 2. quote is being fetched
     label = "Fetching Quote";
     disabled = true;
     icon = <LoaderIcon />;
@@ -132,6 +138,8 @@ const BuyBtn = ({
     handleClick = onBuy;
     icon = <ButtonSwap />;
   }
+
+  console.log("[buy-btn]", label);
 
   const animatedProps = buttonSlideAnimation;
 
